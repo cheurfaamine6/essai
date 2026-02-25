@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#070a14" />
+  <title>Seat Comfort</title>
+
+  <style>
+    :root{
+      --bg0:#070a14; --bg1:#0b1020;
+      --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.12);
+      --txt:#eef2ff; --muted:#a7b0d8;
+      --a1:#4f8cff; --a2:#7c3aed;
+      --shadow: 0 18px 55px rgba(0,0,0,.45);
+      --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--txt);
+      background: radial-gradient(1200px 700px at 10% -20%, rgba(124,58,237,.25), transparent 60%),
+                  radial-gradient(1200px 700px at 90% -20%, rgba(79,140,255,.20), transparent 60%),
+                  linear-gradient(180deg,var(--bg0),var(--bg1));
+      min-height:100vh;
+    }
+
+    header{
+      position:sticky; top:0; z-index:10;
+      background: rgba(7,10,20,.72);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .wrap{max-width:1200px;margin:0 auto;padding:12px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .title{display:flex;flex-direction:column;gap:2px}
+    .title b{font-size:1.05rem;letter-spacing:.2px}
+    .title span{font-size:.85rem;color:var(--muted)}
+
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.07);
+      color:var(--txt);
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.15s;
+      user-select:none;
+    }
+    .btn:hover{transform: translateY(-1px); border-color:rgba(255,255,255,.24)}
+    .btn.primary{border:none;background: linear-gradient(90deg,var(--a1),var(--a2))}
+    .btn.ghost{background:transparent;border-color:rgba(255,255,255,.14)}
+    .btn.small{padding:8px 10px;border-radius:12px}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:12px;
+      align-items:start;
+    }
+    @media (max-width:980px){
+      .grid{grid-template-columns:1fr;}
+      @media (orientation:landscape){
+        .grid{grid-template-columns: 1.15fr .85fr;}
+      }
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      overflow:hidden;
+      box-shadow: 0 10px 35px rgba(0,0,0,.25);
+    }
+    .p{padding:12px}
+    .hint{color:var(--muted);font-size:.88rem;line-height:1.35}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .pill{
+      font-size:.78rem;
+      padding:5px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      color:var(--muted);
+      background: rgba(0,0,0,.10);
+    }
+
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field label{font-size:.82rem;color:var(--muted);font-weight:700}
+    .field input{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color:var(--txt);
+      padding:10px 12px;
+      border-radius:14px;
+      outline:none;
+    }
+
+    /* ✅ pas de coupe : on réduit */
+    .seatFrame{
+      width:100%;
+      border-top: 1px solid rgba(255,255,255,.06);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:10px;
+    }
+    .seatFrame svg{
+      width:100%;
+      height: min(72vh, 900px);
+      display:block;
+    }
+    @media (max-width:980px){
+      @media (orientation:portrait){ .seatFrame svg{ height: 58vh; } }
+      @media (orientation:landscape){ .seatFrame svg{ height: 78vh; } }
+    }
+
+    .zone{
+      fill: rgba(79,140,255,.12);
+      stroke: rgba(79,140,255,.55);
+      stroke-width:2;
+      cursor:pointer;
+      transition:.12s;
+    }
+    .zone:hover{fill: rgba(124,58,237,.18); stroke: rgba(124,58,237,.80)}
+    .zone.active{fill: rgba(124,58,237,.28); stroke: rgba(124,58,237,.98); stroke-width:3}
+
+    .list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+    .item{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      padding:10px 12px;
+      background: rgba(0,0,0,.12);
+    }
+    .item b{font-size:.92rem}
+    .item .sub{color:var(--muted);font-size:.84rem;margin-top:2px}
+    .val{
+      font-weight:900;
+      padding:6px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      min-width:64px;
+      text-align:center;
+    }
+
+    /* Bottom sheet */
+    .overlay{position:fixed; inset:0; background: rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:.18s; z-index:20}
+    .overlay.show{opacity:1; pointer-events:auto}
+    .sheet{position:fixed; left:0; right:0; bottom:0; transform: translateY(105%);
+      transition:.22s cubic-bezier(.2,.8,.2,1); z-index:30; padding: 12px 12px calc(14px + env(safe-area-inset-bottom));}
+    .sheet.show{transform: translateY(0)}
+    .sheetCard{max-width:760px; margin:0 auto; background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.14);
+      border-radius:22px; box-shadow: var(--shadow); overflow:hidden}
+    .grab{height:18px; display:grid; place-items:center; background: rgba(255,255,255,.03); border-bottom:1px solid rgba(255,255,255,.08)}
+    .grab::before{content:""; width:56px; height:5px; border-radius:999px; background: rgba(255,255,255,.22)}
+    .sheetBody{padding:14px}
+    .zoneTitle{font-weight:950;font-size:1.08rem}
+    .zoneMeta{color:var(--muted);font-size:.85rem;margin-top:2px}
+    input[type="range"]{width:100%}
+    .scoreRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+    .scoreBig{
+      font-weight:950;font-size:1.4rem;
+      background: linear-gradient(90deg,var(--a1),var(--a2));
+      -webkit-background-clip:text; background-clip:text;
+      color:transparent;
+    }
+    .scale{color:var(--muted);font-size:.82rem;display:flex;justify-content:space-between;margin-top:4px}
+    .sheetActions{display:flex;gap:10px;margin-top:14px}
+    .sheetActions .btn{flex:1}
+
+    /* Reasons */
+    .reasonBox{margin-top:12px;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:10px;background:rgba(0,0,0,.14)}
+    .reasonTitle{font-weight:900;margin-bottom:8px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--txt);
+      border-radius:999px;
+      padding:8px 10px;
+      font-weight:800;
+      cursor:pointer;
+      user-select:none;
+    }
+    .chip.on{background: rgba(124,58,237,.25); border-color: rgba(124,58,237,.65)}
+    textarea{
+      width:100%; margin-top:10px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color:var(--txt);
+      border-radius:14px;
+      padding:10px 12px;
+      min-height:80px;
+      resize:vertical;
+    }
+
+    /* Table */
+    .tableWrap{overflow:auto;border:1px solid rgba(255,255,255,.12);border-radius:16px;margin-top:12px}
+    table{width:100%;border-collapse:collapse;font-size:.84rem}
+    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap;text-align:left}
+    th{position:sticky;top:0;background:rgba(17,25,50,.92)}
+
+    .toast{position:fixed; left:50%; bottom:18px; transform: translateX(-50%) translateY(20px); opacity:0; pointer-events:none;
+      background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:10px 12px; z-index:40;
+      transition:.2s; box-shadow: var(--shadow); max-width:92vw;}
+    .toast.show{opacity:1; transform: translateX(-50%) translateY(0)}
+
+    /* Portrait helper */
+    .rotateOverlay{
+      position:fixed; inset:0; z-index:50;
+      display:none;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(10px);
+      align-items:center; justify-content:center;
+      text-align:center; padding:24px;
+    }
+    .rotateOverlay .box{
+      max-width:520px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(17,25,50,.92);
+      border-radius:22px;
+      padding:16px;
+      box-shadow: var(--shadow);
+    }
+    .rotateOverlay .box b{font-size:1.1rem}
+    .rotateOverlay .box p{color:var(--muted);margin:8px 0 0}
+
+    /* Zone tuning panel */
+    .tune{
+      margin-top:12px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      padding:10px;
+      background: rgba(0,0,0,.12);
+    }
+    .tune h4{margin:0 0 8px;font-size:.95rem}
+    .tune .sl{
+      display:grid;
+      grid-template-columns: 56px 1fr 54px;
+      gap:10px;
+      align-items:center;
+      margin:8px 0;
+    }
+    .tune .sl label{font-size:.82rem;color:var(--muted);font-weight:800}
+    .tune input[type="range"]{width:100%}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color:#c7d2fe; font-size:.82rem; word-break:break-word}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap top">
+    <div class="title">
+      <b>Seat Comfort</b>
+      <span>Zones cliquables → note 1–10 → sauvegarde personne</span>
+    </div>
+    <div class="row" style="gap:8px">
+      <button class="btn" id="fsBtn">Plein écran</button>
+      <button class="btn ghost" id="resetBtn">Réinitialiser notes</button>
+      <button class="btn" id="exportBtn">Exporter CSV</button>
+      <button class="btn primary" id="savePersonBtn">Sauver personne</button>
+    </div>
+  </div>
+</header>
+
+<div class="rotateOverlay" id="rotateOverlay">
+  <div class="box">
+    <b>Tourne ton téléphone</b>
+    <p>Pour une meilleure utilisation, mets ton téléphone en <b>mode paysage</b>.</p>
+  </div>
+</div>
+
+<main class="wrap grid">
+  <!-- LEFT -->
+  <section class="card">
+    <div class="p row">
+      <div>
+        <b>Siège interactif</b>
+        <div class="hint">Clique une zone → le panneau s’ouvre (slider).</div>
+      </div>
+      <div class="pill" id="countPill">0 zone notée</div>
+    </div>
+
+    <div class="seatFrame">
+      <!-- PHOTO 1361×2048 -->
+      <svg id="seatSvg" viewBox="0 0 1361 2048" preserveAspectRatio="xMidYMid meet">
+        <image href="seat.png" x="0" y="0" width="1361" height="2048" />
+
+        <!-- ⭐ IMPORTANT: zones dans un groupe "zonesLayer" pour pouvoir les décaler -->
+        <g id="zonesLayer" transform="translate(0 0) scale(1)">
+          <polygon class="zone" data-zone="Dossier haut (bleu)"
+            points="825,620 819,599 760,583 470,620 452,700 502,761 825,761 825,620" />
+
+          <polygon class="zone" data-zone="Dossier milieu (rouge)"
+            points="781,726 507,718 483,736 503,751 528,880 562,900 681,908 760,900 781,726" />
+
+          <polygon class="zone" data-zone="Zone centrale (gris clair)"
+            points="497,856 849,856 850,986 497,986" />
+
+          <polygon class="zone" data-zone="Bande jaune"
+            points="754,1143 717,1108 520,1112 505,1128 506,1187 566,1215 701,1219 754,1184 754,1143" />
+
+          <polygon class="zone" data-zone="Bande magenta"
+            points="770,1292 723,1268 527,1272 502,1295 502,1353 565,1378 725,1377 770,1346 770,1292" />
+
+          <polygon class="zone" data-zone="Assise bas (vert)"
+            points="808,1485 787,1445 701,1437 486,1450 505,1563 563,1609 776,1609 808,1558 808,1485" />
+
+          <polygon class="zone" data-zone="Bas gauche (vert)"
+            points="277,1387 261,1450 273,1563 304,1599 367,1599 397,1455 395,1433 342,1410 304,1407 277,1387" />
+
+          <polygon class="zone" data-zone="Flanc gauche (vert)"
+            points="447,749 378,754 324,818 338,939 404,964 447,920 447,749" />
+
+          <polygon class="zone" data-zone="Flanc gauche (noir)"
+            points="448,916 416,923 351,990 321,1097 343,1179 397,1197 448,1129 448,916" />
+
+          <polygon class="zone" data-zone="Flanc droit (violet)"
+            points="929,813 894,799 842,830 825,933 844,986 894,986 929,918 929,813" />
+
+          <polygon class="zone" data-zone="Flanc droit (orange)"
+            points="928,980 844,1001 800,1093 814,1225 885,1245 928,1159 928,980" />
+
+          <polygon class="zone" data-zone="Bas droit (blanc)"
+            points="950,1257 857,1272 807,1334 818,1410 885,1429 950,1355 950,1257" />
+
+          <polygon class="zone" data-zone="Bas droit (cyan)"
+            points="968,1420 903,1429 839,1495 852,1608 934,1608 968,1560 968,1420" />
+
+          <polygon class="zone" data-zone="Bas gauche (orange)"
+            points="439,1302 382,1301 283,1365 297,1443 382,1443 439,1392 439,1302" />
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- RIGHT -->
+  <aside class="card">
+    <div class="p">
+      <div class="row">
+        <b>Profil testeur</b>
+        <span class="pill" id="avgPill">Moyenne —</span>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px">
+        <div class="field">
+          <label>Nom</label>
+          <input id="nom" placeholder="Ex: Dupont">
+        </div>
+        <div class="field">
+          <label>Prénom</label>
+          <input id="prenom" placeholder="Ex: Amine">
+        </div>
+        <div class="field">
+          <label>Taille (cm)</label>
+          <input id="taille" inputmode="numeric" placeholder="178">
+        </div>
+        <div class="field">
+          <label>Poids (kg)</label>
+          <input id="poids" inputmode="numeric" placeholder="75">
+        </div>
+      </div>
+
+      <div class="list" id="list"></div>
+
+      <!-- ⭐ panneau pour corriger le décalage des zones -->
+      <div class="tune">
+        <div class="row">
+          <h4 style="margin:0">Réglage zones (alignement)</h4>
+          <button class="btn small" id="copyTuneBtn">Copier config</button>
+        </div>
+
+        <div class="sl">
+          <label>DX</label>
+          <input id="dx" type="range" min="-120" max="120" step="1" value="0">
+          <div class="mono" id="dxVal">0</div>
+        </div>
+
+        <div class="sl">
+          <label>DY</label>
+          <input id="dy" type="range" min="-120" max="120" step="1" value="0">
+          <div class="mono" id="dyVal">0</div>
+        </div>
+
+        <div class="sl">
+          <label>Scale</label>
+          <input id="sc" type="range" min="0.90" max="1.10" step="0.001" value="1">
+          <div class="mono" id="scVal">1.000</div>
+        </div>
+
+        <div class="hint" style="margin-top:6px">
+          Ajuste DX/DY/Scale jusqu’à ce que ça colle parfaitement. Ensuite “Copier config”.
+        </div>
+        <div class="mono" id="tuneOut" style="margin-top:8px"></div>
+      </div>
+
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th><th>Nom</th><th>Prénom</th><th>Taille</th><th>Poids</th><th>Moy</th>
+            </tr>
+          </thead>
+          <tbody id="peopleBody"></tbody>
+        </table>
+      </div>
+
+      <div class="hint" style="margin-top:10px">
+        Astuce : sur téléphone, mets en <b>paysage</b>.
+      </div>
+    </div>
+  </aside>
+</main>
+
+<!-- Bottom sheet -->
+<div class="overlay" id="overlay"></div>
+<div class="sheet" id="sheet">
+  <div class="sheetCard">
+    <div class="grab"></div>
+    <div class="sheetBody">
+      <div class="zoneTitle" id="sheetZone">Zone</div>
+      <div class="zoneMeta" id="sheetMeta">Choisis une note et enregistre.</div>
+
+      <input id="slider" type="range" min="1" max="10" step="1" value="7" />
+      <div class="scoreRow">
+        <div class="hint">1 = inconfort</div>
+        <div class="scoreBig"><span id="sliderVal">7</span>/10</div>
+        <div class="hint">10 = excellent</div>
+      </div>
+      <div class="scale"><span>1</span><span>5</span><span>10</span></div>
+
+      <div class="reasonBox" id="reasonBox" style="display:none">
+        <div class="reasonTitle">Pourquoi ? (si note ≤ 5)</div>
+        <div class="chips" id="chips"></div>
+        <textarea id="reasonText" placeholder="Commentaire optionnel..."></textarea>
+      </div>
+
+      <div class="sheetActions">
+        <button class="btn ghost" id="closeBtn">Fermer</button>
+        <button class="btn primary" id="saveBtn">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">OK</div>
+
+<script>
+  // ---- Fullscreen button ----
+  const fsBtn = document.getElementById("fsBtn");
+  function isFullscreen(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+  async function enterFullscreen(){
+    const el = document.documentElement;
+    try{ if(el.requestFullscreen) await el.requestFullscreen(); else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen(); }catch(e){}
+  }
+  async function exitFullscreen(){
+    try{ if(document.exitFullscreen) await document.exitFullscreen(); else if(document.webkitExitFullscreen) document.webkitExitFullscreen(); }catch(e){}
+  }
+  function updateFsBtn(){ fsBtn.textContent = isFullscreen() ? "Quitter plein écran" : "Plein écran"; }
+  fsBtn.addEventListener("click", async ()=>{ if(isFullscreen()) await exitFullscreen(); else await enterFullscreen(); updateFsBtn(); });
+  document.addEventListener("fullscreenchange", updateFsBtn);
+  document.addEventListener("webkitfullscreenchange", updateFsBtn);
+  updateFsBtn();
+
+  // ---- Rotate helper ----
+  const rotateOverlay = document.getElementById("rotateOverlay");
+  function checkOrientation(){
+    const isMobile = window.matchMedia("(max-width: 980px)").matches;
+    const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+    rotateOverlay.style.display = (isMobile && isPortrait) ? "flex" : "none";
+  }
+  window.addEventListener("resize", checkOrientation);
+  window.addEventListener("orientationchange", checkOrientation);
+  checkOrientation();
+
+  // ---- Storage ----
+  const RATINGS_KEY = "seat_ratings_current_v4";
+  const PEOPLE_KEY  = "seat_people_passes_v4";
+  const TUNE_KEY    = "seat_zones_tune_v1";
+
+  const $ = (id)=>document.getElementById(id);
+
+  const REASONS = [
+    "Trop de pression","Trop dur","Trop mou","Mauvais maintien",
+    "Gêne lombaire","Gêne cuisse","Mauvaise posture","Zone mal adaptée"
+  ];
+
+  let activeZone = null;
+  let activeReasons = new Set();
+  let ratings = loadJson(RATINGS_KEY, {}); // { zone: {score, reasons[], comment} }
+
+  function loadJson(key, fallback){
+    try { return JSON.parse(localStorage.getItem(key) || "") || fallback; }
+    catch { return fallback; }
+  }
+  function saveJson(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+  function toast(msg){
+    const t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"), 1200);
+  }
+  function escapeHtml(s){
+    return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+  }
+
+  function getZones(){
+    return Array.from(document.querySelectorAll(".zone")).map(z=>z.dataset.zone);
+  }
+
+  function avgScore(){
+    const vals = Object.values(ratings).map(v=>Number(v?.score)).filter(n=>Number.isFinite(n));
+    if(!vals.length) return null;
+    return vals.reduce((a,b)=>a+b,0)/vals.length;
+  }
+
+  function updateSummary(){
+    const zones = getZones();
+    const count = Object.keys(ratings).length;
+    $("countPill").textContent = `${count} zone notée${count>1?"s":""}`;
+
+    const a = avgScore();
+    $("avgPill").textContent = a ? `Moyenne ${a.toFixed(1)}/10` : "Moyenne —";
+
+    $("list").innerHTML = zones.map(z=>{
+      const v = ratings[z]?.score;
+      const label = v ? `${v}/10` : "—";
+      return `
+        <div class="item">
+          <div>
+            <b>${escapeHtml(z)}</b>
+            <div class="sub">${v ? "Noté" : "Non noté"}</div>
+          </div>
+          <div class="val">${label}</div>
+        </div>`;
+    }).join("");
+  }
+
+  // ---- Bottom sheet ----
+  function openSheet(zone, el){
+    activeZone = zone;
+    activeReasons = new Set();
+
+    $("sheetZone").textContent = zone;
+
+    document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
+    if(el) el.classList.add("active");
+
+    const existing = ratings[zone];
+    const v = existing?.score ? Number(existing.score) : 7;
+    $("slider").value = v;
+    $("sliderVal").textContent = v;
+
+    $("sheetMeta").textContent = existing?.score
+      ? `Note actuelle : ${existing.score}/10 • Modifie si besoin`
+      : "Aucune note encore • Choisis 1 à 10";
+
+    $("reasonText").value = existing?.comment || "";
+    (existing?.reasons || []).forEach(r=>activeReasons.add(r));
+    renderReasons(v);
+
+    $("overlay").classList.add("show");
+    $("sheet").classList.add("show");
+  }
+  function closeSheet(){
+    $("overlay").classList.remove("show");
+    $("sheet").classList.remove("show");
+  }
+
+  function renderReasons(score){
+    const show = Number(score) <= 5;
+    $("reasonBox").style.display = show ? "block" : "none";
+    if(!show) return;
+
+    $("chips").innerHTML = REASONS.map(r=>{
+      const on = activeReasons.has(r);
+      return `<div class="chip ${on?"on":""}" data-reason="${escapeHtml(r)}">${escapeHtml(r)}</div>`;
+    }).join("");
+
+    document.querySelectorAll(".chip").forEach(ch=>{
+      ch.addEventListener("click", ()=>{
+        const r = ch.dataset.reason;
+        if(activeReasons.has(r)) activeReasons.delete(r);
+        else activeReasons.add(r);
+        renderReasons($("slider").value);
+      });
+    });
+  }
+
+  $("slider").addEventListener("input", ()=>{
+    $("sliderVal").textContent = $("slider").value;
+    renderReasons($("slider").value);
+  });
+
+  $("saveBtn").addEventListener("click", ()=>{
+    if(!activeZone) return;
+    const score = Number($("slider").value);
+
+    ratings[activeZone] = {
+      score,
+      reasons: score <= 5 ? Array.from(activeReasons) : [],
+      comment: score <= 5 ? $("reasonText").value.trim() : ""
+    };
+
+    saveJson(RATINGS_KEY, ratings);
+    updateSummary();
+    toast("✅ Note enregistrée");
+    closeSheet();
+  });
+
+  $("overlay").addEventListener("click", closeSheet);
+  $("closeBtn").addEventListener("click", closeSheet);
+
+  // Bind zone clicks
+  document.querySelectorAll(".zone").forEach(el=>{
+    el.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      openSheet(el.dataset.zone, el);
+    });
+  });
+
+  // ---- People table ----
+  function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
+  function savePeople(arr){ saveJson(PEOPLE_KEY, arr); }
+
+  function renderPeople(){
+    const people = loadPeople().slice().reverse();
+    $("peopleBody").innerHTML = people.map(p=>`
+      <tr>
+        <td>${escapeHtml(p.ts)}</td>
+        <td>${escapeHtml(p.nom)}</td>
+        <td>${escapeHtml(p.prenom)}</td>
+        <td>${escapeHtml(p.taille)}</td>
+        <td>${escapeHtml(p.poids)}</td>
+        <td>${escapeHtml(p.avg)}</td>
+      </tr>
+    `).join("");
+  }
+
+  $("savePersonBtn").addEventListener("click", ()=>{
+    const nom = $("nom").value.trim();
+    const prenom = $("prenom").value.trim();
+    const taille = $("taille").value.trim();
+    const poids = $("poids").value.trim();
+
+    if(!nom || !prenom){ toast("⚠️ Nom + prénom requis"); return; }
+    const a = avgScore();
+    if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
+
+    const entry = {
+      ts: new Date().toLocaleString("fr-FR"),
+      nom, prenom, taille, poids,
+      avg: a.toFixed(1),
+      ratings
+    };
+
+    const people = loadPeople();
+    people.push(entry);
+    savePeople(people);
+
+    toast("✅ Personne enregistrée");
+    renderPeople();
+
+    // reset current for next person
+    ratings = {};
+    saveJson(RATINGS_KEY, ratings);
+    updateSummary();
+    document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
+  });
+
+  $("resetBtn").addEventListener("click", ()=>{
+    if(confirm("Réinitialiser les notes actuelles (personne en cours) ?")){
+      ratings = {};
+      saveJson(RATINGS_KEY, ratings);
+      updateSummary();
+      toast("Réinitialisé");
+      closeSheet();
+      document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
+    }
+  });
+
+  $("exportBtn").addEventListener("click", ()=>{
+    const people = loadPeople();
+    const zones = getZones();
+    const SEP = ";";
+    const esc = (v)=>`"${String(v??"").replaceAll('"','""')}"`;
+
+    const zoneCols = zones.flatMap(z=>[`${z} score`, `${z} reasons`, `${z} comment`]);
+    const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne", ...zoneCols];
+    const lines = [headers.map(esc).join(SEP)];
+
+    people.forEach(p=>{
+      const row = [p.ts, p.nom, p.prenom, p.taille, p.poids, p.avg];
+      zones.forEach(z=>{
+        const rz = p.ratings?.[z];
+        row.push(rz?.score ?? "");
+        row.push((rz?.reasons || []).join(" | "));
+        row.push(rz?.comment ?? "");
+      });
+      lines.push(row.map(esc).join(SEP));
+    });
+
+    const csv = "\uFEFF" + lines.join("\n");
+    const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "seat_people_passes.csv";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast("CSV exporté");
+  });
+
+  // ---- Zone tuning (global shift/scale) ----
+  const zonesLayer = document.getElementById("zonesLayer");
+  const dxEl = $("dx"), dyEl = $("dy"), scEl = $("sc");
+  const dxVal = $("dxVal"), dyVal = $("dyVal"), scVal = $("scVal"), tuneOut = $("tuneOut");
+
+  function applyTune(dx, dy, sc){
+    zonesLayer.setAttribute("transform", `translate(${dx} ${dy}) scale(${sc})`);
+    dxVal.textContent = dx;
+    dyVal.textContent = dy;
+    scVal.textContent = Number(sc).toFixed(3);
+    tuneOut.textContent = `transform="translate(${dx} ${dy}) scale(${Number(sc).toFixed(3)})"`;
+  }
+
+  // Load saved tune
+  const savedTune = loadJson(TUNE_KEY, {dx:0, dy:0, sc:1});
+  dxEl.value = savedTune.dx;
+  dyEl.value = savedTune.dy;
+  scEl.value = savedTune.sc;
+
+  function onTuneChange(){
+    const dx = Number(dxEl.value);
+    const dy = Number(dyEl.value);
+    const sc = Number(scEl.value);
+    applyTune(dx, dy, sc);
+    saveJson(TUNE_KEY, {dx, dy, sc});
+  }
+
+  dxEl.addEventListener("input", onTuneChange);
+  dyEl.addEventListener("input", onTuneChange);
+  scEl.addEventListener("input", onTuneChange);
+
+  $("copyTuneBtn").addEventListener("click", async ()=>{
+    const txt = tuneOut.textContent;
+    try{
+      await navigator.clipboard.writeText(txt);
+      toast("✅ Config copiée");
+    }catch{
+      toast("⚠️ Copie impossible (navigateur)");
+    }
+  });
+
+  // Init
+  onTuneChange();
+  updateSummary();
+  renderPeople();
+</script>
+</body>
+</html>
