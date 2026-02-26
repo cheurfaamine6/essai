@@ -25,7 +25,7 @@
       --zone-stroke-active: rgba(124,58,237,.98);
       --zone-stroke-width-active: 3px;
 
-      /* RATED zones => GREEN */
+      /* rated zones => GREEN */
       --rated-fill: rgba(46, 204, 113, .22);
       --rated-stroke: rgba(46, 204, 113, .95);
       --rated-stroke-width: 3px;
@@ -264,6 +264,10 @@
     th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap;text-align:left}
     th{position:sticky;top:0;background:rgba(17,25,50,.92);z-index:2}
 
+    /* NEW: Collapsible table */
+    .collapse{display:none}
+    .collapse.show{display:block}
+
     .toast{position:fixed; left:50%; bottom:18px; transform: translateX(-50%) translateY(20px); opacity:0; pointer-events:none;
       background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:10px 12px; z-index:60;
       transition:.2s; box-shadow: var(--shadow); max-width:92vw;}
@@ -358,7 +362,7 @@
       <button class="btn" id="fsBtn">Plein écran</button>
       <button class="btn ghost" id="resetBtn">Réinitialiser notes</button>
       <button class="btn" id="exportBtn">Exporter CSV</button>
-      <button class="btn primary" id="savePersonBtn">sauvegarde personne</button>
+      <button class="btn primary" id="savePersonBtn">Sauver personne</button>
     </div>
   </div>
 </header>
@@ -371,7 +375,6 @@
 </div>
 
 <main class="wrap grid">
-  <!-- LEFT: seat + table under image -->
   <section class="card">
     <div class="p row">
       <div>
@@ -384,78 +387,68 @@
     <div class="seatFrame">
       <svg id="seatSvg" viewBox="0 0 1361 2048" preserveAspectRatio="xMidYMid meet">
         <image href="seat.png" x="0" y="0" width="1361" height="2048" />
-
         <g id="zonesLayer">
-          <polygon id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)"
-            transform="translate(0 -58) scale(1.000)"
+          <polygon id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)" transform="translate(0 -58) scale(1.000)"
             points="825,620 819,599 760,583 470,620 452,700 502,761 825,761 825,620" />
-          <polygon id="z_dossier_rouge" class="zone" data-zone="Dossier milieu (rouge)"
-            transform="translate(35 -19) scale(1.000)"
+          <polygon id="z_dossier_rouge" class="zone" data-zone="Dossier milieu (rouge)" transform="translate(35 -19) scale(1.000)"
             points="781,726 507,718 483,736 503,751 528,880 562,900 681,908 760,900 781,726" />
-          <polygon id="z_central_gris" class="zone" data-zone="Zone centrale (gris clair)"
-            transform="translate(-21 76) scale(1.000)"
+          <polygon id="z_central_gris" class="zone" data-zone="Zone centrale (gris clair)" transform="translate(-21 76) scale(1.000)"
             points="497,856 849,856 850,986 497,986" />
-          <polygon id="z_jaune" class="zone" data-zone="Bande jaune"
-            transform="translate(21 -20) scale(1.000)"
+          <polygon id="z_jaune" class="zone" data-zone="Bande jaune" transform="translate(21 -20) scale(1.000)"
             points="754,1143 717,1108 520,1112 505,1128 506,1187 566,1215 701,1219 754,1184 754,1143" />
-          <polygon id="z_magenta" class="zone" data-zone="Bande magenta"
-            transform="translate(8 0) scale(1.000)"
+          <polygon id="z_magenta" class="zone" data-zone="Bande magenta" transform="translate(8 0) scale(1.000)"
             points="770,1292 723,1268 527,1272 502,1295 502,1353 565,1378 725,1377 770,1346 770,1292" />
-          <polygon id="z_assise_vert" class="zone" data-zone="Assise bas (vert)"
-            transform="translate(-3 -34) scale(1.000)"
+          <polygon id="z_assise_vert" class="zone" data-zone="Assise bas (vert)" transform="translate(-3 -34) scale(1.000)"
             points="808,1485 787,1445 701,1437 486,1450 505,1563 563,1609 776,1609 808,1558 808,1485" />
-          <polygon id="z_bas_gauche_vert" class="zone" data-zone="Bas gauche (vert)"
-            transform="translate(2 -54) scale(1.000)"
+          <polygon id="z_bas_gauche_vert" class="zone" data-zone="Bas gauche (vert)" transform="translate(2 -54) scale(1.000)"
             points="277,1387 261,1450 273,1563 304,1599 367,1599 397,1455 395,1433 342,1410 304,1407 277,1387" />
-          <polygon id="z_flanc_gauche_vert" class="zone" data-zone="Flanc gauche (vert)"
-            transform="translate(0 0) scale(1.000)"
+          <polygon id="z_flanc_gauche_vert" class="zone" data-zone="Flanc gauche (vert)" transform="translate(0 0) scale(1.000)"
             points="447,749 378,754 324,818 338,939 404,964 447,920 447,749" />
-          <polygon id="z_flanc_gauche_noir" class="zone" data-zone="Flanc gauche (noir)"
-            transform="translate(-22 0) scale(1.000)"
+          <polygon id="z_flanc_gauche_noir" class="zone" data-zone="Flanc gauche (noir)" transform="translate(-22 0) scale(1.000)"
             points="448,916 416,923 351,990 321,1097 343,1179 397,1197 448,1129 448,916" />
-          <polygon id="z_flanc_droit_violet" class="zone" data-zone="Flanc droit (violet)"
-            transform="translate(76 -49) scale(1.000)"
+          <polygon id="z_flanc_droit_violet" class="zone" data-zone="Flanc droit (violet)" transform="translate(76 -49) scale(1.000)"
             points="929,813 894,799 842,830 825,933 844,986 894,986 929,918 929,813" />
-          <polygon id="z_flanc_droit_orange" class="zone" data-zone="Flanc droit (orange)"
-            transform="translate(60 -37) scale(1.000)"
+          <polygon id="z_flanc_droit_orange" class="zone" data-zone="Flanc droit (orange)" transform="translate(60 -37) scale(1.000)"
             points="928,980 844,1001 800,1093 814,1225 885,1245 928,1159 928,980" />
-          <polygon id="z_bas_droit_blanc" class="zone" data-zone="Bas droit (blanc)"
-            transform="translate(80 -34) scale(1.000)"
+          <polygon id="z_bas_droit_blanc" class="zone" data-zone="Bas droit (blanc)" transform="translate(80 -34) scale(1.000)"
             points="950,1257 857,1272 807,1334 818,1410 885,1429 950,1355 950,1257" />
-          <polygon id="z_bas_droit_cyan" class="zone" data-zone="Bas droit (cyan)"
-            transform="translate(69 -35) scale(1.000)"
+          <polygon id="z_bas_droit_cyan" class="zone" data-zone="Bas droit (cyan)" transform="translate(69 -35) scale(1.000)"
             points="968,1420 903,1429 839,1495 852,1608 934,1608 968,1560 968,1420" />
-          <polygon id="z_bas_gauche_orange" class="zone" data-zone="Bas gauche (orange)"
-            transform="translate(-13 -69) scale(1.000)"
+          <polygon id="z_bas_gauche_orange" class="zone" data-zone="Bas gauche (orange)" transform="translate(-13 -69) scale(1.000)"
             points="439,1302 382,1301 283,1365 297,1443 382,1443 439,1392 439,1302" />
         </g>
-
         <g id="marksLayer"></g>
       </svg>
     </div>
 
+    <!-- Collapsible table section -->
     <div class="p" style="border-top:1px solid rgba(255,255,255,.06)">
       <div class="tableTitle">
         <div>
           <b>Historique des personnes</b>
-          <div class="hint">Affichage complet sous l’image (scroll horizontal si besoin).</div>
+          <div class="hint">Clique sur le bouton pour afficher/masquer le tableau.</div>
         </div>
-        <span class="pill" id="peopleCountPill">0 personne</span>
+        <div class="row" style="gap:8px">
+          <span class="pill" id="peopleCountPill">0 personne</span>
+          <button class="btn small" id="toggleTableBtn">Afficher tableau</button>
+        </div>
       </div>
 
-      <div class="tableWrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th><th>Nom</th><th>Prénom</th><th>Taille</th><th>Poids</th><th>Moy</th>
-            </tr>
-          </thead>
-          <tbody id="peopleBody"></tbody>
-        </table>
-      </div>
+      <div id="tableCollapse" class="collapse">
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th><th>Nom</th><th>Prénom</th><th>Taille</th><th>Poids</th><th>Moy</th>
+              </tr>
+            </thead>
+            <tbody id="peopleBody"></tbody>
+          </table>
+        </div>
 
-      <div class="hint" style="margin-top:10px">
-        Astuce : sur téléphone, mets en <b>paysage</b>.
+        <div class="hint" style="margin-top:10px">
+          Astuce : sur téléphone, mets en <b>paysage</b>.
+        </div>
       </div>
     </div>
   </section>
@@ -491,6 +484,7 @@
   </aside>
 </main>
 
+<!-- rating sheet -->
 <div class="overlay" id="overlay"></div>
 <div class="sheet" id="sheet">
   <div class="sheetCard">
@@ -521,6 +515,7 @@
   </div>
 </div>
 
+<!-- SETTINGS modal -->
 <div class="modalOverlay" id="settingsOverlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-label="Settings">
     <div class="modalHead">
@@ -648,6 +643,18 @@
   window.addEventListener("orientationchange", checkOrientation);
   checkOrientation();
 
+  // Collapsible table (DEFAULT HIDDEN)
+  const tableCollapse = $("tableCollapse");
+  const toggleTableBtn = $("toggleTableBtn");
+  let tableShown = false;
+  function setTableShown(v){
+    tableShown = v;
+    tableCollapse.classList.toggle("show", tableShown);
+    toggleTableBtn.textContent = tableShown ? "Masquer tableau" : "Afficher tableau";
+  }
+  toggleTableBtn.addEventListener("click", ()=> setTableShown(!tableShown));
+  setTableShown(false);
+
   // Ratings / People
   const RATINGS_KEY = "seat_ratings_current_final";
   const PEOPLE_KEY  = "seat_people_passes_final";
@@ -670,7 +677,7 @@
     return vals.reduce((a,b)=>a+b,0)/vals.length;
   }
 
-  // NEW: zone states (green + check)
+  // zone states (green + check)
   function updateZoneVisuals(){
     const marksLayer = $("marksLayer");
     if(marksLayer) marksLayer.innerHTML = "";
@@ -955,7 +962,6 @@
 
   // SETTINGS: per-zone transforms
   const ZTUNE_KEY = "seat_zone_tune_map_v2";
-
   const DEFAULT_TUNE = {
     "z_dossier_bleu": {dx:0, dy:-58, sc:1.000},
     "z_dossier_rouge": {dx:35, dy:-19, sc:1.000},
