@@ -218,20 +218,6 @@
       letter-spacing:.4px;
     }
 
-    /* Couleurs selon score */
-    .val.good{
-      border-color: rgba(46,204,113,.45);
-      background: rgba(46,204,113,.12);
-    }
-    .val.mid{
-      border-color: rgba(241,196,15,.50);
-      background: rgba(241,196,15,.12);
-    }
-    .val.bad{
-      border-color: rgba(231,76,60,.50);
-      background: rgba(231,76,60,.12);
-    }
-
     /* Mini progress bar */
     .bar{
       height:8px;
@@ -249,6 +235,27 @@
       background: linear-gradient(90deg, var(--a1), var(--a2));
       box-shadow: 0 8px 18px rgba(124,58,237,.25);
     }
+
+    .scoreLabel{
+      margin-top:6px;
+      font-size:.78rem;
+      color: rgba(255,255,255,.75);
+      font-weight:800;
+      letter-spacing:.25px;
+    }
+
+    /* ===== Score badge + jauge colorée par note ===== */
+    .val.s1, .val.s2 { border-color: rgba(231,76,60,.55); background: rgba(231,76,60,.14); }
+    .val.s34        { border-color: rgba(243,156,18,.55); background: rgba(243,156,18,.14); }
+    .val.s56        { border-color: rgba(241,196,15,.60); background: rgba(241,196,15,.14); }
+    .val.s78, .val.s9 { border-color: rgba(46,204,113,.55); background: rgba(46,204,113,.14); }
+    .val.s10        { border-color: rgba(0,229,255,.55); background: rgba(0,229,255,.14); }
+
+    .bar > i.s1, .bar > i.s2  { background: rgba(231,76,60,1); }
+    .bar > i.s34              { background: rgba(243,156,18,1); }
+    .bar > i.s56              { background: rgba(241,196,15,1); }
+    .bar > i.s78, .bar > i.s9 { background: rgba(46,204,113,1); }
+    .bar > i.s10              { background: rgba(0,229,255,1); }
 
     /* Bottom sheet */
     .overlay{position:fixed; inset:0; background: rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:.18s; z-index:20}
@@ -615,8 +622,8 @@
       <div class="scale"><span>1</span><span>5</span><span>10</span></div>
 
       <div class="reasonBox" id="reasonBox">
-        <div class="reasonTitle" id="criteriaTitle">Critères</div>
-        <div class="hint" id="criteriaHint">Clique un critère → choisis une option.</div>
+        <div class="reasonTitle" id="criteriaTitle">Critères (échelle unique)</div>
+        <div class="hint" id="criteriaHint">Clique un critère → choisis l’évaluation.</div>
 
         <div id="criteriaList"></div>
 
@@ -845,14 +852,14 @@
     { id:"symetrie",   label:"Symétrie (bolsters assise/dos)" },
     { id:"homogeneite",label:"Homogénéité" }
   ];
-// ===== Critères : UNE SEULE échelle d’options (valable pour toute note) =====
-const CRIT_OPTIONS = {
-  presence: ["Inacceptable", "Faible", "Moyenne", "Bonne", "Excellente"],
-  durete: ["Inacceptable", "Trop souple", "Correcte", "Ferme", "Très bien équilibrée"],
-  symetrie: ["Asymétrie forte", "Asymétrie modérée", "Asymétrie légère", "Bonne symétrie", "Excellente symétrie"],
-  homogeneite: ["Hétérogénéité forte", "Hétérogénéité modérée", "Hétérogénéité légère", "Bonne homogénéité", "Excellente homogénéité"]
-};
- 
+
+  // ✅ UNE SEULE échelle d’options, valable pour toute note
+  const CRIT_OPTIONS = {
+    presence: ["Inacceptable", "Faible", "Moyenne", "Bonne", "Excellente"],
+    durete: ["Inacceptable", "Trop souple", "Correcte", "Ferme", "Très bien équilibrée"],
+    symetrie: ["Asymétrie forte", "Asymétrie modérée", "Asymétrie légère", "Bonne symétrie", "Excellente symétrie"],
+    homogeneite: ["Hétérogénéité forte", "Hétérogénéité modérée", "Hétérogénéité légère", "Bonne homogénéité", "Excellente homogénéité"]
+  };
 
   let ratings = loadJson(RATINGS_KEY, {});
   let activeZoneName = null;
@@ -922,6 +929,18 @@ const CRIT_OPTIONS = {
     });
   }
 
+  // ===== Score label + couleurs (1..10) =====
+  function scoreMeta(score){
+    if(score === 1)  return { cls:"s1",  label:"Inacceptable" };
+    if(score === 2)  return { cls:"s2",  label:"Très insatisfait" };
+    if(score === 3 || score === 4) return { cls:"s34", label:"Insatisfait" };
+    if(score === 5 || score === 6) return { cls:"s56", label:"Acceptable" };
+    if(score === 7 || score === 8) return { cls:"s78", label:"Satisfait" };
+    if(score === 9)  return { cls:"s9",  label:"Très satisfait" };
+    if(score === 10) return { cls:"s10", label:"Optimum" };
+    return { cls:"", label:"" };
+  }
+
   function updateSummary(){
     const zones = getZones();
     const scoredCount = zones.map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n)).length;
@@ -936,29 +955,25 @@ const CRIT_OPTIONS = {
       const group = MEMBER_TO_GROUP.get(z);
       const sub = group ? `Groupe: ${escapeHtml(group)}` : (v ? "Noté" : "Non noté");
 
-      const score = Number.isFinite(v) ? v : null;
-
-      let cls = "";
-      let lbl = "—";
-      if(score !== null){
-        if(score >= 8){ cls = "good"; lbl = "BON"; }
-        else if(score >= 5){ cls = "mid"; lbl = "MOYEN"; }
-        else { cls = "bad"; lbl = "FAIBLE"; }
-      }
-
+      const score = Number.isFinite(v) ? Number(v) : null;
       const pct = score !== null ? Math.max(0, Math.min(100, (score/10)*100)) : 0;
+
+      const meta = score !== null ? scoreMeta(score) : {cls:"", label:""};
+      const scoreText = score !== null ? `${score}/10` : "—";
 
       return `
         <div class="item">
           <div style="flex:1; min-width:180px">
             <b>${escapeHtml(z)}</b>
             <div class="sub">${sub}</div>
-            <div class="bar"><i style="width:${pct}%"></i></div>
+
+            <div class="bar"><i class="${meta.cls}" style="width:${pct}%"></i></div>
+            <div class="scoreLabel">${score !== null ? meta.label : ""}</div>
           </div>
 
-          <div class="val ${cls}">
-            <div>${score !== null ? (score+"/10") : "—"}</div>
-            <small>${score !== null ? lbl : ""}</small>
+          <div class="val ${meta.cls}">
+            <div>${scoreText}</div>
+            <small>${score !== null ? meta.label.toUpperCase() : ""}</small>
           </div>
         </div>`;
     }).join("");
@@ -977,16 +992,14 @@ const CRIT_OPTIONS = {
     }
   }
 
+  // ✅ options identiques peu importe la note
   function currentOptionsForCrit(_score, critId){
-  return CRIT_OPTIONS[critId] || [];
- }
+    return CRIT_OPTIONS[critId] || [];
+  }
 
   function renderCriteria(score){
-    const isLow = Number(score) <= 5;
-    $("criteriaTitle").textContent = isLow ? "Critères (à améliorer)" : "Critères (points forts)";
-    $("criteriaHint").textContent = isLow
-      ? "Clique un critère → choisis l’évaluation."
-      : "Clique un critère → choisis l’évaluation positive.";
+    $("criteriaTitle").textContent = "Critères (échelle unique)";
+    $("criteriaHint").textContent = "Clique un critère → choisis l’évaluation.";
 
     const listEl = $("criteriaList");
     const panel = $("criteriaPanel");
