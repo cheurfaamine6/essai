@@ -977,10 +977,9 @@ const CRIT_OPTIONS = {
     }
   }
 
-  function currentOptionsForCrit(score, critId){
-    const opts = (Number(score) <= 5) ? CRIT_OPTIONS_NEG : CRIT_OPTIONS_POS;
-    return opts[critId] || [];
-  }
+  function currentOptionsForCrit(_score, critId){
+  return CRIT_OPTIONS[critId] || [];
+ }
 
   function renderCriteria(score){
     const isLow = Number(score) <= 5;
