@@ -15,7 +15,6 @@
       --shadow: 0 18px 55px rgba(0,0,0,.45);
       --r:18px;
 
-      /* zone style variables */
       --zone-fill: rgba(79,140,255,.12);
       --zone-stroke: rgba(79,140,255,.55);
       --zone-stroke-width: 2px;
@@ -25,12 +24,10 @@
       --zone-stroke-active: rgba(124,58,237,.98);
       --zone-stroke-width-active: 3px;
 
-      /* rated zones => GREEN */
       --rated-fill: rgba(46, 204, 113, .22);
       --rated-stroke: rgba(46, 204, 113, .95);
       --rated-stroke-width: 3px;
 
-      /* check mark */
       --mark-fill: rgba(255,255,255,.95);
       --mark-stroke: rgba(0,0,0,.55);
     }
@@ -225,7 +222,7 @@
     .sheetActions{display:flex;gap:10px;margin-top:14px}
     .sheetActions .btn{flex:1}
 
-    /* Criteria box */
+    /* Criteria UI */
     .reasonBox{margin-top:12px;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:10px;background:rgba(0,0,0,.14)}
     .reasonTitle{font-weight:900;margin-bottom:8px}
 
@@ -255,6 +252,7 @@
       background: rgba(0,0,0,.10);
       border-radius:14px;
       padding:10px;
+      margin-top:10px;
     }
     .critHead{
       display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
@@ -283,18 +281,26 @@
       background: rgba(255,255,255,.06);
     }
 
+    .commentLabel{
+      font-size:.82rem;
+      color:var(--muted);
+      font-weight:900;
+      margin-top:12px;
+      display:block;
+    }
     textarea{
-      width:100%; margin-top:10px;
+      width:100%;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(0,0,0,.18);
       color:var(--txt);
       border-radius:14px;
       padding:10px 12px;
-      min-height:80px;
+      min-height:90px;
       resize:vertical;
+      margin-top:8px;
     }
 
-    /* Table under image (collapsible) */
+    /* Table under image */
     .tableTitle{
       display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
       margin-top:6px;
@@ -399,7 +405,7 @@
   <div class="wrap top">
     <div class="title">
       <b>Seat Comfort</b>
-      <span>Zones cliquables → note 1–10 → critères (si note ≤5) → sauver personne</span>
+      <span>Zones cliquables → note 1–10 → critères + commentaires</span>
     </div>
     <div class="row" style="gap:8px">
       <button class="btn icon" id="settingsBtn" title="Settings">⚙️ Settings</button>
@@ -421,14 +427,6 @@
 <main class="wrap grid">
   <section class="card">
     <div class="p row">
-      <div>
-        <b>Siège interactif</b>
-        <div class="hint">
-          Clique une zone → note 1–10.
-          <br/>Si note ≤ 5 : critères <b>Présence / Dureté / Symétrie / Homogénéité</b>.
-          <br/><b>Bolsters</b> groupés : dossier (haut/bas) + assise (haut/bas).
-        </div>
-      </div>
       <div class="row" style="gap:8px">
         <div class="pill" id="countPill">0 zone notée</div>
         <div class="pill good" id="globalPill">Confort global —</div>
@@ -438,7 +436,6 @@
     <div class="seatFrame">
       <svg id="seatSvg" viewBox="0 0 1361 2048" preserveAspectRatio="xMidYMid meet">
         <image href="seat.png" x="0" y="0" width="1361" height="2048" />
-
         <g id="zonesLayer">
           <polygon id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)"
             transform="translate(0 -58) scale(1.000)"
@@ -483,7 +480,6 @@
             transform="translate(-13 -69) scale(1.000)"
             points="439,1302 382,1301 283,1365 297,1443 382,1443 439,1392 439,1302" />
         </g>
-
         <g id="marksLayer"></g>
       </svg>
     </div>
@@ -563,21 +559,25 @@
       </div>
       <div class="scale"><span>1</span><span>5</span><span>10</span></div>
 
-      <div class="reasonBox" id="reasonBox" style="display:none">
-        <div class="reasonTitle">Critères (si note ≤ 5)</div>
-        <div class="hint">Clique un critère → choisis une option.</div>
+      <div class="reasonBox" id="reasonBox">
+        <div class="reasonTitle" id="criteriaTitle">Critères</div>
+        <div class="hint" id="criteriaHint">Clique un critère → choisis une option.</div>
 
         <div id="criteriaList"></div>
 
-        <div id="criteriaPanel" style="margin-top:10px; display:none">
+        <div id="criteriaPanel" style="display:none">
           <div class="critHead">
             <b id="critTitle">Critère</b>
-            <span class="badgeMini" id="critSelected">—</span>
+            <div class="row" style="gap:8px">
+              <span class="badgeMini" id="critSelected">—</span>
+              <button class="btn small ghost" id="backToCriteriaBtn" type="button">Changer</button>
+            </div>
           </div>
           <div class="chips" id="critOptions"></div>
         </div>
 
-        <textarea id="reasonText" placeholder="Commentaire optionnel..."></textarea>
+        <label class="commentLabel" for="reasonText">Commentaire</label>
+        <textarea id="reasonText" placeholder="Ajoute un commentaire (optionnel)"></textarea>
       </div>
 
       <div class="sheetActions">
@@ -621,10 +621,6 @@
             <input id="strokeW" type="range" min="1" max="6" step="1" value="2">
             <div class="mono" id="strokeWVal">2</div>
           </div>
-
-          <div class="hint">
-            Astuce : baisse “Opacité remplissage” si les couleurs du siège doivent rester visibles.
-          </div>
         </div>
 
         <div class="section">
@@ -662,9 +658,7 @@
         </div>
       </div>
 
-      <div class="hint">
-        Tout est sauvegardé sur ce navigateur (localStorage).
-      </div>
+      <div class="hint">Tout est sauvegardé sur ce navigateur (localStorage).</div>
     </div>
   </div>
 </div>
@@ -729,16 +723,14 @@
   setTableShown(false);
 
   // ===== Data keys =====
-  const RATINGS_KEY = "seat_ratings_current_final_v4";
-  const PEOPLE_KEY  = "seat_people_passes_final_v4";
+  const RATINGS_KEY = "seat_ratings_current_final_v5";
+  const PEOPLE_KEY  = "seat_people_passes_final_v5";
 
   // ===== Bolsters grouping (dossier + assise) =====
-  // Assise: orange + blanc ensemble, vert + cyan ("bleu") ensemble
   const BOLSTER_GROUPS = [
     { key: "Bolsters haut dossier (G+D)", members: ["Flanc gauche (vert)", "Flanc droit (violet)"] },
     { key: "Bolsters bas dossier (G+D)",  members: ["Flanc gauche (noir)", "Flanc droit (orange)"] },
-
-    { key: "Bolsters haut assise (G+D)",  members: ["Bas gauche (vert)", "Bas droit (cyan)"] },
+    { key: "Bolsters haut assise (G+D)",  members: ["Bas gauche (vert)", "Bas droit (cyan)"] },  // "bleu" = cyan
     { key: "Bolsters bas assise (G+D)",   members: ["Bas gauche (orange)", "Bas droit (blanc)"] }
   ];
 
@@ -757,7 +749,7 @@
     return g ? g.members : [key];
   }
 
-  // ===== Criteria model (professional) =====
+  // ===== Criteria model =====
   const CRITERIA = [
     { id:"presence",   label:"Présence" },
     { id:"durete",     label:"Dureté" },
@@ -765,18 +757,27 @@
     { id:"homogeneite",label:"Homogénéité" }
   ];
 
-  const CRIT_OPTIONS = {
-    presence: ["Insuffisante", "Adaptée", "Excessive"],
-    durete: ["Trop souple", "Équilibrée", "Trop ferme"],
+  // <= 5 (plutôt négatif / à corriger)
+  const CRIT_OPTIONS_NEG = {
+    presence: ["Insuffisante", "À ajuster", "Excessive"],
+    durete: ["Trop souple", "À ajuster", "Trop ferme"],
     symetrie: ["Asymétrie légère", "Asymétrie modérée", "Asymétrie forte"],
     homogeneite: ["Hétérogénéité légère", "Hétérogénéité modérée", "Hétérogénéité forte"]
   };
 
+  // > 5 (plutôt positif)
+  const CRIT_OPTIONS_POS = {
+    presence: ["Correcte", "Bonne", "Excellente"],
+    durete: ["Confortable", "Bien équilibrée", "Très bien équilibrée"],
+    symetrie: ["Bonne symétrie", "Très bonne symétrie", "Excellente symétrie"],
+    homogeneite: ["Bonne homogénéité", "Très bonne homogénéité", "Excellente homogénéité"]
+  };
+
   let ratings = loadJson(RATINGS_KEY, {});
-  let activeZoneName = null;   // clicked zone
-  let activeKey = null;        // effective key (group or zone)
-  let activeCriteria = {};     // {presence:"...", ...}
-  let activeCritId = null;     // selected criterion in the panel
+  let activeZoneName = null;
+  let activeKey = null;
+  let activeCriteria = {};
+  let activeCritId = null;
 
   function getZones(){
     return Array.from(document.querySelectorAll(".zone")).map(z=>z.dataset.zone);
@@ -809,7 +810,6 @@
         const bb = poly.getBBox();
         const cx = bb.x + bb.width / 2;
         const cy = bb.y + bb.height / 2;
-
         const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
         t.setAttribute("x", cx);
         t.setAttribute("y", cy);
@@ -825,12 +825,11 @@
   function updateSummary(){
     const zones = getZones();
     const scoredCount = zones.map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n)).length;
-
     $("countPill").textContent = `${scoredCount} zone notée(s)`;
 
     const a = avgGlobalComfort();
-    $("avgPill").textContent = a ? `Moyenne globale ${a.toFixed(1)}/10` : "Moyenne globale —";
     $("globalPill").textContent = a ? `Confort global ${a.toFixed(1)}/10` : "Confort global —";
+    $("avgPill").textContent = a ? `Moyenne globale ${a.toFixed(1)}/10` : "Moyenne globale —";
 
     $("list").innerHTML = zones.map(z=>{
       const v = getScoreForZoneName(z);
@@ -861,48 +860,73 @@
     }
   }
 
+  function currentOptionsForCrit(score, critId){
+    const opts = (Number(score) <= 5) ? CRIT_OPTIONS_NEG : CRIT_OPTIONS_POS;
+    return opts[critId] || [];
+  }
+
   function renderCriteria(score){
-    const show = Number(score) <= 5;
-    $("reasonBox").style.display = show ? "block" : "none";
-    if(!show) return;
+    // titre + hint changent selon score
+    const isLow = Number(score) <= 5;
+    $("criteriaTitle").textContent = isLow ? "Critères (à améliorer)" : "Critères (points forts)";
+    $("criteriaHint").textContent = isLow
+      ? "Clique un critère → choisis l’évaluation."
+      : "Clique un critère → choisis l’évaluation positive.";
 
-    // list
-    $("criteriaList").innerHTML = CRITERIA.map(c=>{
-      const sel = activeCriteria[c.id] || "—";
-      const on = (activeCritId === c.id);
-      return `
-        <div class="criteriaBtn ${on ? "on":""}" data-crit="${escapeHtml(c.id)}">
-          <b>${escapeHtml(c.label)}</b>
-          <span class="badgeMini">${escapeHtml(sel)}</span>
-        </div>
-      `;
-    }).join("");
-
-    document.querySelectorAll(".criteriaBtn").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        const id = btn.dataset.crit;
-        activeCritId = (activeCritId === id) ? null : id; // toggle
-        renderCriteria($("slider").value);
-      });
-    });
-
-    // panel
+    const listEl = $("criteriaList");
     const panel = $("criteriaPanel");
+
+    // Si un critère est sélectionné => on cache les autres (disparaissent)
     if(!activeCritId){
+      listEl.innerHTML = CRITERIA.map(c=>{
+        const sel = activeCriteria[c.id] || "—";
+        return `
+          <div class="criteriaBtn" data-crit="${escapeHtml(c.id)}">
+            <b>${escapeHtml(c.label)}</b>
+            <span class="badgeMini">${escapeHtml(sel)}</span>
+          </div>
+        `;
+      }).join("");
+
+      listEl.querySelectorAll(".criteriaBtn").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          activeCritId = btn.dataset.crit;
+          renderCriteria($("slider").value);
+        });
+      });
+
       panel.style.display = "none";
       return;
     }
 
-    panel.style.display = "block";
+    // On ne montre QUE le critère choisi
     const crit = CRITERIA.find(x=>x.id === activeCritId);
+    listEl.innerHTML = `
+      <div class="criteriaBtn on" data-crit="${escapeHtml(activeCritId)}">
+        <b>${escapeHtml(crit ? crit.label : "Critère")}</b>
+        <span class="badgeMini">${escapeHtml(activeCriteria[activeCritId] || "—")}</span>
+      </div>
+    `;
+    listEl.querySelector(".criteriaBtn").addEventListener("click", ()=>{
+      // clic sur le critère => retour liste
+      activeCritId = null;
+      renderCriteria($("slider").value);
+    });
+
+    panel.style.display = "block";
     $("critTitle").textContent = crit ? crit.label : "Critère";
     $("critSelected").textContent = activeCriteria[activeCritId] || "—";
 
-    const options = CRIT_OPTIONS[activeCritId] || [];
+    const options = currentOptionsForCrit(score, activeCritId);
     $("critOptions").innerHTML = options.map(opt=>{
       const on = activeCriteria[activeCritId] === opt;
       return `<div class="chip ${on?"on":""}" data-opt="${escapeHtml(opt)}">${escapeHtml(opt)}</div>`;
     }).join("");
+
+    $("backToCriteriaBtn").onclick = ()=>{
+      activeCritId = null;
+      renderCriteria($("slider").value);
+    };
 
     document.querySelectorAll("#critOptions .chip").forEach(ch=>{
       ch.addEventListener("click", ()=>{
@@ -952,6 +976,8 @@
 
   $("slider").addEventListener("input", ()=>{
     $("sliderVal").textContent = $("slider").value;
+    // IMPORTANT: si on change de côté (<=5 vs >5), on ferme le panel pour éviter incohérences
+    activeCritId = null;
     renderCriteria($("slider").value);
   });
 
@@ -959,11 +985,10 @@
     if(!activeKey) return;
 
     const score = Number($("slider").value);
-
     ratings[activeKey] = {
       score,
-      criteria: score <= 5 ? activeCriteria : {},
-      comment: score <= 5 ? $("reasonText").value.trim() : ""
+      criteria: activeCriteria,
+      comment: $("reasonText").value.trim()
     };
 
     saveJson(RATINGS_KEY, ratings);
@@ -1062,7 +1087,6 @@
       zones.forEach(z=>{
         const key = effectiveKeyForZone(z);
         const rz = p.ratings?.[key];
-
         row.push(rz?.score ?? "");
         CRITERIA.forEach(c=> row.push(rz?.criteria?.[c.id] ?? ""));
         row.push(rz?.comment ?? "");
@@ -1081,7 +1105,7 @@
     toast("CSV exporté");
   });
 
-  // ===== SETTINGS: open/close (kept, but UI removed from this version to stay coherent) =====
+  // ===== SETTINGS: open/close =====
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     settingsOverlay.classList.add("show");
@@ -1146,7 +1170,7 @@
   strokeAlpha.addEventListener("input", onStyleChange);
   strokeW.addEventListener("input", onStyleChange);
 
-  // ===== SETTINGS: per-zone transforms (kept) =====
+  // ===== SETTINGS: per-zone transforms =====
   const ZTUNE_KEY = "seat_zone_tune_map_v2";
   const DEFAULT_TUNE = {
     "z_dossier_bleu": {dx:0, dy:-58, sc:1.000},
@@ -1248,6 +1272,24 @@
   applyAll();
   loadZoneToUI(zoneSelect.value);
   updateSummary();
+
+  // people
+  function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
+  function savePeople(arr){ saveJson(PEOPLE_KEY, arr); }
+  function renderPeople(){
+    const people = loadPeople().slice().reverse();
+    $("peopleCountPill").textContent = `${people.length} personne(s)`;
+    $("peopleBody").innerHTML = people.map(p=>`
+      <tr>
+        <td>${escapeHtml(p.ts)}</td>
+        <td>${escapeHtml(p.nom)}</td>
+        <td>${escapeHtml(p.prenom)}</td>
+        <td>${escapeHtml(p.taille)}</td>
+        <td>${escapeHtml(p.poids)}</td>
+        <td>${escapeHtml(p.globalAvg)}</td>
+      </tr>
+    `).join("");
+  }
   renderPeople();
 </script>
 </body>
