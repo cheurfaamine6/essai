@@ -793,45 +793,6 @@
     return vals.reduce((a,b)=>a+b,0)/vals.length;
   }
 
-  // ===== Emoji markers aligned with polygon geometry + transforms =====
-  function polygonCentroidLocal(poly){
-    const pts = poly.points;
-    const n = pts.numberOfItems;
-    if(!n) return {x:0, y:0};
-
-    let area = 0, cx = 0, cy = 0;
-    for(let i=0; i<n; i++){
-      const p0 = pts.getItem(i);
-      const p1 = pts.getItem((i+1) % n);
-      const cross = p0.x * p1.y - p1.x * p0.y;
-      area += cross;
-      cx += (p0.x + p1.x) * cross;
-      cy += (p0.y + p1.y) * cross;
-    }
-    area *= 0.5;
-
-    // fallback if polygon is degenerate
-    if(Math.abs(area) < 1e-6){
-      let sx=0, sy=0;
-      for(let i=0; i<n; i++){ const p = pts.getItem(i); sx += p.x; sy += p.y; }
-      return { x: sx/n, y: sy/n };
-    }
-
-    cx /= (6 * area);
-    cy /= (6 * area);
-    return {x: cx, y: cy};
-  }
-
-  function mapLocalPointToSvg(poly, x, y){
-    const svg = poly.ownerSVGElement;
-    const pt = svg.createSVGPoint();
-    pt.x = x; pt.y = y;
-
-    const m = poly.getCTM(); // includes all transforms (group + polygon transform)
-    const out = pt.matrixTransform(m);
-    return {x: out.x, y: out.y};
-  }
-
   // ===== Emoji markers only (no green fill) =====
   function updateZoneVisuals(){
     const marksLayer = $("marksLayer");
@@ -843,17 +804,17 @@
       poly.classList.toggle("rated", scored);
 
       if(scored && marksLayer){
-        // centroid from polygon points + same transforms as polygon
-        const c = polygonCentroidLocal(poly);
-        const p = mapLocalPointToSvg(poly, c.x, c.y);
+        const bb = poly.getBBox();
+        const cx = bb.x + bb.width / 2;
+        const cy = bb.y + bb.height / 2;
 
         const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        t.setAttribute("x", p.x);
-        t.setAttribute("y", p.y);
+        t.setAttribute("x", cx);
+        t.setAttribute("y", cy);
         t.setAttribute("text-anchor", "middle");
         t.setAttribute("dominant-baseline", "middle");
         t.setAttribute("class", "mark");
-        t.textContent = "☑️"; // emoji validation
+        t.textContent = "☑️"; // beau emoji de validation
         marksLayer.appendChild(t);
       }
     });
