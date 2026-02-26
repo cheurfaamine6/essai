@@ -26,6 +26,11 @@
 
       --mark-fill: rgba(255,255,255,.95);
       --mark-stroke: rgba(0,0,0,.55);
+
+      /* Slider dynamic theming */
+      --scol: rgba(124,58,237,1);
+      --scolSoft: rgba(124,58,237,.14);
+      --scolBorder: rgba(124,58,237,.55);
     }
 
     *{box-sizing:border-box}
@@ -244,7 +249,7 @@
       letter-spacing:.25px;
     }
 
-    /* ===== Score badge + jauge colorée par note ===== */
+    /* ===== Score badge + jauge colorée par note (list) ===== */
     .val.s1, .val.s2 { border-color: rgba(231,76,60,.55); background: rgba(231,76,60,.14); }
     .val.s34        { border-color: rgba(243,156,18,.55); background: rgba(243,156,18,.14); }
     .val.s56        { border-color: rgba(241,196,15,.60); background: rgba(241,196,15,.14); }
@@ -270,7 +275,86 @@
     .sheetBody{padding:14px}
     .zoneTitle{font-weight:950;font-size:1.08rem}
     .zoneMeta{color:var(--muted);font-size:.85rem;margin-top:2px}
-    input[type="range"]{width:100%}
+
+    /* ===== Slider styled + dynamic color ===== */
+    .sheetScoreHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:10px;
+    }
+    .scoreChip{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--scolBorder);
+      background: var(--scolSoft);
+      font-weight:950;
+      letter-spacing:.2px;
+    }
+    .scoreChip .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: var(--scol);
+      box-shadow: 0 0 0 5px rgba(255,255,255,.06);
+    }
+    .scoreChip .label{
+      color: rgba(255,255,255,.92);
+      font-size:.86rem;
+      white-space:nowrap;
+    }
+
+    input[type="range"]{
+      width:100%;
+      margin-top:10px;
+      accent-color: var(--scol);
+      background: transparent;
+    }
+
+    /* WebKit */
+    input[type="range"]::-webkit-slider-runnable-track{
+      height:10px;
+      border-radius:999px;
+      background:
+        linear-gradient(90deg,
+          var(--scol) 0%,
+          var(--scol) var(--pct),
+          rgba(255,255,255,.10) var(--pct),
+          rgba(255,255,255,.10) 100%);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width:22px; height:22px;
+      border-radius:999px;
+      background: rgba(255,255,255,.95);
+      border: 2px solid rgba(0,0,0,.35);
+      box-shadow: 0 10px 22px rgba(0,0,0,.35);
+      margin-top:-7px; /* center thumb */
+    }
+
+    /* Firefox */
+    input[type="range"]::-moz-range-track{
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    input[type="range"]::-moz-range-progress{
+      height:10px;
+      border-radius:999px;
+      background: var(--scol);
+    }
+    input[type="range"]::-moz-range-thumb{
+      width:22px; height:22px;
+      border-radius:999px;
+      background: rgba(255,255,255,.95);
+      border: 2px solid rgba(0,0,0,.35);
+      box-shadow: 0 10px 22px rgba(0,0,0,.35);
+    }
+
     .scoreRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
     .scoreBig{
       font-weight:950;font-size:1.4rem;
@@ -613,6 +697,15 @@
       <div class="zoneTitle" id="sheetZone">Zone</div>
       <div class="zoneMeta" id="sheetMeta">Choisis une note et enregistre.</div>
 
+      <!-- ✅ NEW: dynamic label + color for the slider -->
+      <div class="sheetScoreHeader">
+        <div class="hint">Fais glisser pour noter</div>
+        <div class="scoreChip" id="scoreChip">
+          <span class="dot"></span>
+          <span class="label" id="scoreWord">Satisfait</span>
+        </div>
+      </div>
+
       <input id="slider" type="range" min="1" max="10" step="1" value="7" />
       <div class="scoreRow">
         <div class="hint">1 = inconfort</div>
@@ -941,6 +1034,32 @@
     return { cls:"", label:"" };
   }
 
+  // ✅ NEW: slider theme (color + label) based on current slider value
+  function sliderTheme(score){
+    // colors: red / orange / yellow / green / cyan-blue
+    if(score === 1)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Inacceptable" };
+    if(score === 2)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Très insatisfait" };
+    if(score === 3 || score === 4) return { col:"rgba(243,156,18,1)", soft:"rgba(243,156,18,.14)", border:"rgba(243,156,18,.55)", word:"Insatisfait" };
+    if(score === 5 || score === 6) return { col:"rgba(241,196,15,1)", soft:"rgba(241,196,15,.14)", border:"rgba(241,196,15,.60)", word:"Acceptable" };
+    if(score === 7 || score === 8) return { col:"rgba(46,204,113,1)", soft:"rgba(46,204,113,.14)", border:"rgba(46,204,113,.55)", word:"Satisfait" };
+    if(score === 9)  return { col:"rgba(46,204,113,1)", soft:"rgba(46,204,113,.14)", border:"rgba(46,204,113,.55)", word:"Très satisfait" };
+    if(score === 10) return { col:"rgba(0,229,255,1)", soft:"rgba(0,229,255,.14)", border:"rgba(0,229,255,.55)", word:"Optimum" };
+    return { col:"rgba(124,58,237,1)", soft:"rgba(124,58,237,.14)", border:"rgba(124,58,237,.55)", word:"—" };
+  }
+
+  function applySliderUI(score){
+    const s = sliderTheme(Number(score));
+    document.documentElement.style.setProperty("--scol", s.col);
+    document.documentElement.style.setProperty("--scolSoft", s.soft);
+    document.documentElement.style.setProperty("--scolBorder", s.border);
+
+    // percent for webkit track fill
+    const pct = Math.max(0, Math.min(100, (Number(score) - 1) / 9 * 100));
+    document.documentElement.style.setProperty("--pct", pct + "%");
+
+    $("scoreWord").textContent = s.word;
+  }
+
   function updateSummary(){
     const zones = getZones();
     const scoredCount = zones.map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n)).length;
@@ -1078,6 +1197,9 @@
     $("slider").value = v;
     $("sliderVal").textContent = v;
 
+    // ✅ apply dynamic slider UI at open
+    applySliderUI(v);
+
     const isGrouped = (activeKey !== zoneName);
     const groupInfo = isGrouped ? ` (appliqué à: ${membersForKey(activeKey).join(" + ")})` : "";
     $("sheetMeta").textContent = existing?.score
@@ -1098,10 +1220,13 @@
     document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
   }
 
+  // ✅ when moving slider: color + word + value update
   $("slider").addEventListener("input", ()=>{
-    $("sliderVal").textContent = $("slider").value;
+    const v = Number($("slider").value);
+    $("sliderVal").textContent = v;
+    applySliderUI(v);
     activeCritId = null;
-    renderCriteria($("slider").value);
+    renderCriteria(v);
   });
 
   $("saveBtn").addEventListener("click", ()=>{
@@ -1448,6 +1573,9 @@
   applyAll();
   loadZoneToUI(zoneSelect.value);
   loadEmojiToUI(emojiZoneSelect.value);
+
+  // initial slider UI defaults
+  applySliderUI(Number($("slider").value));
 
   updateSummary();
   renderPeople();
