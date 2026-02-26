@@ -106,7 +106,7 @@
 
     .field{display:flex;flex-direction:column;gap:6px}
     .field label{font-size:.82rem;color:var(--muted);font-weight:700}
-    .field input{
+    .field input, .field select{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(0,0,0,.18);
       color:var(--txt);
@@ -589,7 +589,7 @@
   </div>
 </div>
 
-<!-- SETTINGS modal (kept) -->
+<!-- SETTINGS modal -->
 <div class="modalOverlay" id="settingsOverlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-label="Settings">
     <div class="modalHead">
@@ -656,6 +656,40 @@
           </div>
 
           <div class="mono" id="zoneOut" style="margin-top:8px"></div>
+        </div>
+
+        <div class="section">
+          <h3>Réglage des emojis (par zone)</h3>
+
+          <div class="field">
+            <label>Zone (emoji)</label>
+            <select id="emojiZoneSelect"></select>
+          </div>
+
+          <div class="sl">
+            <label>Emoji DX</label>
+            <input id="mdx" type="range" min="-220" max="220" step="1" value="0">
+            <div class="mono" id="mdxVal">0</div>
+          </div>
+
+          <div class="sl">
+            <label>Emoji DY</label>
+            <input id="mdy" type="range" min="-220" max="220" step="1" value="0">
+            <div class="mono" id="mdyVal">0</div>
+          </div>
+
+          <div class="sl">
+            <label>Emoji Scale</label>
+            <input id="msc" type="range" min="0.50" max="1.80" step="0.01" value="1.00">
+            <div class="mono" id="mscVal">1.00</div>
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <button class="btn small ghost" id="resetEmojiBtn">Reset emoji</button>
+            <button class="btn small" id="copyEmojiBtn">Copier config</button>
+          </div>
+
+          <div class="mono" id="emojiOut" style="margin-top:8px"></div>
         </div>
       </div>
 
@@ -731,7 +765,7 @@
   const BOLSTER_GROUPS = [
     { key: "Bolsters haut dossier (G+D)", members: ["Flanc gauche (vert)", "Flanc droit (violet)"] },
     { key: "Bolsters bas dossier (G+D)",  members: ["Flanc gauche (noir)", "Flanc droit (orange)"] },
-    { key: "Bolsters haut assise (G+D)",  members: ["Bas gauche (vert)", "Bas droit (cyan)"] },  // "bleu" = cyan
+    { key: "Bolsters haut assise (G+D)",  members: ["Bas gauche (vert)", "Bas droit (cyan)"] },
     { key: "Bolsters bas assise (G+D)",   members: ["Bas gauche (orange)", "Bas droit (blanc)"] }
   ];
 
@@ -793,7 +827,17 @@
     return vals.reduce((a,b)=>a+b,0)/vals.length;
   }
 
-  // ===== Emoji markers only (no green fill) =====
+  // ===== Emoji tuning (per zone) =====
+  const EMOJI_TUNE_KEY = "seat_emoji_tune_map_v1";
+  const DEFAULT_EMOJI_TUNE = {}; // default per id => {dx:0,dy:0,sc:1}
+  let emojiTune = loadJson(EMOJI_TUNE_KEY, DEFAULT_EMOJI_TUNE);
+
+  function getEmojiTune(polyId){
+    const t = emojiTune?.[polyId];
+    return t ? t : {dx:0, dy:0, sc:1};
+  }
+
+  // ===== Emoji markers (stable BBox center + manual tune) =====
   function updateZoneVisuals(){
     const marksLayer = $("marksLayer");
     if(marksLayer) marksLayer.innerHTML = "";
@@ -805,8 +849,12 @@
 
       if(scored && marksLayer){
         const bb = poly.getBBox();
-        const cx = bb.x + bb.width / 2;
-        const cy = bb.y + bb.height / 2;
+        let cx = bb.x + bb.width / 2;
+        let cy = bb.y + bb.height / 2;
+
+        const tTune = getEmojiTune(poly.id);
+        cx += Number(tTune.dx || 0);
+        cy += Number(tTune.dy || 0);
 
         const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
         t.setAttribute("x", cx);
@@ -814,7 +862,13 @@
         t.setAttribute("text-anchor", "middle");
         t.setAttribute("dominant-baseline", "middle");
         t.setAttribute("class", "mark");
-        t.textContent = "☑️"; // beau emoji de validation
+        t.textContent = "☑️";
+
+        const sc = Number(tTune.sc || 1);
+        if(sc !== 1){
+          t.setAttribute("transform", `translate(${cx} ${cy}) scale(${sc}) translate(${-cx} ${-cy})`);
+        }
+
         marksLayer.appendChild(t);
       }
     });
@@ -1239,6 +1293,59 @@
     catch{ toast("⚠️ Copie impossible"); }
   });
 
+  // ===== SETTINGS: per-emoji transforms (DX/DY/Scale) =====
+  const emojiZoneSelect = $("emojiZoneSelect");
+  const mdxEl = $("mdx"), mdyEl = $("mdy"), mscEl = $("msc");
+  const mdxVal = $("mdxVal"), mdyVal = $("mdyVal"), mscVal = $("mscVal");
+  const emojiOut = $("emojiOut");
+
+  polys.forEach(p=>{
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    opt.textContent = p.dataset.zone;
+    emojiZoneSelect.appendChild(opt);
+  });
+
+  function loadEmojiToUI(polyId){
+    const t = getEmojiTune(polyId);
+    mdxEl.value = t.dx; mdyEl.value = t.dy; mscEl.value = t.sc;
+    mdxVal.textContent = t.dx;
+    mdyVal.textContent = t.dy;
+    mscVal.textContent = Number(t.sc).toFixed(2);
+    emojiOut.textContent = `${polyId}: emoji dx=${t.dx}, dy=${t.dy}, scale=${Number(t.sc).toFixed(2)}`;
+  }
+
+  function onEmojiTuneChange(){
+    const id = emojiZoneSelect.value;
+    emojiTune[id] = { dx:Number(mdxEl.value), dy:Number(mdyEl.value), sc:Number(mscEl.value) };
+    saveJson(EMOJI_TUNE_KEY, emojiTune);
+    loadEmojiToUI(id);
+    updateZoneVisuals();
+  }
+
+  emojiZoneSelect.addEventListener("change", ()=> loadEmojiToUI(emojiZoneSelect.value));
+  mdxEl.addEventListener("input", onEmojiTuneChange);
+  mdyEl.addEventListener("input", onEmojiTuneChange);
+  mscEl.addEventListener("input", onEmojiTuneChange);
+
+  $("resetEmojiBtn").addEventListener("click", ()=>{
+    const id = emojiZoneSelect.value;
+    emojiTune[id] = {dx:0, dy:0, sc:1};
+    saveJson(EMOJI_TUNE_KEY, emojiTune);
+    loadEmojiToUI(id);
+    updateZoneVisuals();
+    toast("Emoji reset");
+  });
+
+  $("copyEmojiBtn").addEventListener("click", async ()=>{
+    const lines = polys.map(p=>{
+      const t = getEmojiTune(p.id);
+      return `${p.id}: emoji dx=${t.dx}, dy=${t.dy}, scale=${Number(t.sc).toFixed(2)}`;
+    }).join("\n");
+    try{ await navigator.clipboard.writeText(lines); toast("✅ Config emoji copiée"); }
+    catch{ toast("⚠️ Copie impossible"); }
+  });
+
   $("resetSettingsBtn").addEventListener("click", ()=>{
     if(!confirm("Réinitialiser les Settings (zones + transparence) ?")) return;
     zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
@@ -1250,6 +1357,11 @@
     saveJson(ZSTYLE_KEY, zStyle);
     applyZoneStyle(zStyle);
 
+    emojiTune = {};
+    saveJson(EMOJI_TUNE_KEY, emojiTune);
+    loadEmojiToUI(emojiZoneSelect.value);
+
+    updateZoneVisuals();
     toast("Settings reset");
   });
 
@@ -1257,10 +1369,10 @@
   applyZoneStyle(zStyle);
   applyAll();
   loadZoneToUI(zoneSelect.value);
+
+  loadEmojiToUI(emojiZoneSelect.value);
   updateSummary();
   renderPeople();
-
-  // export + save person + reset already wired above
 </script>
 </body>
 </html>
