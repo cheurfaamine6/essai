@@ -27,12 +27,10 @@
       --mark-fill: rgba(255,255,255,.95);
       --mark-stroke: rgba(0,0,0,.55);
 
-      /* Slider dynamic theming */
+      /* Slider dynamic theming (only for rating slider) */
       --scol: rgba(124,58,237,1);
       --scolSoft: rgba(124,58,237,.14);
       --scolBorder: rgba(124,58,237,.55);
-
-      /* WebKit fill percent for slider track */
       --pct: 66%;
     }
 
@@ -123,6 +121,17 @@
       outline:none;
     }
 
+    /* ✅ Settings sliders should stay simple + not bug */
+    .modal input[type="range"]{
+      width:100%;
+      accent-color: var(--a1);
+    }
+    /* avoid inherited weird track/thumb rules elsewhere */
+    .modal input[type="range"]::-webkit-slider-runnable-track{ background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.12); height:10px; border-radius:999px; }
+    .modal input[type="range"]::-webkit-slider-thumb{ -webkit-appearance:auto; }
+    .modal input[type="range"]::-moz-range-track{ background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.12); height:10px; border-radius:999px; }
+    .modal input[type="range"]::-moz-range-progress{ background: rgba(255,255,255,.20); height:10px; border-radius:999px; }
+
     /* Seat SVG */
     .seatFrame{
       width:100%;
@@ -156,7 +165,6 @@
       stroke-width: var(--zone-stroke-width-active);
     }
 
-    /* zones notées : PAS DE CHANGEMENT COULEUR (on utilise seulement l'emoji) */
     .zone.rated{
       fill: var(--zone-fill);
       stroke: var(--zone-stroke);
@@ -172,7 +180,6 @@
       stroke-width: var(--zone-stroke-width-active);
     }
 
-    /* Emoji marker */
     .mark{
       font-size: 52px;
       font-weight: 900;
@@ -186,21 +193,18 @@
 
     .list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
 
-    /* ===== Pretty ratings list ===== */
     .item{
       position:relative;
       border:1px solid rgba(255,255,255,.12);
       border-radius:18px;
       padding:12px 12px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.10));
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.10));
       box-shadow: 0 10px 30px rgba(0,0,0,.18);
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
     }
-
     .item b{font-size:.95rem; letter-spacing:.2px}
     .item .sub{color:rgba(167,176,216,.9); font-size:.82rem; margin-top:3px}
 
@@ -218,7 +222,6 @@
       justify-content:center;
       gap:2px;
     }
-
     .val small{
       font-weight:800;
       font-size:.70rem;
@@ -226,7 +229,6 @@
       letter-spacing:.4px;
     }
 
-    /* Mini progress bar */
     .bar{
       height:8px;
       border-radius:999px;
@@ -243,7 +245,6 @@
       background: linear-gradient(90deg, var(--a1), var(--a2));
       box-shadow: 0 8px 18px rgba(124,58,237,.25);
     }
-
     .scoreLabel{
       margin-top:6px;
       font-size:.78rem;
@@ -252,7 +253,6 @@
       letter-spacing:.25px;
     }
 
-    /* ===== Score badge + jauge colorée par note (list) ===== */
     .val.s1, .val.s2 { border-color: rgba(231,76,60,.55); background: rgba(231,76,60,.14); }
     .val.s34        { border-color: rgba(243,156,18,.55); background: rgba(243,156,18,.14); }
     .val.s56        { border-color: rgba(241,196,15,.60); background: rgba(241,196,15,.14); }
@@ -279,18 +279,16 @@
     .zoneTitle{font-weight:950;font-size:1.08rem}
     .zoneMeta{color:var(--muted);font-size:.85rem;margin-top:2px}
 
-    /* ===== Slider styled + dynamic color ===== */
+    /* ===== Slider styled + dynamic color (ONLY rating slider) ===== */
     .sheetScoreHeader{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
       margin-top:10px;
-
-      /* ✅ tablette: allow wrap */
       flex-wrap: wrap;
     }
-    .sheetScoreHeader > *{ min-width:0; } /* ✅ important for flex text */
+    .sheetScoreHeader > *{ min-width:0; }
 
     .scoreChip{
       display:inline-flex;
@@ -303,7 +301,6 @@
       font-weight:950;
       letter-spacing:.2px;
 
-      /* ✅ tablette: never overflow */
       max-width:100%;
       flex: 1 1 auto;
       justify-content:flex-start;
@@ -317,14 +314,10 @@
     .scoreChip .label{
       color: rgba(255,255,255,.92);
       line-height: 1.15;
-
-      /* ✅ tablette: allow wrap, shrink */
       white-space: normal;
       overflow-wrap: anywhere;
       font-size: clamp(.80rem, 2.4vw, .90rem);
     }
-
-    /* ✅ small screens: keep only label */
     @media (max-width:720px){
       .sheetScoreHeader .hint{ display:none; }
       .scoreChip{ justify-content:center; }
@@ -334,15 +327,15 @@
       .scoreChip .label{ font-size:.78rem; }
     }
 
-    input[type="range"]{
+    .ratingSlider{
       width:100%;
       margin-top:10px;
       accent-color: var(--scol);
       background: transparent;
     }
 
-    /* WebKit */
-    input[type="range"]::-webkit-slider-runnable-track{
+    /* WebKit (only .ratingSlider) */
+    .ratingSlider::-webkit-slider-runnable-track{
       height:10px;
       border-radius:999px;
       background:
@@ -353,29 +346,29 @@
           rgba(255,255,255,.10) 100%);
       border:1px solid rgba(255,255,255,.12);
     }
-    input[type="range"]::-webkit-slider-thumb{
+    .ratingSlider::-webkit-slider-thumb{
       -webkit-appearance:none;
       width:22px; height:22px;
       border-radius:999px;
       background: rgba(255,255,255,.95);
       border: 2px solid rgba(0,0,0,.35);
       box-shadow: 0 10px 22px rgba(0,0,0,.35);
-      margin-top:-7px; /* center thumb */
+      margin-top:-6px; /* ✅ perfect center: -(22-10)/2 */
     }
 
-    /* Firefox */
-    input[type="range"]::-moz-range-track{
+    /* Firefox (only .ratingSlider) */
+    .ratingSlider::-moz-range-track{
       height:10px;
       border-radius:999px;
       background: rgba(255,255,255,.10);
       border:1px solid rgba(255,255,255,.12);
     }
-    input[type="range"]::-moz-range-progress{
+    .ratingSlider::-moz-range-progress{
       height:10px;
       border-radius:999px;
       background: var(--scol);
     }
-    input[type="range"]::-moz-range-thumb{
+    .ratingSlider::-moz-range-thumb{
       width:22px; height:22px;
       border-radius:999px;
       background: rgba(255,255,255,.95);
@@ -394,7 +387,6 @@
     .sheetActions{display:flex;gap:10px;margin-top:14px}
     .sheetActions .btn{flex:1}
 
-    /* Criteria UI */
     .reasonBox{margin-top:12px;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:10px;background:rgba(0,0,0,.14)}
     .reasonTitle{font-weight:900;margin-bottom:8px}
 
@@ -472,7 +464,6 @@
       margin-top:8px;
     }
 
-    /* Table under image */
     .tableTitle{
       display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
       margin-top:6px;
@@ -725,7 +716,6 @@
       <div class="zoneTitle" id="sheetZone">Zone</div>
       <div class="zoneMeta" id="sheetMeta">Choisis une note et enregistre.</div>
 
-      <!-- dynamic label + color for the slider -->
       <div class="sheetScoreHeader">
         <div class="hint">Fais glisser pour noter</div>
         <div class="scoreChip" id="scoreChip">
@@ -734,7 +724,9 @@
         </div>
       </div>
 
-      <input id="slider" type="range" min="1" max="10" step="1" value="7" />
+      <!-- ✅ only this slider has custom styling -->
+      <input id="slider" class="ratingSlider" type="range" min="1" max="10" step="1" value="7" />
+
       <div class="scoreRow">
         <div class="hint">1 = inconfort</div>
         <div class="scoreBig"><span id="sliderVal">7</span>/10</div>
@@ -943,24 +935,18 @@
   const RATINGS_KEY = "seat_ratings_current_final_v6";
   const PEOPLE_KEY  = "seat_people_passes_final_v6";
 
-  // ===== Bolsters grouping (dossier + assise) =====
+  // ===== Bolsters grouping =====
   const BOLSTER_GROUPS = [
     { key: "Bolsters haut dossier (G+D)", members: ["Flanc gauche (vert)", "Flanc droit (violet)"] },
     { key: "Bolsters bas dossier (G+D)",  members: ["Flanc gauche (noir)", "Flanc droit (orange)"] },
     { key: "Bolsters haut assise (G+D)",  members: ["Bas gauche (vert)", "Bas droit (cyan)"] },
     { key: "Bolsters bas assise (G+D)",   members: ["Bas gauche (orange)", "Bas droit (blanc)"] }
   ];
-
   const MEMBER_TO_GROUP = new Map();
   BOLSTER_GROUPS.forEach(g => g.members.forEach(m => MEMBER_TO_GROUP.set(m, g.key)));
 
-  function effectiveKeyForZone(zoneName){
-    return MEMBER_TO_GROUP.get(zoneName) || zoneName;
-  }
-  function effectiveDisplayName(zoneName){
-    const g = MEMBER_TO_GROUP.get(zoneName);
-    return g ? g : zoneName;
-  }
+  function effectiveKeyForZone(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
+  function effectiveDisplayName(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
   function membersForKey(key){
     const g = BOLSTER_GROUPS.find(x=>x.key===key);
     return g ? g.members : [key];
@@ -973,8 +959,6 @@
     { id:"symetrie",   label:"Symétrie (bolsters assise/dos)" },
     { id:"homogeneite",label:"Homogénéité" }
   ];
-
-  // Une seule échelle d’options
   const CRIT_OPTIONS = {
     presence: ["Inacceptable", "Faible", "Moyenne", "Bonne", "Excellente"],
     durete: ["Inacceptable", "Trop souple", "Correcte", "Ferme", "Très bien équilibrée"],
@@ -1040,13 +1024,11 @@
         if(sc !== 1){
           t.setAttribute("transform", `translate(${cx} ${cy}) scale(${sc}) translate(${-cx} ${-cy})`);
         }
-
         marksLayer.appendChild(t);
       }
     });
   }
 
-  // List score mapping
   function scoreMeta(score){
     if(score === 1)  return { cls:"s1",  label:"Inacceptable" };
     if(score === 2)  return { cls:"s2",  label:"Très insatisfait" };
@@ -1058,7 +1040,6 @@
     return { cls:"", label:"" };
   }
 
-  // Slider mapping (color + word)
   function sliderTheme(score){
     if(score === 1)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Inacceptable" };
     if(score === 2)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Très insatisfait" };
@@ -1132,10 +1113,7 @@
       });
     }
   }
-
-  function currentOptionsForCrit(_score, critId){
-    return CRIT_OPTIONS[critId] || [];
-  }
+  function currentOptionsForCrit(_score, critId){ return CRIT_OPTIONS[critId] || []; }
 
   function renderCriteria(score){
     $("criteriaTitle").textContent = "Critères (échelle unique)";
@@ -1371,7 +1349,7 @@
     toast("CSV exporté");
   });
 
-  // SETTINGS: open/close
+  // SETTINGS open/close
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     settingsOverlay.classList.add("show");
@@ -1431,7 +1409,7 @@
   strokeAlpha.addEventListener("input", onStyleChange);
   strokeW.addEventListener("input", onStyleChange);
 
-  // SETTINGS: per-zone transforms
+  // SETTINGS per-zone transforms
   const ZTUNE_KEY = "seat_zone_tune_map_v2";
   const DEFAULT_TUNE = {
     "z_dossier_bleu": {dx:0, dy:-58, sc:1.000},
@@ -1480,7 +1458,6 @@
     zscVal.textContent = Number(t.sc).toFixed(3);
     zoneOut.textContent = `${polyId}: transform="translate(${t.dx} ${t.dy}) scale(${Number(t.sc).toFixed(3)})"`;
   }
-
   function onZoneTuneChange(){
     const id = zoneSelect.value;
     zoneTune[id] = { dx:Number(zdxEl.value), dy:Number(zdyEl.value), sc:Number(zscEl.value) };
@@ -1514,7 +1491,7 @@
     catch{ toast("⚠️ Copie impossible"); }
   });
 
-  // SETTINGS: per-emoji transforms
+  // SETTINGS per-emoji transforms
   const emojiZoneSelect = $("emojiZoneSelect");
   const mdxEl = $("mdx"), mdyEl = $("mdy"), mscEl = $("msc");
   const mdxVal = $("mdxVal"), mdyVal = $("mdyVal"), mscVal = $("mscVal");
@@ -1569,6 +1546,7 @@
 
   $("resetSettingsBtn").addEventListener("click", ()=>{
     if(!confirm("Réinitialiser les Settings (zones + transparence) ?")) return;
+
     zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
     saveJson(ZTUNE_KEY, zoneTune);
     applyAll();
@@ -1593,9 +1571,12 @@
   loadEmojiToUI(emojiZoneSelect.value);
 
   applySliderUI(Number($("slider").value));
-
   updateSummary();
   renderPeople();
+
+  // collapsible table button
+  const tableShownBtn = $("toggleTableBtn");
+  tableShownBtn?.addEventListener?.("click", ()=>{});
 </script>
 </body>
 </html>
