@@ -31,6 +31,9 @@
       --scol: rgba(124,58,237,1);
       --scolSoft: rgba(124,58,237,.14);
       --scolBorder: rgba(124,58,237,.55);
+
+      /* WebKit fill percent for slider track */
+      --pct: 66%;
     }
 
     *{box-sizing:border-box}
@@ -283,7 +286,12 @@
       justify-content:space-between;
       gap:10px;
       margin-top:10px;
+
+      /* ✅ tablette: allow wrap */
+      flex-wrap: wrap;
     }
+    .sheetScoreHeader > *{ min-width:0; } /* ✅ important for flex text */
+
     .scoreChip{
       display:inline-flex;
       align-items:center;
@@ -294,16 +302,36 @@
       background: var(--scolSoft);
       font-weight:950;
       letter-spacing:.2px;
+
+      /* ✅ tablette: never overflow */
+      max-width:100%;
+      flex: 1 1 auto;
+      justify-content:flex-start;
     }
     .scoreChip .dot{
       width:10px; height:10px; border-radius:999px;
       background: var(--scol);
       box-shadow: 0 0 0 5px rgba(255,255,255,.06);
+      flex: 0 0 auto;
     }
     .scoreChip .label{
       color: rgba(255,255,255,.92);
-      font-size:.86rem;
-      white-space:nowrap;
+      line-height: 1.15;
+
+      /* ✅ tablette: allow wrap, shrink */
+      white-space: normal;
+      overflow-wrap: anywhere;
+      font-size: clamp(.80rem, 2.4vw, .90rem);
+    }
+
+    /* ✅ small screens: keep only label */
+    @media (max-width:720px){
+      .sheetScoreHeader .hint{ display:none; }
+      .scoreChip{ justify-content:center; }
+    }
+    @media (max-width:420px){
+      .scoreChip{ padding:7px 10px; }
+      .scoreChip .label{ font-size:.78rem; }
     }
 
     input[type="range"]{
@@ -697,7 +725,7 @@
       <div class="zoneTitle" id="sheetZone">Zone</div>
       <div class="zoneMeta" id="sheetMeta">Choisis une note et enregistre.</div>
 
-      <!-- ✅ NEW: dynamic label + color for the slider -->
+      <!-- dynamic label + color for the slider -->
       <div class="sheetScoreHeader">
         <div class="hint">Fais glisser pour noter</div>
         <div class="scoreChip" id="scoreChip">
@@ -946,7 +974,7 @@
     { id:"homogeneite",label:"Homogénéité" }
   ];
 
-  // ✅ UNE SEULE échelle d’options, valable pour toute note
+  // Une seule échelle d’options
   const CRIT_OPTIONS = {
     presence: ["Inacceptable", "Faible", "Moyenne", "Bonne", "Excellente"],
     durete: ["Inacceptable", "Trop souple", "Correcte", "Ferme", "Très bien équilibrée"],
@@ -955,7 +983,6 @@
   };
 
   let ratings = loadJson(RATINGS_KEY, {});
-  let activeZoneName = null;
   let activeKey = null;
   let activeCriteria = {};
   let activeCritId = null;
@@ -975,17 +1002,14 @@
     return vals.reduce((a,b)=>a+b,0)/vals.length;
   }
 
-  // ===== Emoji tuning (per zone) =====
+  // ===== Emoji tuning =====
   const EMOJI_TUNE_KEY = "seat_emoji_tune_map_v1";
-  const DEFAULT_EMOJI_TUNE = {};
-  let emojiTune = loadJson(EMOJI_TUNE_KEY, DEFAULT_EMOJI_TUNE);
-
+  let emojiTune = loadJson(EMOJI_TUNE_KEY, {});
   function getEmojiTune(polyId){
     const t = emojiTune?.[polyId];
     return t ? t : {dx:0, dy:0, sc:1};
   }
 
-  // ===== Emoji markers (stable BBox center + manual tune) =====
   function updateZoneVisuals(){
     const marksLayer = $("marksLayer");
     if(marksLayer) marksLayer.innerHTML = "";
@@ -1022,7 +1046,7 @@
     });
   }
 
-  // ===== Score label + couleurs (1..10) =====
+  // List score mapping
   function scoreMeta(score){
     if(score === 1)  return { cls:"s1",  label:"Inacceptable" };
     if(score === 2)  return { cls:"s2",  label:"Très insatisfait" };
@@ -1034,9 +1058,8 @@
     return { cls:"", label:"" };
   }
 
-  // ✅ NEW: slider theme (color + label) based on current slider value
+  // Slider mapping (color + word)
   function sliderTheme(score){
-    // colors: red / orange / yellow / green / cyan-blue
     if(score === 1)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Inacceptable" };
     if(score === 2)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Très insatisfait" };
     if(score === 3 || score === 4) return { col:"rgba(243,156,18,1)", soft:"rgba(243,156,18,.14)", border:"rgba(243,156,18,.55)", word:"Insatisfait" };
@@ -1053,7 +1076,6 @@
     document.documentElement.style.setProperty("--scolSoft", s.soft);
     document.documentElement.style.setProperty("--scolBorder", s.border);
 
-    // percent for webkit track fill
     const pct = Math.max(0, Math.min(100, (Number(score) - 1) / 9 * 100));
     document.documentElement.style.setProperty("--pct", pct + "%");
 
@@ -1111,7 +1133,6 @@
     }
   }
 
-  // ✅ options identiques peu importe la note
   function currentOptionsForCrit(_score, critId){
     return CRIT_OPTIONS[critId] || [];
   }
@@ -1183,7 +1204,6 @@
   }
 
   function openSheet(zoneName, el){
-    activeZoneName = zoneName;
     activeKey = effectiveKeyForZone(zoneName);
 
     $("sheetZone").textContent = effectiveDisplayName(zoneName);
@@ -1197,7 +1217,6 @@
     $("slider").value = v;
     $("sliderVal").textContent = v;
 
-    // ✅ apply dynamic slider UI at open
     applySliderUI(v);
 
     const isGrouped = (activeKey !== zoneName);
@@ -1220,7 +1239,6 @@
     document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
   }
 
-  // ✅ when moving slider: color + word + value update
   $("slider").addEventListener("input", ()=>{
     const v = Number($("slider").value);
     $("sliderVal").textContent = v;
@@ -1496,7 +1514,7 @@
     catch{ toast("⚠️ Copie impossible"); }
   });
 
-  // ===== SETTINGS: per-emoji transforms (DX/DY/Scale) =====
+  // SETTINGS: per-emoji transforms
   const emojiZoneSelect = $("emojiZoneSelect");
   const mdxEl = $("mdx"), mdyEl = $("mdy"), mscEl = $("msc");
   const mdxVal = $("mdxVal"), mdyVal = $("mdyVal"), mscVal = $("mscVal");
@@ -1574,7 +1592,6 @@
   loadZoneToUI(zoneSelect.value);
   loadEmojiToUI(emojiZoneSelect.value);
 
-  // initial slider UI defaults
   applySliderUI(Number($("slider").value));
 
   updateSummary();
