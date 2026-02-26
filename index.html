@@ -711,16 +711,29 @@
 
   // ===== Bolsters grouping (2 du haut ensemble, 2 du bas ensemble) =====
   // Ici je l'applique aux bolsters du DOSSIER (flancs). Si tu veux aussi le faire pour assise, je te le rajoute.
-  const BOLSTER_GROUPS = [
-    {
-      key: "Bolsters haut dossier (gauche+droit)",
-      members: ["Flanc gauche (vert)", "Flanc droit (violet)"]
-    },
-    {
-      key: "Bolsters bas dossier (gauche+droit)",
-      members: ["Flanc gauche (noir)", "Flanc droit (orange)"]
-    }
-  ];
+const BOLSTER_GROUPS = [
+  // ===== DOSSIER (comme avant)
+  {
+    key: "Bolsters haut dossier (gauche+droit)",
+    members: ["Flanc gauche (vert)", "Flanc droit (violet)"]
+  },
+  {
+    key: "Bolsters bas dossier (gauche+droit)",
+    members: ["Flanc gauche (noir)", "Flanc droit (orange)"]
+  },
+
+  // ===== ASSISE (nouveau)
+  // orange + blanc ensemble
+  {
+    key: "Bolsters bas assise (gauche+droit)",
+    members: ["Bas gauche (orange)", "Bas droit (blanc)"]
+  },
+  // vert + "bleu" ensemble -> ici j'utilise cyan comme "bleu"
+  {
+    key: "Bolsters haut assise (gauche+droit)",
+    members: ["Bas gauche (vert)", "Bas droit (cyan)"]
+  }
+];
 
   const MEMBER_TO_GROUP = new Map();
   BOLSTER_GROUPS.forEach(g => g.members.forEach(m => MEMBER_TO_GROUP.set(m, g.key)));
