@@ -15,7 +15,7 @@
       --shadow: 0 18px 55px rgba(0,0,0,.45);
       --r:18px;
 
-      /* zone style variables (modifiable via settings) */
+      /* zone style variables */
       --zone-fill: rgba(79,140,255,.12);
       --zone-stroke: rgba(79,140,255,.55);
       --zone-stroke-width: 2px;
@@ -105,6 +105,11 @@
       color:var(--muted);
       background: rgba(0,0,0,.10);
     }
+    .pill.good{
+      color:#d1fae5;
+      border-color: rgba(46, 204, 113, .35);
+      background: rgba(46, 204, 113, .10);
+    }
 
     .field{display:flex;flex-direction:column;gap:6px}
     .field label{font-size:.82rem;color:var(--muted);font-weight:700}
@@ -117,7 +122,7 @@
       outline:none;
     }
 
-    /* no crop */
+    /* Seat SVG */
     .seatFrame{
       width:100%;
       border-top: 1px solid rgba(255,255,255,.06);
@@ -223,9 +228,21 @@
     .sheetActions{display:flex;gap:10px;margin-top:14px}
     .sheetActions .btn{flex:1}
 
-    /* Reasons (hierarchical + zone-specific) */
+    /* Reasons (simple scale per criterion) */
     .reasonBox{margin-top:12px;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:10px;background:rgba(0,0,0,.14)}
     .reasonTitle{font-weight:900;margin-bottom:8px}
+    .critWrap{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.10);
+      border-radius:14px;
+      padding:10px;
+      margin-top:10px;
+    }
+    .critHead{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .critHead b{font-size:.92rem}
     .chips{display:flex;flex-wrap:wrap;gap:8px}
     .chip{
       border:1px solid rgba(255,255,255,.14);
@@ -238,33 +255,7 @@
       user-select:none;
     }
     .chip.on{background: rgba(124,58,237,.25); border-color: rgba(124,58,237,.65)}
-
-    .reasonGroupTitle{
-      font-weight:900;
-      margin-top:6px;
-      margin-bottom:8px;
-      color: var(--txt);
-    }
-    .chip.big{
-      padding:10px 12px;
-      font-size:.9rem;
-    }
-    .subWrap{
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.10);
-      border-radius:14px;
-      padding:10px;
-      margin-bottom:10px;
-    }
-    .subHead{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:8px;
-    }
-    .subHead b{ font-size:.9rem; }
-    .badgeCount{
+    .badgeMini{
       font-size:.78rem;
       padding:4px 8px;
       border-radius:999px;
@@ -272,7 +263,6 @@
       color:var(--muted);
       background: rgba(255,255,255,.06);
     }
-
     textarea{
       width:100%; margin-top:10px;
       border:1px solid rgba(255,255,255,.14);
@@ -299,7 +289,6 @@
     table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:820px}
     th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap;text-align:left}
     th{position:sticky;top:0;background:rgba(17,25,50,.92);z-index:2}
-
     .collapse{display:none}
     .collapse.show{display:block}
 
@@ -390,7 +379,7 @@
   <div class="wrap top">
     <div class="title">
       <b>Seat Comfort</b>
-      <span>Zones cliquables → note 1–10 → sauvegarde personne</span>
+      <span>Zones cliquables → note 1–10 → + critères (si note ≤5) → sauver personne</span>
     </div>
     <div class="row" style="gap:8px">
       <button class="btn icon" id="settingsBtn" title="Settings">⚙️ Settings</button>
@@ -414,9 +403,16 @@
     <div class="p row">
       <div>
         <b>Siège interactif</b>
-        <div class="hint">Clique une zone → slider + raisons si ≤5. Les zones notées deviennent <b>vertes</b> + ✓.</div>
+        <div class="hint">
+          Clique une zone → note 1–10.
+          <br/>Si note ≤ 5 : critères <b>Présence / Dureté / Symétrie / Homogénéité</b> (échelle légère / trop / beaucoup).
+          <br/><b>Bolsters</b> : les 2 du haut = même note • les 2 du bas = même note.
+        </div>
       </div>
-      <div class="pill" id="countPill">0 zone notée</div>
+      <div class="row" style="gap:8px">
+        <div class="pill" id="countPill">0 zone notée</div>
+        <div class="pill good" id="globalPill">Confort global —</div>
+      </div>
     </div>
 
     <div class="seatFrame">
@@ -477,7 +473,7 @@
       <div class="tableTitle">
         <div>
           <b>Historique des personnes</b>
-          <div class="hint">Clique sur le bouton pour afficher/masquer le tableau.</div>
+          <div class="hint">Clique pour afficher/masquer.</div>
         </div>
         <div class="row" style="gap:8px">
           <span class="pill" id="peopleCountPill">0 personne</span>
@@ -490,15 +486,11 @@
           <table>
             <thead>
               <tr>
-                <th>Date</th><th>Nom</th><th>Prénom</th><th>Taille</th><th>Poids</th><th>Moy</th>
+                <th>Date</th><th>Nom</th><th>Prénom</th><th>Taille</th><th>Poids</th><th>Moy globale</th>
               </tr>
             </thead>
             <tbody id="peopleBody"></tbody>
           </table>
-        </div>
-
-        <div class="hint" style="margin-top:10px">
-          Astuce : sur téléphone, mets en <b>paysage</b>.
         </div>
       </div>
     </div>
@@ -508,7 +500,7 @@
     <div class="p">
       <div class="row">
         <b>Profil testeur</b>
-        <span class="pill" id="avgPill">Moyenne —</span>
+        <span class="pill good" id="avgPill">Moyenne globale —</span>
       </div>
 
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px">
@@ -531,6 +523,10 @@
       </div>
 
       <div class="list" id="list"></div>
+
+      <div class="hint" style="margin-top:10px">
+        Astuce : sur téléphone, mets en <b>paysage</b>.
+      </div>
     </div>
   </aside>
 </main>
@@ -553,17 +549,10 @@
       <div class="scale"><span>1</span><span>5</span><span>10</span></div>
 
       <div class="reasonBox" id="reasonBox" style="display:none">
-        <div class="reasonTitle">Pourquoi ? (si note ≤ 5)</div>
+        <div class="reasonTitle">Critères (si note ≤ 5)</div>
+        <div class="hint">Sélectionne une option par critère (Légère / Trop / Beaucoup).</div>
 
-        <div class="hint" id="reasonHint" style="margin-bottom:8px">
-          Choisis une catégorie puis des sous-raisons adaptées à cette zone.
-        </div>
-
-        <div class="reasonGroupTitle">Catégories</div>
-        <div class="chips" id="catChips"></div>
-
-        <div class="reasonGroupTitle" style="margin-top:10px">Sous-raisons</div>
-        <div id="subReasons"></div>
+        <div id="criteriaUI"></div>
 
         <textarea id="reasonText" placeholder="Commentaire optionnel..."></textarea>
       </div>
@@ -704,7 +693,7 @@
   window.addEventListener("orientationchange", checkOrientation);
   checkOrientation();
 
-  // ===== Collapsible table (default hidden) =====
+  // ===== Collapsible table =====
   const tableCollapse = $("tableCollapse");
   const toggleTableBtn = $("toggleTableBtn");
   let tableShown = false;
@@ -716,213 +705,77 @@
   toggleTableBtn.addEventListener("click", ()=> setTableShown(!tableShown));
   setTableShown(false);
 
-  // ===== Ratings / People =====
-  const RATINGS_KEY = "seat_ratings_current_final";
-  const PEOPLE_KEY  = "seat_people_passes_final";
+  // ===== Data keys =====
+  const RATINGS_KEY = "seat_ratings_current_final_v3";
+  const PEOPLE_KEY  = "seat_people_passes_final_v3";
 
-  // ===== Zone-specific hierarchical reasons (from your form) =====
-  const ZONE_REASON_TREES = {
-    "Dossier haut (bleu)": {
-      "__hint": "Confort du dossier • haut dossier (G1/G2) • appui tête si concerné",
-      "Présence haut de dossier (G1/G2)": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Dureté haut de dossier": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Appui tête (I)": [
-        "Présence trop faible","Présence trop forte",
-        "Dureté trop faible","Dureté trop forte",
-        "Gêne cervicale"
-      ],
-      "Ressenti": ["Pression localisée","Non homogène","Mauvais maintien","Mauvaise posture"]
+  // ===== Bolsters grouping (2 du haut ensemble, 2 du bas ensemble) =====
+  // Ici je l'applique aux bolsters du DOSSIER (flancs). Si tu veux aussi le faire pour assise, je te le rajoute.
+  const BOLSTER_GROUPS = [
+    {
+      key: "Bolsters haut dossier (gauche+droit)",
+      members: ["Flanc gauche (vert)", "Flanc droit (violet)"]
     },
-
-    "Dossier milieu (rouge)": {
-      "__hint": "Confort du dossier • zones pelvienne (E) et lombaire (F)",
-      "Zone pelvienne (E) – présence": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Zone pelvienne (E) – dureté": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Zone lombaire (F) – présence": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Zone lombaire (F) – dureté": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Ressenti": ["Pression non homogène","Points durs","Gêne lombaire","Mauvaise posture"]
-    },
-
-    "Zone centrale (gris clair)": {
-      "__hint": "Confort du dossier • homogénéité / pression",
-      "Pression": ["Non homogène","Déséquilibrée (gauche/droite)","Trop forte","Trop faible","Douleur localisée"],
-      "Dureté": ["Trop dur","Trop mou","Manque d’amorti","Rebond gênant"],
-      "Posture": ["Mauvaise posture","Manque de soutien","Instabilité / glisse"]
-    },
-
-    "Flanc droit (violet)": {
-      "__hint": "Maintien latéral • dossier (efficacité / confort)",
-      "Efficacité du dossier (maintien latéral)": ["Très faible","Faible","Moyenne","Bonne","Très bonne"],
-      "Confort maintien du dossier": ["Pression localisée","Trop serré","Pas assez de maintien","Déséquilibré"],
-      "Dureté parties latérales": ["Trop dur","Trop mou","Non homogène"]
-    },
-
-    "Flanc droit (orange)": {
-      "__hint": "Maintien latéral • dossier (zone D/H) + symétrie",
-      "Présence parties latérales (D/H)": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Dureté des parties latérales": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Symétrie du dossier": ["Très mauvaise","Mauvaise","Moyenne","Bonne","Très bonne"]
-    },
-
-    "Flanc gauche (vert)": {
-      "__hint": "Maintien latéral • dossier",
-      "Efficacité du dossier (maintien latéral)": ["Très faible","Faible","Moyenne","Bonne","Très bonne"],
-      "Confort maintien du dossier": ["Pression localisée","Trop serré","Pas assez de maintien","Déséquilibré"]
-    },
-
-    "Flanc gauche (noir)": {
-      "__hint": "Maintien latéral • dossier (zone basse) / symétrie",
-      "Symétrie du dossier": ["Très mauvaise","Mauvaise","Moyenne","Bonne","Très bonne"],
-      "Efficacité du dossier": ["Très faible","Faible","Moyenne","Bonne","Très bonne"],
-      "Confort": ["Douleur côté","Pression trop forte","Pas assez de maintien"]
-    },
-
-    "Assise bas (vert)": {
-      "__hint": "Confort de l’assise • sous ischions (A) / dureté / homogénéité",
-      "Homogénéité sous ischions (A)": ["Très mauvaise","Mauvaise","Moyenne","Bonne","Très bonne"],
-      "Dureté sous ischions": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Pression": ["Non homogène","Points durs","Douleur localisée","Engourdissement"],
-      "Longueur d’assise": [
-        "Beaucoup trop courte","Trop courte","Légèrement trop courte",
-        "Légèrement trop longue","Trop longue","Beaucoup trop longue"
-      ]
-    },
-
-    "Bande jaune": {
-      "__hint": "Avant assise • nez d’assise (B) / parties latérales avant (Cav)",
-      "Présence nez d’assise (B)": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Dureté nez d’assise": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Parties latérales avant (Cav) – présence": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Dureté parties latérales (Cav/Car)": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ]
-    },
-
-    "Bande magenta": {
-      "__hint": "Arrière assise • parties latérales arrière (Car) / maintien",
-      "Parties latérales arrière (Car) – présence": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Dureté parties latérales (Cav/Car)": [
-        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
-        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
-      ],
-      "Efficacité maintien assise": ["Très faible","Faible","Moyenne","Bonne","Très bonne"],
-      "Confort maintien assise": ["Trop serré","Pas assez de maintien","Pression côté","Déséquilibré"]
-    },
-
-    "Bas gauche (vert)": {
-      "__hint": "Maintien latéral • assise (symétrie / efficacité / confort)",
-      "Symétrie de l’assise": ["Très mauvaise","Mauvaise","Moyenne","Bonne","Très bonne"],
-      "Efficacité de l’assise": ["Très faible","Faible","Moyenne","Bonne","Très bonne"],
-      "Confort maintien assise": ["Pression côté","Trop serré","Pas assez de maintien","Déséquilibré"]
-    },
-
-    "Bas gauche (orange)": {
-      "__hint": "Assise • parties latérales / maintien latéral",
-      "Parties latérales (Cav/Car)": ["Présence trop faible","Présence trop forte","Dureté trop faible","Dureté trop forte","Pression non homogène"],
-      "Maintien latéral": ["Efficacité faible","Confort faible","Déséquilibré"]
-    },
-
-    "Bas droit (blanc)": {
-      "__hint": "Maintien latéral • assise (symétrie / efficacité / confort)",
-      "Symétrie de l’assise": ["Très mauvaise","Mauvaise","Moyenne","Bonne","Très bonne"],
-      "Efficacité de l’assise": ["Très faible","Faible","Moyenne","Bonne","Très bonne"],
-      "Confort maintien assise": ["Pression côté","Trop serré","Pas assez de maintien","Déséquilibré"]
-    },
-
-    "Bas droit (cyan)": {
-      "__hint": "Assise • maintien latéral / confort",
-      "Maintien latéral assise": ["Très faible","Faible","Moyen","Bon","Très bon"],
-      "Confort": ["Pression localisée","Points durs","Trop serré","Pas assez de maintien"]
+    {
+      key: "Bolsters bas dossier (gauche+droit)",
+      members: ["Flanc gauche (noir)", "Flanc droit (orange)"]
     }
-  };
+  ];
 
-  const DEFAULT_REASON_TREE = {
-    "__hint": "Choisis une catégorie puis des sous-raisons.",
-    "Pression": ["Non homogène","Déséquilibrée","Trop forte","Trop faible","Douleur localisée"],
-    "Dureté": ["Trop dur","Trop mou","Manque d’amorti"],
-    "Maintien": ["Pas assez de maintien","Trop serré","Déséquilibré"],
-    "Posture": ["Mauvaise posture","Instabilité"]
-  };
+  const MEMBER_TO_GROUP = new Map();
+  BOLSTER_GROUPS.forEach(g => g.members.forEach(m => MEMBER_TO_GROUP.set(m, g.key)));
+
+  function effectiveKeyForZone(zoneName){
+    return MEMBER_TO_GROUP.get(zoneName) || zoneName;
+  }
+  function effectiveDisplayName(zoneName){
+    const g = MEMBER_TO_GROUP.get(zoneName);
+    return g ? `${g}` : zoneName;
+  }
+  function membersForKey(key){
+    const g = BOLSTER_GROUPS.find(x=>x.key===key);
+    return g ? g.members : [key];
+  }
+
+  // ===== Criteria model (simple) =====
+  const CRITERIA = [
+    { id:"presence",   label:"Présence" },
+    { id:"durete",     label:"Dureté" },
+    { id:"symetrie",   label:"Symétrie (bolsters assise/dos)" },
+    { id:"homogeneite",label:"Homogénéité" }
+  ];
+  const SCALE = ["Légère", "Trop", "Beaucoup"];
 
   let ratings = loadJson(RATINGS_KEY, {});
-  let activeZoneName = null;
-  let activeReasons = new Map(); // cat -> Set(sub)
-
-  function getReasonTreeForZone(zoneName){
-    return ZONE_REASON_TREES[zoneName] || DEFAULT_REASON_TREE;
-  }
-  function clearReasons(){ activeReasons = new Map(); }
-  function loadReasonsFromExisting(existing){
-    clearReasons();
-
-    if(existing?.reasonsTree && typeof existing.reasonsTree === "object"){
-      Object.entries(existing.reasonsTree).forEach(([cat, subs])=>{
-        activeReasons.set(cat, new Set(Array.isArray(subs) ? subs : []));
-      });
-      return;
-    }
-    if(Array.isArray(existing?.reasons) && existing.reasons.length){
-      activeReasons.set("Autre", new Set(existing.reasons));
-    }
-  }
+  let activeZoneName = null;   // clicked zone name (physical)
+  let activeKey = null;        // effective key (group or zone)
+  let activeCriteria = {};     // {presence:"Légère"|... , ...}
 
   function getZones(){
     return Array.from(document.querySelectorAll(".zone")).map(z=>z.dataset.zone);
   }
-  function avgScore(){
-    const vals = Object.values(ratings).map(v=>Number(v?.score)).filter(n=>Number.isFinite(n));
+
+  function getScoreForZoneName(zoneName){
+    const key = effectiveKeyForZone(zoneName);
+    const v = ratings[key]?.score;
+    return Number.isFinite(Number(v)) ? Number(v) : null;
+  }
+
+  function avgGlobalComfort(){
+    // moyenne de TOUTES les notes sur les zones physiques
+    const zones = getZones();
+    const vals = zones.map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n));
     if(!vals.length) return null;
     return vals.reduce((a,b)=>a+b,0)/vals.length;
   }
 
-  // ===== Zone visuals (green + ✓) =====
   function updateZoneVisuals(){
     const marksLayer = $("marksLayer");
     if(marksLayer) marksLayer.innerHTML = "";
 
     document.querySelectorAll(".zone").forEach(poly=>{
       const zName = poly.dataset.zone;
-      const scored = Number.isFinite(Number(ratings?.[zName]?.score));
+      const scored = Number.isFinite(getScoreForZoneName(zName));
       poly.classList.toggle("rated", scored);
 
       if(scored && marksLayer){
@@ -944,17 +797,23 @@
 
   function updateSummary(){
     const zones = getZones();
-    $("countPill").textContent = `${Object.keys(ratings).length} zone notée(s)`;
-    const a = avgScore();
-    $("avgPill").textContent = a ? `Moyenne ${a.toFixed(1)}/10` : "Moyenne —";
+    const scoredCount = zones.map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n)).length;
+
+    $("countPill").textContent = `${scoredCount} zone notée(s)`;
+
+    const a = avgGlobalComfort();
+    $("avgPill").textContent = a ? `Moyenne globale ${a.toFixed(1)}/10` : "Moyenne globale —";
+    $("globalPill").textContent = a ? `Confort global ${a.toFixed(1)}/10` : "Confort global —";
 
     $("list").innerHTML = zones.map(z=>{
-      const v = ratings[z]?.score;
+      const v = getScoreForZoneName(z);
+      const label = escapeHtml(z);
+      const sub = MEMBER_TO_GROUP.get(z) ? `Groupe: ${escapeHtml(MEMBER_TO_GROUP.get(z))}` : (v ? "Noté" : "Non noté");
       return `
         <div class="item">
           <div>
-            <b>${escapeHtml(z)}</b>
-            <div class="sub">${v ? "Noté" : "Non noté"}</div>
+            <b>${label}</b>
+            <div class="sub">${sub}</div>
           </div>
           <div class="val">${v ? (v+"/10") : "—"}</div>
         </div>`;
@@ -963,93 +822,82 @@
     updateZoneVisuals();
   }
 
-  // ===== Reasons UI (zone-specific, hierarchical) =====
-  function renderReasons(score){
+  // ===== Criteria UI render =====
+  function setCriteriaDefaultsFromExisting(existing){
+    activeCriteria = {};
+    if(existing?.criteria && typeof existing.criteria === "object"){
+      CRITERIA.forEach(c=>{
+        const v = existing.criteria[c.id];
+        if(SCALE.includes(v)) activeCriteria[c.id] = v;
+      });
+    }
+  }
+
+  function renderCriteria(score){
     const show = Number(score) <= 5;
     $("reasonBox").style.display = show ? "block" : "none";
     if(!show) return;
 
-    const tree = getReasonTreeForZone(activeZoneName);
-    $("reasonHint").textContent = tree.__hint || "Choisis une catégorie puis des sous-raisons.";
-
-    const cats = Object.keys(tree).filter(k=>k !== "__hint");
-
-    $("catChips").innerHTML = cats.map(cat=>{
-      const on = activeReasons.has(cat);
-      return `<div class="chip big ${on ? "on" : ""}" data-cat="${escapeHtml(cat)}">${escapeHtml(cat)}</div>`;
-    }).join("");
-
-    document.querySelectorAll("#catChips .chip").forEach(ch=>{
-      ch.addEventListener("click", ()=>{
-        const cat = ch.dataset.cat;
-        if(activeReasons.has(cat)) activeReasons.delete(cat);
-        else activeReasons.set(cat, new Set());
-        renderReasons($("slider").value);
-      });
-    });
-
-    const selectedCats = Array.from(activeReasons.keys());
-    if(!selectedCats.length){
-      $("subReasons").innerHTML = `<div class="hint">Choisis au moins une catégorie pour voir les sous-raisons.</div>`;
-      return;
-    }
-
-    $("subReasons").innerHTML = selectedCats.map(cat=>{
-      const subs = Array.isArray(tree[cat]) ? tree[cat] : [];
-      const set = activeReasons.get(cat) || new Set();
-
-      const subsHtml = subs.map(s=>{
-        const on = set.has(s);
-        return `<div class="chip ${on ? "on" : ""}" data-cat="${escapeHtml(cat)}" data-sub="${escapeHtml(s)}">${escapeHtml(s)}</div>`;
+    const wrap = $("criteriaUI");
+    wrap.innerHTML = CRITERIA.map(c=>{
+      const selected = activeCriteria[c.id] || "";
+      const chips = SCALE.map(s=>{
+        const on = selected === s;
+        return `<div class="chip ${on?"on":""}" data-crit="${escapeHtml(c.id)}" data-val="${escapeHtml(s)}">${escapeHtml(s)}</div>`;
       }).join("");
-
       return `
-        <div class="subWrap">
-          <div class="subHead">
-            <b>${escapeHtml(cat)}</b>
-            <span class="badgeCount">${set.size} sélection</span>
+        <div class="critWrap">
+          <div class="critHead">
+            <b>${escapeHtml(c.label)}</b>
+            <span class="badgeMini">${selected ? escapeHtml(selected) : "—"}</span>
           </div>
-          <div class="chips">${subsHtml}</div>
-        </div>`;
+          <div class="chips">${chips}</div>
+        </div>
+      `;
     }).join("");
 
-    document.querySelectorAll("#subReasons .chip").forEach(ch=>{
+    wrap.querySelectorAll(".chip").forEach(ch=>{
       ch.addEventListener("click", ()=>{
-        const cat = ch.dataset.cat;
-        const sub = ch.dataset.sub;
-        if(!activeReasons.has(cat)) activeReasons.set(cat, new Set());
-        const set = activeReasons.get(cat);
-        if(set.has(sub)) set.delete(sub);
-        else set.add(sub);
-        renderReasons($("slider").value);
+        const crit = ch.dataset.crit;
+        const val = ch.dataset.val;
+        // toggle : si on clique la même valeur -> on vide
+        if(activeCriteria[crit] === val) delete activeCriteria[crit];
+        else activeCriteria[crit] = val;
+        renderCriteria($("slider").value);
       });
     });
   }
 
-  // ===== Bottom sheet =====
+  // ===== Bottom sheet open/close =====
   function openSheet(zoneName, el){
     activeZoneName = zoneName;
+    activeKey = effectiveKeyForZone(zoneName);
 
-    $("sheetZone").textContent = zoneName;
+    $("sheetZone").textContent = effectiveDisplayName(zoneName);
+
     document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
     if(el) el.classList.add("active");
 
-    const existing = ratings[zoneName];
+    const existing = ratings[activeKey];
     const v = existing?.score ? Number(existing.score) : 7;
+
     $("slider").value = v;
     $("sliderVal").textContent = v;
 
+    const isGrouped = (activeKey !== zoneName);
+    const groupInfo = isGrouped ? ` (appliqué à: ${membersForKey(activeKey).join(" + ")})` : "";
     $("sheetMeta").textContent = existing?.score
-      ? `Note actuelle : ${existing.score}/10 • Modifie si besoin`
-      : "Aucune note encore • Choisis 1 à 10";
+      ? `Note actuelle : ${existing.score}/10${groupInfo} • Modifie si besoin`
+      : `Aucune note encore • Choisis 1 à 10${groupInfo}`;
 
     $("reasonText").value = existing?.comment || "";
-    loadReasonsFromExisting(existing);
-    renderReasons(v);
+    setCriteriaDefaultsFromExisting(existing);
+    renderCriteria(v);
 
     $("overlay").classList.add("show");
     $("sheet").classList.add("show");
   }
+
   function closeSheet(){
     $("overlay").classList.remove("show");
     $("sheet").classList.remove("show");
@@ -1058,26 +906,17 @@
 
   $("slider").addEventListener("input", ()=>{
     $("sliderVal").textContent = $("slider").value;
-    renderReasons($("slider").value);
+    renderCriteria($("slider").value);
   });
 
   $("saveBtn").addEventListener("click", ()=>{
-    if(!activeZoneName) return;
+    if(!activeKey) return;
 
     const score = Number($("slider").value);
 
-    const reasonsTree = {};
-    activeReasons.forEach((set, cat)=>{
-      reasonsTree[cat] = Array.from(set || []);
-    });
-
-    const reasonsFlat = Object.entries(reasonsTree)
-      .flatMap(([cat, subs]) => (subs?.length ? subs.map(s=>`${cat}: ${s}`) : [`${cat}`]));
-
-    ratings[activeZoneName] = {
+    ratings[activeKey] = {
       score,
-      reasonsTree: score <= 5 ? reasonsTree : {},
-      reasonsFlat: score <= 5 ? reasonsFlat : [],
+      criteria: score <= 5 ? activeCriteria : {},
       comment: score <= 5 ? $("reasonText").value.trim() : ""
     };
 
@@ -1114,7 +953,7 @@
         <td>${escapeHtml(p.prenom)}</td>
         <td>${escapeHtml(p.taille)}</td>
         <td>${escapeHtml(p.poids)}</td>
-        <td>${escapeHtml(p.avg)}</td>
+        <td>${escapeHtml(p.globalAvg)}</td>
       </tr>
     `).join("");
   }
@@ -1125,14 +964,15 @@
     const taille = $("taille").value.trim();
     const poids = $("poids").value.trim();
 
-    if(!nom || !prenom){ toast("Nom + prénom requis"); return; }
-    const a = avgScore();
-    if(!a){ toast("Note au moins 1 zone"); return; }
+    if(!nom || !prenom){ toast("⚠️ Nom + prénom requis"); return; }
+
+    const a = avgGlobalComfort();
+    if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
     const entry = {
       ts: new Date().toLocaleString("fr-FR"),
       nom, prenom, taille, poids,
-      avg: a.toFixed(1),
+      globalAvg: a.toFixed(1),
       ratings
     };
 
@@ -1140,7 +980,7 @@
     people.push(entry);
     savePeople(people);
 
-    toast("Personne enregistrée");
+    toast("✅ Personne enregistrée");
     renderPeople();
 
     ratings = {};
@@ -1164,18 +1004,33 @@
     const SEP = ";";
     const esc = (v)=>`"${String(v??"").replaceAll('"','""')}"`;
 
-    const zoneCols = zones.flatMap(z=>[`${z} score`, `${z} reasons`, `${z} comment`]);
-    const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne", ...zoneCols];
+    // Colonnes: score + critères (présence/dureté/symétrie/homogénéité) + commentaire
+    const critCols = CRITERIA.map(c=>`${c.label}`);
+    const zoneCols = zones.flatMap(z=>[
+      `${z} score`,
+      ...critCols.map(cc=>`${z} ${cc}`),
+      `${z} comment`
+    ]);
+
+    const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale", ...zoneCols];
     const lines = [headers.map(esc).join(SEP)];
 
     people.forEach(p=>{
-      const row = [p.ts, p.nom, p.prenom, p.taille, p.poids, p.avg];
+      const row = [p.ts, p.nom, p.prenom, p.taille, p.poids, p.globalAvg];
+
       zones.forEach(z=>{
-        const rz = p.ratings?.[z];
+        const key = MEMBER_TO_GROUP.get(z) ? MEMBER_TO_GROUP.get(z) : z;
+        const rz = p.ratings?.[key];
+
         row.push(rz?.score ?? "");
-        row.push((rz?.reasonsFlat || []).join(" | "));
+
+        CRITERIA.forEach(c=>{
+          row.push(rz?.criteria?.[c.id] ?? "");
+        });
+
         row.push(rz?.comment ?? "");
       });
+
       lines.push(row.map(esc).join(SEP));
     });
 
@@ -1336,12 +1191,13 @@
       const t = zoneTune[p.id] || {dx:0, dy:0, sc:1};
       return `${p.id}: translate(${t.dx},${t.dy}) scale(${Number(t.sc).toFixed(3)})`;
     }).join("\n");
-    try{ await navigator.clipboard.writeText(lines); toast("Config copiée"); }
-    catch{ toast("Copie impossible"); }
+    try{ await navigator.clipboard.writeText(lines); toast("✅ Config copiée"); }
+    catch{ toast("⚠️ Copie impossible"); }
   });
 
   $("resetSettingsBtn").addEventListener("click", ()=>{
     if(!confirm("Réinitialiser les Settings (zones + transparence) ?")) return;
+
     zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
     saveJson(ZTUNE_KEY, zoneTune);
     applyAll();
@@ -1351,7 +1207,6 @@
     saveJson(ZSTYLE_KEY, zStyle);
     applyZoneStyle(zStyle);
 
-    updateZoneVisuals();
     toast("Settings reset");
   });
 
