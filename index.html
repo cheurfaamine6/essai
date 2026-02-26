@@ -24,10 +24,6 @@
       --zone-stroke-active: rgba(124,58,237,.98);
       --zone-stroke-width-active: 3px;
 
-      --rated-fill: rgba(46, 204, 113, .22);
-      --rated-stroke: rgba(46, 204, 113, .95);
-      --rated-stroke-width: 3px;
-
       --mark-fill: rgba(255,255,255,.95);
       --mark-stroke: rgba(0,0,0,.55);
     }
@@ -151,14 +147,16 @@
       stroke: var(--zone-stroke-active);
       stroke-width: var(--zone-stroke-width-active);
     }
+
+    /* zones notées : PAS DE CHANGEMENT COULEUR (on utilise seulement l'emoji) */
     .zone.rated{
-      fill: var(--rated-fill);
-      stroke: var(--rated-stroke);
-      stroke-width: var(--rated-stroke-width);
+      fill: var(--zone-fill);
+      stroke: var(--zone-stroke);
+      stroke-width: var(--zone-stroke-width);
     }
     .zone.rated:hover{
-      fill: rgba(46, 204, 113, .32);
-      stroke: rgba(46, 204, 113, 1);
+      fill: var(--zone-fill-hover);
+      stroke: var(--zone-stroke-hover);
     }
     .zone.rated.active{
       fill: var(--zone-fill-active);
@@ -166,8 +164,9 @@
       stroke-width: var(--zone-stroke-width-active);
     }
 
+    /* Emoji marker */
     .mark{
-      font-size: 46px;
+      font-size: 52px;
       font-weight: 900;
       paint-order: stroke fill;
       fill: var(--mark-fill);
@@ -436,6 +435,7 @@
     <div class="seatFrame">
       <svg id="seatSvg" viewBox="0 0 1361 2048" preserveAspectRatio="xMidYMid meet">
         <image href="seat.png" x="0" y="0" width="1361" height="2048" />
+
         <g id="zonesLayer">
           <polygon id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)"
             transform="translate(0 -58) scale(1.000)"
@@ -480,6 +480,7 @@
             transform="translate(-13 -69) scale(1.000)"
             points="439,1302 382,1301 283,1365 297,1443 382,1443 439,1392 439,1302" />
         </g>
+
         <g id="marksLayer"></g>
       </svg>
     </div>
@@ -588,7 +589,7 @@
   </div>
 </div>
 
-<!-- SETTINGS modal -->
+<!-- SETTINGS modal (kept) -->
 <div class="modalOverlay" id="settingsOverlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-label="Settings">
     <div class="modalHead">
@@ -723,8 +724,8 @@
   setTableShown(false);
 
   // ===== Data keys =====
-  const RATINGS_KEY = "seat_ratings_current_final_v5";
-  const PEOPLE_KEY  = "seat_people_passes_final_v5";
+  const RATINGS_KEY = "seat_ratings_current_final_v6";
+  const PEOPLE_KEY  = "seat_people_passes_final_v6";
 
   // ===== Bolsters grouping (dossier + assise) =====
   const BOLSTER_GROUPS = [
@@ -757,7 +758,6 @@
     { id:"homogeneite",label:"Homogénéité" }
   ];
 
-  // <= 5 (plutôt négatif / à corriger)
   const CRIT_OPTIONS_NEG = {
     presence: ["Insuffisante", "À ajuster", "Excessive"],
     durete: ["Trop souple", "À ajuster", "Trop ferme"],
@@ -765,7 +765,6 @@
     homogeneite: ["Hétérogénéité légère", "Hétérogénéité modérée", "Hétérogénéité forte"]
   };
 
-  // > 5 (plutôt positif)
   const CRIT_OPTIONS_POS = {
     presence: ["Correcte", "Bonne", "Excellente"],
     durete: ["Confortable", "Bien équilibrée", "Très bien équilibrée"],
@@ -782,14 +781,11 @@
   function getZones(){
     return Array.from(document.querySelectorAll(".zone")).map(z=>z.dataset.zone);
   }
-
   function getScoreForZoneName(zoneName){
     const key = effectiveKeyForZone(zoneName);
     const v = ratings[key]?.score;
     return Number.isFinite(Number(v)) ? Number(v) : null;
   }
-
-  // moyenne globale = moyenne de toutes les zones physiques (même si groupées)
   function avgGlobalComfort(){
     const zones = getZones();
     const vals = zones.map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n));
@@ -797,6 +793,7 @@
     return vals.reduce((a,b)=>a+b,0)/vals.length;
   }
 
+  // ===== Emoji markers only (no green fill) =====
   function updateZoneVisuals(){
     const marksLayer = $("marksLayer");
     if(marksLayer) marksLayer.innerHTML = "";
@@ -810,13 +807,14 @@
         const bb = poly.getBBox();
         const cx = bb.x + bb.width / 2;
         const cy = bb.y + bb.height / 2;
+
         const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
         t.setAttribute("x", cx);
         t.setAttribute("y", cy);
         t.setAttribute("text-anchor", "middle");
         t.setAttribute("dominant-baseline", "middle");
         t.setAttribute("class", "mark");
-        t.textContent = "✓";
+        t.textContent = "✅"; // beau emoji de validation
         marksLayer.appendChild(t);
       }
     });
@@ -848,7 +846,6 @@
     updateZoneVisuals();
   }
 
-  // ===== Criteria UI =====
   function setCriteriaDefaultsFromExisting(existing){
     activeCriteria = {};
     activeCritId = null;
@@ -866,7 +863,6 @@
   }
 
   function renderCriteria(score){
-    // titre + hint changent selon score
     const isLow = Number(score) <= 5;
     $("criteriaTitle").textContent = isLow ? "Critères (à améliorer)" : "Critères (points forts)";
     $("criteriaHint").textContent = isLow
@@ -876,7 +872,6 @@
     const listEl = $("criteriaList");
     const panel = $("criteriaPanel");
 
-    // Si un critère est sélectionné => on cache les autres (disparaissent)
     if(!activeCritId){
       listEl.innerHTML = CRITERIA.map(c=>{
         const sel = activeCriteria[c.id] || "—";
@@ -899,7 +894,6 @@
       return;
     }
 
-    // On ne montre QUE le critère choisi
     const crit = CRITERIA.find(x=>x.id === activeCritId);
     listEl.innerHTML = `
       <div class="criteriaBtn on" data-crit="${escapeHtml(activeCritId)}">
@@ -908,7 +902,6 @@
       </div>
     `;
     listEl.querySelector(".criteriaBtn").addEventListener("click", ()=>{
-      // clic sur le critère => retour liste
       activeCritId = null;
       renderCriteria($("slider").value);
     });
@@ -938,7 +931,6 @@
     });
   }
 
-  // ===== Bottom sheet open/close =====
   function openSheet(zoneName, el){
     activeZoneName = zoneName;
     activeKey = effectiveKeyForZone(zoneName);
@@ -976,15 +968,14 @@
 
   $("slider").addEventListener("input", ()=>{
     $("sliderVal").textContent = $("slider").value;
-    // IMPORTANT: si on change de côté (<=5 vs >5), on ferme le panel pour éviter incohérences
     activeCritId = null;
     renderCriteria($("slider").value);
   });
 
   $("saveBtn").addEventListener("click", ()=>{
     if(!activeKey) return;
-
     const score = Number($("slider").value);
+
     ratings[activeKey] = {
       score,
       criteria: activeCriteria,
@@ -1007,7 +998,7 @@
     });
   });
 
-  // ===== People table =====
+  // People table
   function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
   function savePeople(arr){ saveJson(PEOPLE_KEY, arr); }
   function renderPeople(){
@@ -1105,7 +1096,7 @@
     toast("CSV exporté");
   });
 
-  // ===== SETTINGS: open/close =====
+  // SETTINGS: open/close
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     settingsOverlay.classList.add("show");
@@ -1122,7 +1113,7 @@
     }
   });
 
-  // ===== SETTINGS: zone transparency =====
+  // SETTINGS: zone transparency
   const ZSTYLE_KEY = "seat_zone_style_v1";
   const defaultStyle = { fillA:0.12, strokeA:0.55, strokeW:2 };
   let zStyle = loadJson(ZSTYLE_KEY, defaultStyle);
@@ -1157,20 +1148,15 @@
   }
 
   function onStyleChange(){
-    zStyle = {
-      fillA: Number(fillAlpha.value),
-      strokeA: Number(strokeAlpha.value),
-      strokeW: Number(strokeW.value)
-    };
+    zStyle = { fillA: Number(fillAlpha.value), strokeA: Number(strokeAlpha.value), strokeW: Number(strokeW.value) };
     saveJson(ZSTYLE_KEY, zStyle);
     applyZoneStyle(zStyle);
   }
-
   fillAlpha.addEventListener("input", onStyleChange);
   strokeAlpha.addEventListener("input", onStyleChange);
   strokeW.addEventListener("input", onStyleChange);
 
-  // ===== SETTINGS: per-zone transforms =====
+  // SETTINGS: per-zone transforms
   const ZTUNE_KEY = "seat_zone_tune_map_v2";
   const DEFAULT_TUNE = {
     "z_dossier_bleu": {dx:0, dy:-58, sc:1.000},
@@ -1272,25 +1258,9 @@
   applyAll();
   loadZoneToUI(zoneSelect.value);
   updateSummary();
-
-  // people
-  function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
-  function savePeople(arr){ saveJson(PEOPLE_KEY, arr); }
-  function renderPeople(){
-    const people = loadPeople().slice().reverse();
-    $("peopleCountPill").textContent = `${people.length} personne(s)`;
-    $("peopleBody").innerHTML = people.map(p=>`
-      <tr>
-        <td>${escapeHtml(p.ts)}</td>
-        <td>${escapeHtml(p.nom)}</td>
-        <td>${escapeHtml(p.prenom)}</td>
-        <td>${escapeHtml(p.taille)}</td>
-        <td>${escapeHtml(p.poids)}</td>
-        <td>${escapeHtml(p.globalAvg)}</td>
-      </tr>
-    `).join("");
-  }
   renderPeople();
+
+  // export + save person + reset already wired above
 </script>
 </body>
 </html>
