@@ -845,20 +845,14 @@
     { id:"symetrie",   label:"Symétrie (bolsters assise/dos)" },
     { id:"homogeneite",label:"Homogénéité" }
   ];
-
-  const CRIT_OPTIONS_NEG = {
-    presence: ["Insuffisante", "À ajuster", "Excessive"],
-    durete: ["Trop souple", "À ajuster", "Trop ferme"],
-    symetrie: ["Asymétrie légère", "Asymétrie modérée", "Asymétrie forte"],
-    homogeneite: ["Hétérogénéité légère", "Hétérogénéité modérée", "Hétérogénéité forte"]
-  };
-
-  const CRIT_OPTIONS_POS = {
-    presence: ["Correcte", "Bonne", "Excellente"],
-    durete: ["Confortable", "Bien équilibrée", "Très bien équilibrée"],
-    symetrie: ["Bonne symétrie", "Très bonne symétrie", "Excellente symétrie"],
-    homogeneite: ["Bonne homogénéité", "Très bonne homogénéité", "Excellente homogénéité"]
-  };
+// ===== Critères : UNE SEULE échelle d’options (valable pour toute note) =====
+const CRIT_OPTIONS = {
+  presence: ["Inacceptable", "Faible", "Moyenne", "Bonne", "Excellente"],
+  durete: ["Inacceptable", "Trop souple", "Correcte", "Ferme", "Très bien équilibrée"],
+  symetrie: ["Asymétrie forte", "Asymétrie modérée", "Asymétrie légère", "Bonne symétrie", "Excellente symétrie"],
+  homogeneite: ["Hétérogénéité forte", "Hétérogénéité modérée", "Hétérogénéité légère", "Bonne homogénéité", "Excellente homogénéité"]
+};
+ 
 
   let ratings = loadJson(RATINGS_KEY, {});
   let activeZoneName = null;
