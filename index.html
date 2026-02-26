@@ -113,7 +113,7 @@
 
     .field{display:flex;flex-direction:column;gap:6px}
     .field label{font-size:.82rem;color:var(--muted);font-weight:700}
-    .field input, .field select{
+    .field input{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(0,0,0,.18);
       color:var(--txt);
@@ -154,8 +154,6 @@
       stroke: var(--zone-stroke-active);
       stroke-width: var(--zone-stroke-width-active);
     }
-
-    /* rated zones green */
     .zone.rated{
       fill: var(--rated-fill);
       stroke: var(--rated-stroke);
@@ -171,7 +169,6 @@
       stroke-width: var(--zone-stroke-width-active);
     }
 
-    /* check mark style */
     .mark{
       font-size: 46px;
       font-weight: 900;
@@ -228,21 +225,43 @@
     .sheetActions{display:flex;gap:10px;margin-top:14px}
     .sheetActions .btn{flex:1}
 
-    /* Reasons (simple scale per criterion) */
+    /* Criteria box */
     .reasonBox{margin-top:12px;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:10px;background:rgba(0,0,0,.14)}
     .reasonTitle{font-weight:900;margin-bottom:8px}
-    .critWrap{
-      border:1px solid rgba(255,255,255,.10);
+
+    .criteriaBtn{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.10);
+      cursor:pointer;
+      transition:.12s;
+      margin-top:8px;
+    }
+    .criteriaBtn:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.20)}
+    .criteriaBtn b{font-size:.92rem}
+    .criteriaBtn.on{
+      border-color: rgba(124,58,237,.55);
+      background: rgba(124,58,237,.14);
+    }
+
+    #criteriaPanel{
+      border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.10);
       border-radius:14px;
       padding:10px;
-      margin-top:10px;
     }
     .critHead{
       display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
       margin-bottom:8px;
     }
     .critHead b{font-size:.92rem}
+
     .chips{display:flex;flex-wrap:wrap;gap:8px}
     .chip{
       border:1px solid rgba(255,255,255,.14);
@@ -263,6 +282,7 @@
       color:var(--muted);
       background: rgba(255,255,255,.06);
     }
+
     textarea{
       width:100%; margin-top:10px;
       border:1px solid rgba(255,255,255,.14);
@@ -379,7 +399,7 @@
   <div class="wrap top">
     <div class="title">
       <b>Seat Comfort</b>
-      <span>Zones cliquables → note 1–10 → + critères (si note ≤5) → sauver personne</span>
+      <span>Zones cliquables → note 1–10 → critères (si note ≤5) → sauver personne</span>
     </div>
     <div class="row" style="gap:8px">
       <button class="btn icon" id="settingsBtn" title="Settings">⚙️ Settings</button>
@@ -405,8 +425,8 @@
         <b>Siège interactif</b>
         <div class="hint">
           Clique une zone → note 1–10.
-          <br/>Si note ≤ 5 : critères <b>Présence / Dureté / Symétrie / Homogénéité</b> (échelle légère / trop / beaucoup).
-          <br/><b>Bolsters</b> : les 2 du haut = même note • les 2 du bas = même note.
+          <br/>Si note ≤ 5 : critères <b>Présence / Dureté / Symétrie / Homogénéité</b>.
+          <br/><b>Bolsters</b> groupés : dossier (haut/bas) + assise (haut/bas).
         </div>
       </div>
       <div class="row" style="gap:8px">
@@ -468,7 +488,6 @@
       </svg>
     </div>
 
-    <!-- Collapsible table -->
     <div class="p" style="border-top:1px solid rgba(255,255,255,.06)">
       <div class="tableTitle">
         <div>
@@ -486,7 +505,7 @@
           <table>
             <thead>
               <tr>
-                <th>Date</th><th>Nom</th><th>Prénom</th><th>Taille</th><th>Poids</th><th>Moy globale</th>
+                <th>Date</th><th>Nom</th><th>Prénom</th><th>Taille</th><th>Poids</th><th>Moyenne globale</th>
               </tr>
             </thead>
             <tbody id="peopleBody"></tbody>
@@ -523,10 +542,6 @@
       </div>
 
       <div class="list" id="list"></div>
-
-      <div class="hint" style="margin-top:10px">
-        Astuce : sur téléphone, mets en <b>paysage</b>.
-      </div>
     </div>
   </aside>
 </main>
@@ -550,9 +565,17 @@
 
       <div class="reasonBox" id="reasonBox" style="display:none">
         <div class="reasonTitle">Critères (si note ≤ 5)</div>
-        <div class="hint">Sélectionne une option par critère (Légère / Trop / Beaucoup).</div>
+        <div class="hint">Clique un critère → choisis une option.</div>
 
-        <div id="criteriaUI"></div>
+        <div id="criteriaList"></div>
+
+        <div id="criteriaPanel" style="margin-top:10px; display:none">
+          <div class="critHead">
+            <b id="critTitle">Critère</b>
+            <span class="badgeMini" id="critSelected">—</span>
+          </div>
+          <div class="chips" id="critOptions"></div>
+        </div>
 
         <textarea id="reasonText" placeholder="Commentaire optionnel..."></textarea>
       </div>
@@ -706,34 +729,18 @@
   setTableShown(false);
 
   // ===== Data keys =====
-  const RATINGS_KEY = "seat_ratings_current_final_v3";
-  const PEOPLE_KEY  = "seat_people_passes_final_v3";
+  const RATINGS_KEY = "seat_ratings_current_final_v4";
+  const PEOPLE_KEY  = "seat_people_passes_final_v4";
 
-  // ===== Bolsters grouping (2 du haut ensemble, 2 du bas ensemble) =====
-  // Ici je l'applique aux bolsters du DOSSIER (flancs). Si tu veux aussi le faire pour assise, je te le rajoute.
-const BOLSTER_GROUPS = [
-  // ===== DOSSIER (comme avant)
-  {
-    key: "Bolsters haut dossier (gauche+droit)",
-    members: ["Flanc gauche (vert)", "Flanc droit (violet)"]
-  },
-  {
-    key: "Bolsters bas dossier (gauche+droit)",
-    members: ["Flanc gauche (noir)", "Flanc droit (orange)"]
-  },
+  // ===== Bolsters grouping (dossier + assise) =====
+  // Assise: orange + blanc ensemble, vert + cyan ("bleu") ensemble
+  const BOLSTER_GROUPS = [
+    { key: "Bolsters haut dossier (G+D)", members: ["Flanc gauche (vert)", "Flanc droit (violet)"] },
+    { key: "Bolsters bas dossier (G+D)",  members: ["Flanc gauche (noir)", "Flanc droit (orange)"] },
 
-  // ===== ASSISE (nouveau)
-  // orange + blanc ensemble
-  {
-    key: "Bolsters bas assise (gauche+droit)",
-    members: ["Bas gauche (orange)", "Bas droit (blanc)"]
-  },
-  // vert + "bleu" ensemble -> ici j'utilise cyan comme "bleu"
-  {
-    key: "Bolsters haut assise (gauche+droit)",
-    members: ["Bas gauche (vert)", "Bas droit (cyan)"]
-  }
-];
+    { key: "Bolsters haut assise (G+D)",  members: ["Bas gauche (vert)", "Bas droit (cyan)"] },
+    { key: "Bolsters bas assise (G+D)",   members: ["Bas gauche (orange)", "Bas droit (blanc)"] }
+  ];
 
   const MEMBER_TO_GROUP = new Map();
   BOLSTER_GROUPS.forEach(g => g.members.forEach(m => MEMBER_TO_GROUP.set(m, g.key)));
@@ -743,26 +750,33 @@ const BOLSTER_GROUPS = [
   }
   function effectiveDisplayName(zoneName){
     const g = MEMBER_TO_GROUP.get(zoneName);
-    return g ? `${g}` : zoneName;
+    return g ? g : zoneName;
   }
   function membersForKey(key){
     const g = BOLSTER_GROUPS.find(x=>x.key===key);
     return g ? g.members : [key];
   }
 
-  // ===== Criteria model (simple) =====
+  // ===== Criteria model (professional) =====
   const CRITERIA = [
     { id:"presence",   label:"Présence" },
     { id:"durete",     label:"Dureté" },
     { id:"symetrie",   label:"Symétrie (bolsters assise/dos)" },
     { id:"homogeneite",label:"Homogénéité" }
   ];
-  const SCALE = ["Légère", "Trop", "Beaucoup"];
+
+  const CRIT_OPTIONS = {
+    presence: ["Insuffisante", "Adaptée", "Excessive"],
+    durete: ["Trop souple", "Équilibrée", "Trop ferme"],
+    symetrie: ["Asymétrie légère", "Asymétrie modérée", "Asymétrie forte"],
+    homogeneite: ["Hétérogénéité légère", "Hétérogénéité modérée", "Hétérogénéité forte"]
+  };
 
   let ratings = loadJson(RATINGS_KEY, {});
-  let activeZoneName = null;   // clicked zone name (physical)
+  let activeZoneName = null;   // clicked zone
   let activeKey = null;        // effective key (group or zone)
-  let activeCriteria = {};     // {presence:"Légère"|... , ...}
+  let activeCriteria = {};     // {presence:"...", ...}
+  let activeCritId = null;     // selected criterion in the panel
 
   function getZones(){
     return Array.from(document.querySelectorAll(".zone")).map(z=>z.dataset.zone);
@@ -774,8 +788,8 @@ const BOLSTER_GROUPS = [
     return Number.isFinite(Number(v)) ? Number(v) : null;
   }
 
+  // moyenne globale = moyenne de toutes les zones physiques (même si groupées)
   function avgGlobalComfort(){
-    // moyenne de TOUTES les notes sur les zones physiques
     const zones = getZones();
     const vals = zones.map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n));
     if(!vals.length) return null;
@@ -820,12 +834,12 @@ const BOLSTER_GROUPS = [
 
     $("list").innerHTML = zones.map(z=>{
       const v = getScoreForZoneName(z);
-      const label = escapeHtml(z);
-      const sub = MEMBER_TO_GROUP.get(z) ? `Groupe: ${escapeHtml(MEMBER_TO_GROUP.get(z))}` : (v ? "Noté" : "Non noté");
+      const group = MEMBER_TO_GROUP.get(z);
+      const sub = group ? `Groupe: ${escapeHtml(group)}` : (v ? "Noté" : "Non noté");
       return `
         <div class="item">
           <div>
-            <b>${label}</b>
+            <b>${escapeHtml(z)}</b>
             <div class="sub">${sub}</div>
           </div>
           <div class="val">${v ? (v+"/10") : "—"}</div>
@@ -835,13 +849,14 @@ const BOLSTER_GROUPS = [
     updateZoneVisuals();
   }
 
-  // ===== Criteria UI render =====
+  // ===== Criteria UI =====
   function setCriteriaDefaultsFromExisting(existing){
     activeCriteria = {};
+    activeCritId = null;
     if(existing?.criteria && typeof existing.criteria === "object"){
       CRITERIA.forEach(c=>{
         const v = existing.criteria[c.id];
-        if(SCALE.includes(v)) activeCriteria[c.id] = v;
+        if(typeof v === "string" && v) activeCriteria[c.id] = v;
       });
     }
   }
@@ -851,31 +866,49 @@ const BOLSTER_GROUPS = [
     $("reasonBox").style.display = show ? "block" : "none";
     if(!show) return;
 
-    const wrap = $("criteriaUI");
-    wrap.innerHTML = CRITERIA.map(c=>{
-      const selected = activeCriteria[c.id] || "";
-      const chips = SCALE.map(s=>{
-        const on = selected === s;
-        return `<div class="chip ${on?"on":""}" data-crit="${escapeHtml(c.id)}" data-val="${escapeHtml(s)}">${escapeHtml(s)}</div>`;
-      }).join("");
+    // list
+    $("criteriaList").innerHTML = CRITERIA.map(c=>{
+      const sel = activeCriteria[c.id] || "—";
+      const on = (activeCritId === c.id);
       return `
-        <div class="critWrap">
-          <div class="critHead">
-            <b>${escapeHtml(c.label)}</b>
-            <span class="badgeMini">${selected ? escapeHtml(selected) : "—"}</span>
-          </div>
-          <div class="chips">${chips}</div>
+        <div class="criteriaBtn ${on ? "on":""}" data-crit="${escapeHtml(c.id)}">
+          <b>${escapeHtml(c.label)}</b>
+          <span class="badgeMini">${escapeHtml(sel)}</span>
         </div>
       `;
     }).join("");
 
-    wrap.querySelectorAll(".chip").forEach(ch=>{
+    document.querySelectorAll(".criteriaBtn").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const id = btn.dataset.crit;
+        activeCritId = (activeCritId === id) ? null : id; // toggle
+        renderCriteria($("slider").value);
+      });
+    });
+
+    // panel
+    const panel = $("criteriaPanel");
+    if(!activeCritId){
+      panel.style.display = "none";
+      return;
+    }
+
+    panel.style.display = "block";
+    const crit = CRITERIA.find(x=>x.id === activeCritId);
+    $("critTitle").textContent = crit ? crit.label : "Critère";
+    $("critSelected").textContent = activeCriteria[activeCritId] || "—";
+
+    const options = CRIT_OPTIONS[activeCritId] || [];
+    $("critOptions").innerHTML = options.map(opt=>{
+      const on = activeCriteria[activeCritId] === opt;
+      return `<div class="chip ${on?"on":""}" data-opt="${escapeHtml(opt)}">${escapeHtml(opt)}</div>`;
+    }).join("");
+
+    document.querySelectorAll("#critOptions .chip").forEach(ch=>{
       ch.addEventListener("click", ()=>{
-        const crit = ch.dataset.crit;
-        const val = ch.dataset.val;
-        // toggle : si on clique la même valeur -> on vide
-        if(activeCriteria[crit] === val) delete activeCriteria[crit];
-        else activeCriteria[crit] = val;
+        const opt = ch.dataset.opt;
+        if(activeCriteria[activeCritId] === opt) delete activeCriteria[activeCritId];
+        else activeCriteria[activeCritId] = opt;
         renderCriteria($("slider").value);
       });
     });
@@ -946,10 +979,6 @@ const BOLSTER_GROUPS = [
     el.addEventListener("click", (e)=>{
       e.stopPropagation();
       openSheet(el.dataset.zone, el);
-      if(el.id){
-        $("zoneSelect").value = el.id;
-        loadZoneToUI(el.id);
-      }
     });
   });
 
@@ -1017,8 +1046,7 @@ const BOLSTER_GROUPS = [
     const SEP = ";";
     const esc = (v)=>`"${String(v??"").replaceAll('"','""')}"`;
 
-    // Colonnes: score + critères (présence/dureté/symétrie/homogénéité) + commentaire
-    const critCols = CRITERIA.map(c=>`${c.label}`);
+    const critCols = CRITERIA.map(c=>c.label);
     const zoneCols = zones.flatMap(z=>[
       `${z} score`,
       ...critCols.map(cc=>`${z} ${cc}`),
@@ -1032,15 +1060,11 @@ const BOLSTER_GROUPS = [
       const row = [p.ts, p.nom, p.prenom, p.taille, p.poids, p.globalAvg];
 
       zones.forEach(z=>{
-        const key = MEMBER_TO_GROUP.get(z) ? MEMBER_TO_GROUP.get(z) : z;
+        const key = effectiveKeyForZone(z);
         const rz = p.ratings?.[key];
 
         row.push(rz?.score ?? "");
-
-        CRITERIA.forEach(c=>{
-          row.push(rz?.criteria?.[c.id] ?? "");
-        });
-
+        CRITERIA.forEach(c=> row.push(rz?.criteria?.[c.id] ?? ""));
         row.push(rz?.comment ?? "");
       });
 
@@ -1057,7 +1081,7 @@ const BOLSTER_GROUPS = [
     toast("CSV exporté");
   });
 
-  // ===== SETTINGS: open/close =====
+  // ===== SETTINGS: open/close (kept, but UI removed from this version to stay coherent) =====
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     settingsOverlay.classList.add("show");
@@ -1122,9 +1146,8 @@ const BOLSTER_GROUPS = [
   strokeAlpha.addEventListener("input", onStyleChange);
   strokeW.addEventListener("input", onStyleChange);
 
-  // ===== SETTINGS: per-zone transforms =====
+  // ===== SETTINGS: per-zone transforms (kept) =====
   const ZTUNE_KEY = "seat_zone_tune_map_v2";
-
   const DEFAULT_TUNE = {
     "z_dossier_bleu": {dx:0, dy:-58, sc:1.000},
     "z_dossier_rouge": {dx:35, dy:-19, sc:1.000},
@@ -1141,14 +1164,12 @@ const BOLSTER_GROUPS = [
     "z_bas_droit_cyan": {dx:69, dy:-35, sc:1.000},
     "z_bas_gauche_orange": {dx:-13, dy:-69, sc:1.000}
   };
-
   let zoneTune = loadJson(ZTUNE_KEY, DEFAULT_TUNE);
 
   const zoneSelect = $("zoneSelect");
   const zdxEl = $("zdx"), zdyEl = $("zdy"), zscEl = $("zsc");
   const zdxVal = $("zdxVal"), zdyVal = $("zdyVal"), zscVal = $("zscVal");
   const zoneOut = $("zoneOut");
-
   const polys = Array.from(document.querySelectorAll(".zone"));
 
   polys.forEach(p=>{
@@ -1210,7 +1231,6 @@ const BOLSTER_GROUPS = [
 
   $("resetSettingsBtn").addEventListener("click", ()=>{
     if(!confirm("Réinitialiser les Settings (zones + transparence) ?")) return;
-
     zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
     saveJson(ZTUNE_KEY, zoneTune);
     applyAll();
