@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FORVIA • Saisie essais confort siège</title>
+  <style>
+    :root{
+      --bg:#f3f7ff; --card:#fff; --line:#dbe4f0; --txt:#0f172a; --muted:#64748b;
+      --blue:#1d4ed8; --blue2:#1e3a8a; --soft:#dbeafe; --ok:#16a34a; --warn:#b45309;
+      --violet:#7c3aed; --violet2:#a78bfa;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--txt);
+      background:linear-gradient(180deg,#edf3ff,#f9fbff);padding:14px
+    }
+    .app{max-width:1400px;margin:auto;display:grid;grid-template-columns:1.35fr .65fr;gap:14px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 28px rgba(15,23,42,.06)}
+    .main,.side{padding:14px}
+    .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{width:54px;height:54px;border-radius:12px;border:1px solid var(--line);display:grid;place-items:center;background:#fff;overflow:hidden;padding:4px}
+    .logo img{width:100%;height:100%;object-fit:contain;border-radius:8px}
+    .brand h1{margin:0;font-size:1rem}
+    .brand p{margin:2px 0 0;color:var(--muted);font-size:.85rem}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;font-weight:600;cursor:pointer}
+    button:hover{box-shadow:0 6px 18px rgba(15,23,42,.06)}
+    .btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+    .btn-chip.active{background:var(--soft);border-color:var(--blue);color:var(--blue2)}
+    .head{margin-top:8px}
+    .head h2{margin:.2rem 0}
+    .head p{margin:0;color:var(--muted)}
+    .stepbar{display:flex;gap:10px;align-items:center;margin-top:10px}
+    .badge{border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:.82rem;background:#fff}
+    .progress{flex:1;height:10px;background:#eaf0f8;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+    .progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--blue),#60a5fa)}
+    .panel{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:12px;min-height:670px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    .field label{display:block;font-size:.84rem;color:var(--muted);margin-bottom:5px;font-weight:600}
+    .field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;font:inherit}
+    .field textarea{min-height:90px;resize:vertical}
+    .box{border:1px solid var(--line);border-radius:12px;padding:10px;background:#f8fbff}
+    .hero{background:linear-gradient(120deg,#0f172a,#1e3a8a);color:#fff;border:none}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:.78rem;background:#fff}
+    .pill.ok{background:#ecfdf3;border-color:#bbf7d0;color:#166534}
+    .pill.warn{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+    .pill.class{font-weight:800;background:#eff6ff;border-color:#bfdbfe;color:#1e40af}
+    .muted{color:var(--muted)}
+    .morpho-box{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .morpho-box small{display:block;color:var(--muted)}
+
+    /* PES + radar */
+    .pes-wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:12px}
+    .pes-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+    .pes-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .pes-big{font-size:2.2rem;font-weight:800;color:var(--blue2);line-height:1}
+    .pes-sub{font-size:.8rem;color:var(--muted)}
+    .pes-attr{margin:10px 0;padding:8px;border:1px solid #eef3fb;border-radius:12px;background:#fff}
+    .pes-attr-top{display:flex;justify-content:space-between;font-size:.86rem;margin-bottom:6px;align-items:center;gap:10px}
+    .pes-name{display:flex;align-items:center;gap:8px}
+    .pes-bar{height:10px;background:#edf2fb;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+    .pes-bar > div{height:100%;background:linear-gradient(90deg,#2563eb,#60a5fa)}
+    .pes-controls{display:flex;gap:6px;align-items:center}
+    .mini-btn{width:30px;height:30px;padding:0;border-radius:8px;font-weight:800}
+    .score-num{min-width:34px;text-align:center;font-weight:800}
+
+    /* ✅ Zone validée => violet + badge */
+    .pes-attr.filled{border-color:rgba(124,58,237,.35);background:linear-gradient(180deg,#ffffff,#faf7ff)}
+    .pes-attr.filled .pes-bar > div{background:linear-gradient(90deg,var(--violet),var(--violet2))}
+    .pes-attr.filled .score-num, .pes-attr.filled .pes-name span{color:var(--violet)}
+    .okBadge{
+      display:inline-grid;place-items:center;
+      width:22px;height:22px;border-radius:999px;
+      background:rgba(124,58,237,.12);
+      border:1px solid rgba(124,58,237,.35);
+      color:var(--violet);
+      font-size:14px;font-weight:900;
+    }
+
+    .radar-wrap{display:flex;justify-content:center;align-items:center;padding:8px;background:#f8fbff;border:1px solid var(--line);border-radius:12px}
+    canvas{max-width:100%}
+
+    /* Table recap sous radar */
+    .ztable{background:#fff}
+    .ztable .hdr{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .ztable table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.86rem}
+    .ztable th,.ztable td{padding:8px;border-bottom:1px solid #e8eff8}
+    .ztable th{color:#334155;text-align:left;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+    .ztable tr:nth-child(even) td{background:#fbfdff}
+    .zpill{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:3px 9px;border-radius:999px;
+      border:1px solid #e2e8f0;background:#fff;font-size:.78rem;font-weight:700;color:#0f172a
+    }
+    .zpill.v{border-color:rgba(124,58,237,.35);background:rgba(124,58,237,.08);color:var(--violet)}
+    .zpill .miniOk{font-weight:900}
+
+    /* Tableau principal + CSV */
+    .table-controls{display:grid;grid-template-columns:1fr 160px;gap:8px;margin:8px 0}
+    .table-controls input,.table-controls select{border:1px solid var(--line);border-radius:10px;padding:9px}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;max-height:430px}
+    table.big{width:100%;border-collapse:collapse;font-size:.84rem}
+    table.big th, table.big td{padding:8px;border-bottom:1px solid var(--line);white-space:nowrap;text-align:left}
+    table.big th{position:sticky;top:0;background:#f8fbff}
+
+    .statgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+    .stat{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
+    .stat .v{font-weight:800;font-size:1rem}
+    .stat .k{font-size:.78rem;color:var(--muted)}
+    .foot{display:flex;justify-content:space-between;gap:10px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+    .foot .btn-primary{min-width:130px}
+
+    @media (max-width:980px){
+      .app{grid-template-columns:1fr}
+      .grid2,.grid3,.pes-wrap,.table-controls{grid-template-columns:1fr}
+      .panel{min-height:unset}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card main">
+      <div class="top">
+        <div class="brand">
+          <div class="logo"><img id="forviaLogo" alt="FORVIA" src=""></div>
+          <div>
+            <h1>FORVIA • Saisie essais confort siège</h1>
+            <p>Application de saisie des essais</p>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="btnTable" class="btn-chip">Voir tableau</button>
+          <button id="btnNew">Nouveau test</button>
+          <button id="btnReset">Vider formulaire</button>
+        </div>
+      </div>
+
+      <div class="head">
+        <h2 id="pageTitle">Bienvenue</h2>
+        <p id="pageSub">Saisie des évaluations de confort</p>
+      </div>
+
+      <div class="stepbar">
+        <div class="badge" id="badge">1/6</div>
+        <div class="progress"><div id="bar"></div></div>
+      </div>
+
+      <div id="content" class="panel"></div>
+
+      <div class="foot">
+        <button id="btnPrev">← Retour</button>
+        <button id="btnNext" class="btn-primary">Suivant →</button>
+      </div>
+    </div>
+
+    <div class="card side">
+      <h3 style="margin:0">Vue rapide</h3>
+      <p class="muted" style="margin:4px 0 0">Données stockées localement dans ce navigateur.</p>
+
+      <div class="statgrid">
+        <div class="stat"><div class="v" id="sTotal">0</div><div class="k">Passages</div></div>
+        <div class="stat"><div class="v" id="sKeep">0</div><div class="k">Conserver</div></div>
+        <div class="stat"><div class="v" id="sS">0</div><div class="k">Classe S</div></div>
+        <div class="stat"><div class="v" id="sM">0</div><div class="k">Classe M</div></div>
+        <div class="stat"><div class="v" id="sL">0</div><div class="k">Classe L</div></div>
+        <div class="stat"><div class="v" id="sAvg">—</div><div class="k">Moy. confort</div></div>
+      </div>
+
+      <div class="box" style="margin-top:10px">
+        <b>Classification</b><br>
+        <span class="muted">S/M/L par taille + sous-classe morphologique (J / B / T)</span>
+      </div>
+    </div>
+  </div>
+
+<script>
+const FORVIA_LOGO_DATAURL = ""; // colle ton logo base64 ici si tu veux
+const STORAGE_KEY = "forvia_seat_tests_v8";
+
+const steps = [
+  { id:"welcome", title:"Bienvenue", sub:"Application de saisie des essais confort siège" },
+  { id:"tester",  title:"Profil testeur", sub:"Mesures testeur + double classification" },
+  { id:"seat",    title:"Paramètres siège", sub:"Seat Tilt, Seat Length, Backrest Tilt, Seat Height, CLA" },
+  { id:"comfort", title:"Profil confort", sub:"Notation type PES + radar chart" },
+  { id:"ratios",  title:"Mesures finales", sub:"Indices de contrôle + ratios avant/après modification" },
+  { id:"done",    title:"Résumé test", sub:"Enregistrer le passage" }
+];
+
+const zoneLabels = {
+  lombaires: "Lombaires",
+  milieuDos: "Milieu du dos",
+  epaules: "Épaules",
+  assise: "Assise",
+  cuisses: "Cuisses",
+  maintien: "Maintien latéral"
+};
+
+const state = {
+  step: 0, showTable: false, saved: false,
+  tableSearch: "", tableClass: "",
+
+  // Profil
+  testerId: "", tailleCm: "", poidsKg: "", sexe: "", duree: "2 min",
+  busteCm: "", jambeCm: "",
+
+  // Siège
+  seatTilt: "", seatLength: "", backrestTilt: "", seatHeight: "", cla: "",
+
+  // Confort
+  comment: "", globalScore: 5,
+  zones: { lombaires:5, milieuDos:5, epaules:5, assise:5, cuisses:5, maintien:5 },
+  zonesTouched: { lombaires:false, milieuDos:false, epaules:false, assise:false, cuisses:false, maintien:false },
+
+  // Indices de contrôle (avant / après)
+  cushionBolsterCtrlBefore: "",
+  cushionBolsterCtrlAfter: "",
+  cushionDiameterCtrlBefore: "",
+  cushionDiameterCtrlAfter: "",
+  backrestBolsterCtrlBefore: "",
+  backrestBolsterCtrlAfter: "",
+  backrestDiameterCtrlBefore: "",
+  backrestDiameterCtrlAfter: "",
+
+  // Ratios (avant / après) - 4 ratios
+  ratioCushionBolsterBefore: "",
+  ratioCushionBolsterAfter: "",
+  ratioCushionDiameterBefore: "",
+  ratioCushionDiameterAfter: "",
+  ratioBackrestBolsterBefore: "",
+  ratioBackrestBolsterAfter: "",
+  ratioBackrestDiameterBefore: "",
+  ratioBackrestDiameterAfter: "",
+
+  records: loadRecords()
+};
+
+const $ = id => document.getElementById(id);
+function esc(v){ return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+function avg(arr){ return arr.length ? Math.round((arr.reduce((a,b)=>a+b,0)/arr.length)*10)/10 : null; }
+function n(v){ const x = parseFloat(String(v).replace(",", ".")); return Number.isFinite(x) ? x : null; }
+
+function classFromHeight(cm){
+  const x = parseInt(cm,10);
+  if(!x || x<=0) return "";
+  if(x <= 160) return "S";
+  if(x <= 175) return "M";
+  return "L";
+}
+function morphoSubClass(busteCm, jambeCm){
+  const b = n(busteCm), j = n(jambeCm);
+  if(!b || !j || b<=0 || j<=0) return { code:"", label:"Mesures manquantes", detail:"Renseigner buste et jambe." };
+  const r = j / b;
+  if(r > 1.18) return { code:"J", label:"Jambes longues", detail:"Proportion jambe > buste (impact possible assise/longueur siège)." };
+  if(r < 0.95) return { code:"T", label:"Buste long", detail:"Proportion buste élevée (impact possible dossier/lombaires)." };
+  return { code:"B", label:"Équilibré", detail:"Proportions buste/jambe équilibrées." };
+}
+function fullClassification(){
+  const main = classFromHeight(state.tailleCm);
+  const sub = morphoSubClass(state.busteCm, state.jambeCm);
+  if(!main) return { main:"", subCode:"", code:"", text:"Taille manquante", detail:"Renseigner la taille." };
+  return { main, subCode: sub.code, code: sub.code ? `${main}-${sub.code}` : main, text: sub.label, detail: sub.detail };
+}
+
+function loadRecords(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; } }
+function saveRecords(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state.records)); }
+
+function resetForm(){
+  Object.assign(state, {
+    step:0, showTable:false, saved:false,
+    testerId:"", tailleCm:"", poidsKg:"", sexe:"", duree:"2 min", busteCm:"", jambeCm:"",
+    seatTilt:"", seatLength:"", backrestTilt:"", seatHeight:"", cla:"",
+    comment:"", globalScore:5,
+    zones:{ lombaires:5, milieuDos:5, epaules:5, assise:5, cuisses:5, maintien:5 },
+    zonesTouched:{ lombaires:false, milieuDos:false, epaules:false, assise:false, cuisses:false, maintien:false },
+
+    cushionBolsterCtrlBefore:"",
+    cushionBolsterCtrlAfter:"",
+    cushionDiameterCtrlBefore:"",
+    cushionDiameterCtrlAfter:"",
+    backrestBolsterCtrlBefore:"",
+    backrestBolsterCtrlAfter:"",
+    backrestDiameterCtrlBefore:"",
+    backrestDiameterCtrlAfter:"",
+
+    ratioCushionBolsterBefore:"",
+    ratioCushionBolsterAfter:"",
+    ratioCushionDiameterBefore:"",
+    ratioCushionDiameterAfter:"",
+    ratioBackrestBolsterBefore:"",
+    ratioBackrestBolsterAfter:"",
+    ratioBackrestDiameterBefore:"",
+    ratioBackrestDiameterAfter:""
+  });
+}
+
+function zoneAverage(){ return avg(Object.values(state.zones)); }
+
+function stats(){
+  const rows = state.records;
+  return {
+    total: rows.length,
+    keep: rows.filter(r => r.candidate).length,
+    s: rows.filter(r => r.tailleClassMain === "S").length,
+    m: rows.filter(r => r.tailleClassMain === "M").length,
+    l: rows.filter(r => r.tailleClassMain === "L").length,
+    avgGlobal: avg(rows.map(r => Number(r.globalScore)).filter(v => Number.isFinite(v)))
+  };
+}
+function updateStatsUI(){
+  const st = stats();
+  $("sTotal").textContent = st.total;
+  $("sKeep").textContent = st.keep;
+  $("sS").textContent = st.s;
+  $("sM").textContent = st.m;
+  $("sL").textContent = st.l;
+  $("sAvg").textContent = st.avgGlobal ?? "—";
+}
+
+function renderPesRow(key){
+  const val = state.zones[key];
+  const filled = state.zonesTouched?.[key] ? "filled" : "";
+  const badge = state.zonesTouched?.[key] ? `<span class="okBadge" title="Zone validée">✔</span>` : ``;
+
+  return `
+    <div class="pes-attr ${filled}">
+      <div class="pes-attr-top">
+        <div class="pes-name">
+          ${badge}
+          <span>${zoneLabels[key]}</span>
+        </div>
+        <div class="pes-controls">
+          <button class="mini-btn" onclick="adjustZone('${key}',-1)">−</button>
+          <span class="score-num">${val}</span>
+          <button class="mini-btn" onclick="adjustZone('${key}',1)">+</button>
+        </div>
+      </div>
+      <div class="pes-bar"><div style="width:${val*10}%"></div></div>
+    </div>
+  `;
+}
+
+function getRowsFiltered(){
+  let rows = [...state.records].reverse();
+  const q = state.tableSearch.trim().toLowerCase();
+  if(q){
+    rows = rows.filter(r => [
+      r.testerId, r.comment, r.tailleClassFull, r.tailleClassMain,
+      r.cushionBolsterCtrlBefore, r.cushionBolsterCtrlAfter,
+      r.cushionDiameterCtrlBefore, r.cushionDiameterCtrlAfter,
+      r.backrestBolsterCtrlBefore, r.backrestBolsterCtrlAfter,
+      r.backrestDiameterCtrlBefore, r.backrestDiameterCtrlAfter,
+      r.ratioCushionBolsterBefore, r.ratioCushionBolsterAfter,
+      r.ratioCushionDiameterBefore, r.ratioCushionDiameterAfter,
+      r.ratioBackrestBolsterBefore, r.ratioBackrestBolsterAfter,
+      r.ratioBackrestDiameterBefore, r.ratioBackrestDiameterAfter
+    ].join(" ").toLowerCase().includes(q));
+  }
+  if(state.tableClass) rows = rows.filter(r => r.tailleClassMain === state.tableClass);
+  return rows;
+}
+
+function renderTable(){
+  const rows = getRowsFiltered();
+  return `
+    <div class="box"><b>Tableau des passages enregistrés</b><br><span class="muted">${rows.length} résultat(s)</span></div>
+
+    <div class="table-controls">
+      <input id="tableSearch" placeholder="Rechercher (ID, classe, ratio...)" value="${esc(state.tableSearch)}">
+      <select id="tableClass">
+        <option value="">Toutes classes</option>
+        <option value="S" ${state.tableClass==="S"?"selected":""}>Classe S</option>
+        <option value="M" ${state.tableClass==="M"?"selected":""}>Classe M</option>
+        <option value="L" ${state.tableClass==="L"?"selected":""}>Classe L</option>
+      </select>
+    </div>
+
+    <div class="row" style="margin-bottom:8px">
+      <button onclick="toggleTable()">← Retour formulaire</button>
+      <button onclick="exportCSV()">Exporter CSV</button>
+      <button onclick="clearAllRecords()">Vider tableau</button>
+    </div>
+
+    <div class="table-wrap">
+      <table class="big">
+        <thead>
+          <tr>
+            <th>Date</th><th>ID</th><th>Taille</th><th>Classe</th><th>Sous-classe</th>
+            <th>Buste</th><th>Jambe</th>
+            <th>Seat Tilt</th><th>Seat Length</th><th>Backrest Tilt</th><th>Seat Height</th><th>CLA</th>
+            <th>Global</th><th>Moy zones</th>
+
+            <th>CushBol B</th><th>CushBol A</th>
+            <th>CushDia B</th><th>CushDia A</th>
+            <th>BackBol B</th><th>BackBol A</th>
+            <th>BackDia B</th><th>BackDia A</th>
+
+            <th>RCB B</th><th>RCB A</th>
+            <th>RCD B</th><th>RCD A</th>
+            <th>RBB B</th><th>RBB A</th>
+            <th>RBD B</th><th>RBD A</th>
+
+            <th>Décision</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.length ? rows.map(r => `
+            <tr>
+              <td>${esc(r.ts)}</td>
+              <td>${esc(r.testerId)}</td>
+              <td>${esc(r.tailleCm)}</td>
+              <td><b>${esc(r.tailleClassMain)}</b></td>
+              <td title="${esc(r.morphoDetail)}">${esc(r.tailleClassFull)}</td>
+              <td>${esc(r.busteCm)}</td>
+              <td>${esc(r.jambeCm)}</td>
+              <td>${esc(r.seatTilt)}</td>
+              <td>${esc(r.seatLength)}</td>
+              <td>${esc(r.backrestTilt)}</td>
+              <td>${esc(r.seatHeight)}</td>
+              <td>${esc(r.cla)}</td>
+              <td>${esc(r.globalScore)}</td>
+              <td>${esc(r.avgZone)}</td>
+
+              <td>${esc(r.cushionBolsterCtrlBefore)}</td>
+              <td>${esc(r.cushionBolsterCtrlAfter)}</td>
+              <td>${esc(r.cushionDiameterCtrlBefore)}</td>
+              <td>${esc(r.cushionDiameterCtrlAfter)}</td>
+              <td>${esc(r.backrestBolsterCtrlBefore)}</td>
+              <td>${esc(r.backrestBolsterCtrlAfter)}</td>
+              <td>${esc(r.backrestDiameterCtrlBefore)}</td>
+              <td>${esc(r.backrestDiameterCtrlAfter)}</td>
+
+              <td>${esc(r.ratioCushionBolsterBefore)}</td>
+              <td>${esc(r.ratioCushionBolsterAfter)}</td>
+              <td>${esc(r.ratioCushionDiameterBefore)}</td>
+              <td>${esc(r.ratioCushionDiameterAfter)}</td>
+              <td>${esc(r.ratioBackrestBolsterBefore)}</td>
+              <td>${esc(r.ratioBackrestBolsterAfter)}</td>
+              <td>${esc(r.ratioBackrestDiameterBefore)}</td>
+              <td>${esc(r.ratioBackrestDiameterAfter)}</td>
+
+              <td><span class="pill ${r.candidate?'ok':'warn'}">${r.candidate?'Conserver':'À revoir'}</span></td>
+            </tr>
+          `).join("") : `<tr><td colspan="35" class="muted">Aucune donnée enregistrée.</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderZoneRecapTable(){
+  const rows = Object.keys(zoneLabels).map(k=>{
+    const touched = !!state.zonesTouched?.[k];
+    const score = state.zones[k];
+    const pill = touched
+      ? `<span class="zpill v"><span class="miniOk">✔</span> validée</span>`
+      : `<span class="zpill">—</span>`;
+    const scorePill = touched
+      ? `<span class="zpill v">${score}/10</span>`
+      : `<span class="zpill">${score}/10</span>`;
+    return `
+      <tr>
+        <td>${zoneLabels[k]}</td>
+        <td style="text-align:right">${scorePill}</td>
+        <td style="text-align:right">${pill}</td>
+      </tr>
+    `;
+  }).join("");
+
+  const validatedCount = Object.values(state.zonesTouched).filter(Boolean).length;
+
+  return `
+    <div class="box ztable" style="margin-top:10px">
+      <div class="hdr">
+        <b>Récapitulatif zones</b>
+        <span class="pill class">${validatedCount}/6 validées</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Zone</th>
+            <th style="text-align:right">Score</th>
+            <th style="text-align:right">Statut</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderStep(){
+  if(state.showTable) return renderTable();
+
+  const cls = fullClassification();
+  const step = steps[state.step];
+
+  if(step.id === "welcome"){
+    return `
+      <div class="box">Application de saisie pour enregistrer les passages testeurs, paramètres siège, confort (PES + radar) et mesures avant/après.</div>
+      <div class="grid3" style="margin-top:10px">
+        <div class="box"><b>1. Profil</b><br><span class="muted">Taille + buste + jambe + classification</span></div>
+        <div class="box"><b>2. Paramètres siège</b><br><span class="muted">Seat Tilt / Length / Backrest / Height / CLA</span></div>
+        <div class="box"><b>3. Confort & Mesures</b><br><span class="muted">PES + Radar + avant/après</span></div>
+      </div>
+      <div class="box hero" style="margin-top:10px">
+        <b>FORVIA</b><br><span style="opacity:.9">Données locales (navigateur) • Export CSV disponible</span>
+      </div>
+    `;
+  }
+
+  if(step.id === "tester"){
+    return `
+      <div class="grid2">
+        <div class="field"><label>ID testeur</label><input id="testerId" value="${esc(state.testerId)}" placeholder="Ex : T-001"></div>
+        <div class="field"><label>Taille (cm)</label><input id="tailleCm" type="number" value="${esc(state.tailleCm)}" placeholder="178"></div>
+        <div class="field"><label>Buste assis (fesse → tête) cm</label><input id="busteCm" type="number" value="${esc(state.busteCm)}" placeholder="90"></div>
+        <div class="field"><label>Jambe (fesse → pied) cm</label><input id="jambeCm" type="number" value="${esc(state.jambeCm)}" placeholder="102"></div>
+        <div class="field"><label>Poids (kg) (optionnel)</label><input id="poidsKg" type="number" value="${esc(state.poidsKg)}" placeholder="75"></div>
+        <div class="field"><label>Sexe (optionnel)</label>
+          <select id="sexe">
+            <option value="" ${state.sexe===""?"selected":""}>Non précisé</option>
+            <option value="H" ${state.sexe==="H"?"selected":""}>H</option>
+            <option value="F" ${state.sexe==="F"?"selected":""}>F</option>
+            <option value="Autre" ${state.sexe==="Autre"?"selected":""}>Autre</option>
+          </select>
+        </div>
+        <div class="field"><label>Durée test</label>
+          <select id="duree">
+            <option ${state.duree==="2 min"?"selected":""}>2 min</option>
+            <option ${state.duree==="5 min"?"selected":""}>5 min</option>
+            <option ${state.duree==="10 min"?"selected":""}>10 min</option>
+            <option ${state.duree==="15+ min"?"selected":""}>15+ min</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:10px">
+        <div class="morpho-box">
+          <div><b>Classe principale</b><small>Basée sur la taille totale</small></div>
+          <span class="pill class">${cls.main || "—"}</span>
+        </div>
+        <div class="morpho-box">
+          <div><b>Sous-classe morpho</b><small>${esc(cls.detail)}</small></div>
+          <span class="pill class">${cls.code || "—"}</span>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top:10px">
+        <b>Lecture des codes</b> :
+        <span class="pill">J = jambes longues</span>
+        <span class="pill">B = équilibré</span>
+        <span class="pill">T = buste long</span>
+        <br><span class="muted">Exemple : <b>L-J</b> = grande taille avec jambes longues.</span>
+      </div>
+    `;
+  }
+
+  if(step.id === "seat"){
+    return `
+      <div class="box" style="margin-bottom:10px">
+        <b>Paramètres siège</b><br><span class="muted">Renseigne les réglages utilisés pour ce passage.</span>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Seat Tilt</label><input id="seatTilt" value="${esc(state.seatTilt)}" placeholder="Ex : 12°"></div>
+        <div class="field"><label>Seat Length</label><input id="seatLength" value="${esc(state.seatLength)}" placeholder="Ex : 480 mm"></div>
+        <div class="field"><label>Backrest Tilt</label><input id="backrestTilt" value="${esc(state.backrestTilt)}" placeholder="Ex : 22°"></div>
+        <div class="field"><label>Seat Height</label><input id="seatHeight" value="${esc(state.seatHeight)}" placeholder="Ex : 320 mm"></div>
+        <div class="field"><label>CLA</label><input id="cla" value="${esc(state.cla)}" placeholder="Ex : 105°"></div>
+      </div>
+    `;
+  }
+
+  if(step.id === "comfort"){
+    const zAvg = zoneAverage();
+    const dec = (state.globalScore >= 7 && zAvg >= 6) ? "Conserver" : "À revoir";
+
+    return `
+      <div class="pes-wrap">
+        <div class="pes-card">
+          <div class="pes-title">
+            <div>
+              <div style="font-weight:700">Attributs confort (style PES)</div>
+              <div class="pes-sub">Une zone devient violette + ✔ dès qu’elle est validée.</div>
+            </div>
+            <div class="pill class">${cls.code || "Classe ?"}</div>
+          </div>
+          ${Object.keys(zoneLabels).map(renderPesRow).join("")}
+        </div>
+
+        <div class="pes-card">
+          <div class="pes-title">
+            <div>
+              <div style="font-weight:700">Radar + Récap zones</div>
+              <div class="pes-sub">Le tableau récapitulatif est sous le radar.</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <div>
+              <div class="pes-big">${state.globalScore}</div>
+              <div class="pes-sub">/10</div>
+            </div>
+            <div style="flex:1">
+              <div class="pes-bar" style="height:14px"><div style="width:${state.globalScore*10}%"></div></div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <button class="mini-btn" onclick="adjustGlobal(-1)">−</button>
+            <div class="score-num" style="font-size:1.1rem">${state.globalScore}</div>
+            <button class="mini-btn" onclick="adjustGlobal(1)">+</button>
+          </div>
+
+          <div class="radar-wrap" style="margin-top:10px">
+            <canvas id="radarCanvas" width="300" height="300"></canvas>
+          </div>
+
+          ${renderZoneRecapTable()}
+
+          <div class="box" style="margin-top:10px;background:#f8fbff">
+            <div class="row" style="justify-content:space-between"><span>Moyenne zones</span><b>${zAvg}</b></div>
+            <div class="row" style="justify-content:space-between;margin-top:6px">
+              <span>Décision auto</span>
+              <span class="pill ${dec==='Conserver'?'ok':'warn'}">${dec}</span>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:10px">
+            <label>Commentaire confort</label>
+            <textarea id="comment" placeholder="Remarque générale">${esc(state.comment)}</textarea>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if(step.id === "ratios"){
+    return `
+      <div class="box" style="margin-bottom:10px">
+        <b>Mesures finales (avant / après modification)</b><br>
+        <span class="muted">Indices de contrôle + 4 ratios avant/après modification.</span>
+      </div>
+
+      <div class="grid2">
+        <div class="box">
+          <h4 style="margin:0 0 10px">Indices de contrôle • Assise (Cushion)</h4>
+          <div class="grid2">
+            <div class="field"><label>Cushion Bolster Control • Avant</label><input id="cushionBolsterCtrlBefore" value="${esc(state.cushionBolsterCtrlBefore)}" placeholder="Ex : 0,82"></div>
+            <div class="field"><label>Cushion Bolster Control • Après</label><input id="cushionBolsterCtrlAfter" value="${esc(state.cushionBolsterCtrlAfter)}" placeholder="Ex : 0,88"></div>
+            <div class="field"><label>Cushion Diameter Control • Avant</label><input id="cushionDiameterCtrlBefore" value="${esc(state.cushionDiameterCtrlBefore)}" placeholder="Ex : 0,79"></div>
+            <div class="field"><label>Cushion Diameter Control • Après</label><input id="cushionDiameterCtrlAfter" value="${esc(state.cushionDiameterCtrlAfter)}" placeholder="Ex : 0,90"></div>
+          </div>
+        </div>
+
+        <div class="box">
+          <h4 style="margin:0 0 10px">Indices de contrôle • Dossier (Backrest)</h4>
+          <div class="grid2">
+            <div class="field"><label>Backrest Bolster Control • Avant</label><input id="backrestBolsterCtrlBefore" value="${esc(state.backrestBolsterCtrlBefore)}" placeholder="Ex : 0,75"></div>
+            <div class="field"><label>Backrest Bolster Control • Après</label><input id="backrestBolsterCtrlAfter" value="${esc(state.backrestBolsterCtrlAfter)}" placeholder="Ex : 0,84"></div>
+            <div class="field"><label>Backrest Diameter Control • Avant</label><input id="backrestDiameterCtrlBefore" value="${esc(state.backrestDiameterCtrlBefore)}" placeholder="Ex : 0,73"></div>
+            <div class="field"><label>Backrest Diameter Control • Après</label><input id="backrestDiameterCtrlAfter" value="${esc(state.backrestDiameterCtrlAfter)}" placeholder="Ex : 0,86"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top:10px">
+        <h4 style="margin:0 0 10px">Ratios • Avant / Après (4 ratios)</h4>
+        <div class="grid2">
+          <div class="field"><label>Ratio Cushion Bolster • Avant</label><input id="ratioCushionBolsterBefore" value="${esc(state.ratioCushionBolsterBefore)}" placeholder="Ex : 0,81"></div>
+          <div class="field"><label>Ratio Cushion Bolster • Après</label><input id="ratioCushionBolsterAfter" value="${esc(state.ratioCushionBolsterAfter)}" placeholder="Ex : 0,92"></div>
+
+          <div class="field"><label>Ratio Cushion Diameter • Avant</label><input id="ratioCushionDiameterBefore" value="${esc(state.ratioCushionDiameterBefore)}" placeholder="Ex : 0,78"></div>
+          <div class="field"><label>Ratio Cushion Diameter • Après</label><input id="ratioCushionDiameterAfter" value="${esc(state.ratioCushionDiameterAfter)}" placeholder="Ex : 0,89"></div>
+
+          <div class="field"><label>Ratio Backrest Bolster • Avant</label><input id="ratioBackrestBolsterBefore" value="${esc(state.ratioBackrestBolsterBefore)}" placeholder="Ex : 0,76"></div>
+          <div class="field"><label>Ratio Backrest Bolster • Après</label><input id="ratioBackrestBolsterAfter" value="${esc(state.ratioBackrestBolsterAfter)}" placeholder="Ex : 0,87"></div>
+
+          <div class="field"><label>Ratio Backrest Diameter • Avant</label><input id="ratioBackrestDiameterBefore" value="${esc(state.ratioBackrestDiameterBefore)}" placeholder="Ex : 0,74"></div>
+          <div class="field"><label>Ratio Backrest Diameter • Après</label><input id="ratioBackrestDiameterAfter" value="${esc(state.ratioBackrestDiameterAfter)}" placeholder="Ex : 0,85"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  if(step.id === "done"){
+    const zAvg = zoneAverage();
+    const cls = fullClassification();
+    const candidate = (state.globalScore >= 7 && zAvg >= 6);
+    const validatedCount = Object.values(state.zonesTouched).filter(Boolean).length;
+
+    return `
+      <div style="text-align:center;padding-top:20px">
+        <div style="font-size:40px;color:var(--ok)">✓</div>
+        <h3 style="margin:6px 0">Résumé du test</h3>
+        <p class="muted">Vérifie puis enregistre le passage.</p>
+
+        <div class="box" style="text-align:left;max-width:1020px;margin:10px auto 0">
+          <b>Testeur</b> : ${esc(state.testerId)||"—"} • <b>Taille</b> : ${esc(state.tailleCm)||"—"} cm • <b>Classe</b> : ${cls.code||"—"}<br>
+          <b>Buste</b> : ${esc(state.busteCm)||"—"} cm • <b>Jambe</b> : ${esc(state.jambeCm)||"—"} cm<br>
+          <b>Zones validées</b> : ${validatedCount}/6<br>
+          <b>Seat</b> : Tilt ${esc(state.seatTilt)||"—"} • Length ${esc(state.seatLength)||"—"} • Backrest ${esc(state.backrestTilt)||"—"} • Height ${esc(state.seatHeight)||"—"} • CLA ${esc(state.cla)||"—"}<br>
+          <b>Global</b> : ${state.globalScore}/10 • <b>Moy. zones</b> : ${zAvg}<br>
+          <b>Contrôles Assise</b> : Bolster ${esc(state.cushionBolsterCtrlBefore)||"—"} → ${esc(state.cushionBolsterCtrlAfter)||"—"} • Diameter ${esc(state.cushionDiameterCtrlBefore)||"—"} → ${esc(state.cushionDiameterCtrlAfter)||"—"}<br>
+          <b>Contrôles Dossier</b> : Bolster ${esc(state.backrestBolsterCtrlBefore)||"—"} → ${esc(state.backrestBolsterCtrlAfter)||"—"} • Diameter ${esc(state.backrestDiameterCtrlBefore)||"—"} → ${esc(state.backrestDiameterCtrlAfter)||"—"}<br>
+          <b>Ratios Assise</b> : Bolster ${esc(state.ratioCushionBolsterBefore)||"—"} → ${esc(state.ratioCushionBolsterAfter)||"—"} • Diameter ${esc(state.ratioCushionDiameterBefore)||"—"} → ${esc(state.ratioCushionDiameterAfter)||"—"}<br>
+          <b>Ratios Dossier</b> : Bolster ${esc(state.ratioBackrestBolsterBefore)||"—"} → ${esc(state.ratioBackrestBolsterAfter)||"—"} • Diameter ${esc(state.ratioBackrestDiameterBefore)||"—"} → ${esc(state.ratioBackrestDiameterAfter)||"—"}<br>
+          <b>Décision</b> : <span class="pill ${candidate?'ok':'warn'}">${candidate?'Conserver':'À revoir'}</span>
+        </div>
+
+        <div class="row" style="justify-content:center;margin-top:10px">
+          <button onclick="saveCurrent()">💾 Enregistrer le passage</button>
+          <button onclick="toggleTable()">📋 Voir tableau</button>
+          <button onclick="newTest()">🧪 Nouveau test</button>
+        </div>
+        ${state.saved ? `<div class="muted" style="margin-top:8px">✅ Passage enregistré.</div>` : ``}
+      </div>
+    `;
+  }
+
+  return "";
+}
+
+function collectInputs(){
+  [
+    "testerId","tailleCm","poidsKg","sexe","duree","busteCm","jambeCm",
+    "seatTilt","seatLength","backrestTilt","seatHeight","cla",
+    "comment",
+
+    "cushionBolsterCtrlBefore","cushionBolsterCtrlAfter",
+    "cushionDiameterCtrlBefore","cushionDiameterCtrlAfter",
+    "backrestBolsterCtrlBefore","backrestBolsterCtrlAfter",
+    "backrestDiameterCtrlBefore","backrestDiameterCtrlAfter",
+
+    "ratioCushionBolsterBefore","ratioCushionBolsterAfter",
+    "ratioCushionDiameterBefore","ratioCushionDiameterAfter",
+    "ratioBackrestBolsterBefore","ratioBackrestBolsterAfter",
+    "ratioBackrestDiameterBefore","ratioBackrestDiameterAfter",
+
+    "tableSearch","tableClass"
+  ].forEach(id => {
+    const el = $(id);
+    if(el) state[id] = el.value;
+  });
+}
+
+function attachEventsAfterRender(){
+  const ids = [
+    "testerId","tailleCm","poidsKg","sexe","duree","busteCm","jambeCm",
+    "seatTilt","seatLength","backrestTilt","seatHeight","cla",
+    "comment",
+
+    "cushionBolsterCtrlBefore","cushionBolsterCtrlAfter",
+    "cushionDiameterCtrlBefore","cushionDiameterCtrlAfter",
+    "backrestBolsterCtrlBefore","backrestBolsterCtrlAfter",
+    "backrestDiameterCtrlBefore","backrestDiameterCtrlAfter",
+
+    "ratioCushionBolsterBefore","ratioCushionBolsterAfter",
+    "ratioCushionDiameterBefore","ratioCushionDiameterAfter",
+    "ratioBackrestBolsterBefore","ratioBackrestBolsterAfter",
+    "ratioBackrestDiameterBefore","ratioBackrestDiameterAfter",
+
+    "tableSearch","tableClass"
+  ];
+
+  ids.forEach(id => {
+    const el = $(id);
+    if(!el) return;
+
+    if(id === "tableSearch" || id === "tableClass"){
+      el.addEventListener("input", () => { collectInputs(); render(); });
+      el.addEventListener("change", () => { collectInputs(); render(); });
+      return;
+    }
+
+    // ✅ pas de render pendant la frappe
+    el.addEventListener("input", () => { collectInputs(); });
+
+    // ✅ render au changement / sortie de champ
+    el.addEventListener("change", () => { collectInputs(); render(); });
+    el.addEventListener("blur", () => { collectInputs(); render(); });
+  });
+}
+
+function drawRadar(){
+  const cvs = $("radarCanvas");
+  if(!cvs) return;
+  const ctx = cvs.getContext("2d");
+  const w = cvs.width, h = cvs.height;
+  ctx.clearRect(0,0,w,h);
+
+  const labels = Object.keys(zoneLabels);
+  const vals = labels.map(k => state.zones[k]);
+  const cx = w/2, cy = h/2, R = 110, levels = 5;
+
+  ctx.strokeStyle = "#dbe4f0";
+  ctx.lineWidth = 1;
+
+  for(let lv=1; lv<=levels; lv++){
+    const r = R * (lv/levels);
+    ctx.beginPath();
+    labels.forEach((_,i)=>{
+      const a = -Math.PI/2 + i*2*Math.PI/labels.length;
+      const x = cx + Math.cos(a)*r;
+      const y = cy + Math.sin(a)*r;
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  labels.forEach((k,i)=>{
+    const a = -Math.PI/2 + i*2*Math.PI/labels.length;
+    const x = cx + Math.cos(a)*R;
+    const y = cy + Math.sin(a)*R;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.stroke();
+
+    ctx.fillStyle = "#334155";
+    ctx.font = "12px Arial";
+    const tx = cx + Math.cos(a)*(R+18);
+    const ty = cy + Math.sin(a)*(R+18);
+    const txt = zoneLabels[k];
+    ctx.textAlign = (Math.cos(a) > 0.2) ? "left" : (Math.cos(a) < -0.2 ? "right" : "center");
+    ctx.textBaseline = (Math.sin(a) > 0.3) ? "top" : (Math.sin(a) < -0.3 ? "bottom" : "middle");
+    ctx.fillText(txt, tx, ty);
+  });
+
+  ctx.beginPath();
+  vals.forEach((v,i)=>{
+    const a = -Math.PI/2 + i*2*Math.PI/labels.length;
+    const r = R * (v/10);
+    const x = cx + Math.cos(a)*r;
+    const y = cy + Math.sin(a)*r;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = "rgba(124,58,237,.18)";
+  ctx.strokeStyle = "#7c3aed";
+  ctx.lineWidth = 2;
+  ctx.fill();
+  ctx.stroke();
+
+  vals.forEach((v,i)=>{
+    const a = -Math.PI/2 + i*2*Math.PI/labels.length;
+    const r = R * (v/10);
+    const x = cx + Math.cos(a)*r;
+    const y = cy + Math.sin(a)*r;
+    ctx.beginPath();
+    ctx.arc(x,y,3,0,Math.PI*2);
+    ctx.fillStyle = "#7c3aed";
+    ctx.fill();
+  });
+}
+
+function render(){
+  collectInputs();
+  updateStatsUI();
+  const step = steps[state.step];
+
+  $("pageTitle").textContent = state.showTable ? "Tableau des passages" : step.title;
+  $("pageSub").textContent = state.showTable ? "Données enregistrées localement" : step.sub;
+  $("badge").textContent = state.showTable ? `${getRowsFiltered().length} résultat(s)` : `${state.step+1}/${steps.length}`;
+  $("bar").style.width = state.showTable ? "100%" : `${(state.step/(steps.length-1))*100}%`;
+
+  $("btnPrev").disabled = state.showTable || state.step === 0 || step.id === "done";
+  $("btnNext").style.display = state.showTable ? "none" : "inline-block";
+
+  $("btnTable").classList.toggle("active", state.showTable);
+  $("content").innerHTML = renderStep();
+  attachEventsAfterRender();
+  drawRadar();
+}
+
+function makeRecord(){
+  const cls = fullClassification();
+  const avgZone = zoneAverage();
+  const candidate = (state.globalScore >= 7 && avgZone >= 6);
+
+  return {
+    ts: new Date().toLocaleString("fr-FR"),
+    testerId: state.testerId,
+    tailleCm: state.tailleCm,
+    poidsKg: state.poidsKg,
+    sexe: state.sexe,
+    duree: state.duree,
+    busteCm: state.busteCm,
+    jambeCm: state.jambeCm,
+    tailleClassMain: cls.main,
+    tailleClassFull: cls.code,
+    morphoDetail: cls.detail,
+
+    seatTilt: state.seatTilt,
+    seatLength: state.seatLength,
+    backrestTilt: state.backrestTilt,
+    seatHeight: state.seatHeight,
+    cla: state.cla,
+
+    globalScore: state.globalScore,
+    avgZone,
+    zones: { ...state.zones },
+    zonesTouched: { ...state.zonesTouched },
+
+    cushionBolsterCtrlBefore: state.cushionBolsterCtrlBefore,
+    cushionBolsterCtrlAfter: state.cushionBolsterCtrlAfter,
+    cushionDiameterCtrlBefore: state.cushionDiameterCtrlBefore,
+    cushionDiameterCtrlAfter: state.cushionDiameterCtrlAfter,
+    backrestBolsterCtrlBefore: state.backrestBolsterCtrlBefore,
+    backrestBolsterCtrlAfter: state.backrestBolsterCtrlAfter,
+    backrestDiameterCtrlBefore: state.backrestDiameterCtrlBefore,
+    backrestDiameterCtrlAfter: state.backrestDiameterCtrlAfter,
+
+    ratioCushionBolsterBefore: state.ratioCushionBolsterBefore,
+    ratioCushionBolsterAfter: state.ratioCushionBolsterAfter,
+    ratioCushionDiameterBefore: state.ratioCushionDiameterBefore,
+    ratioCushionDiameterAfter: state.ratioCushionDiameterAfter,
+    ratioBackrestBolsterBefore: state.ratioBackrestBolsterBefore,
+    ratioBackrestBolsterAfter: state.ratioBackrestBolsterAfter,
+    ratioBackrestDiameterBefore: state.ratioBackrestDiameterBefore,
+    ratioBackrestDiameterAfter: state.ratioBackrestDiameterAfter,
+
+    comment: state.comment,
+    candidate
+  };
+}
+
+/* actions */
+window.adjustGlobal = function(delta){
+  state.globalScore = Math.max(1, Math.min(10, state.globalScore + delta));
+  render();
+};
+window.adjustZone = function(key, delta){
+  state.zones[key] = Math.max(1, Math.min(10, state.zones[key] + delta));
+  state.zonesTouched[key] = true; // ✅ validée
+  render();
+};
+
+window.saveCurrent = function(){
+  collectInputs();
+  state.records.push(makeRecord());
+  saveRecords();
+  state.saved = true;
+  render();
+};
+window.toggleTable = function(){ state.showTable = !state.showTable; render(); };
+window.newTest = function(){
+  const keep = state.records;
+  resetForm();
+  state.records = keep;
+  render();
+};
+window.clearAllRecords = function(){
+  if(confirm("Supprimer toutes les données enregistrées dans ce navigateur ?")){
+    state.records = [];
+    saveRecords();
+    render();
+  }
+};
+
+window.exportCSV = function(){
+  const headers = [
+    "Date","Tester ID","Taille (cm)","Poids (kg)","Sexe","Durée",
+    "Buste assis (cm)","Jambe (cm)",
+    "Classe principale","Sous-classe","Détail morpho",
+    "Seat Tilt","Seat Length","Backrest Tilt","Seat Height","CLA",
+    "Global Score","Moyenne Zones",
+    "Validated Zones Count",
+    "Cushion Bolster Control Before","Cushion Bolster Control After",
+    "Cushion Diameter Control Before","Cushion Diameter Control After",
+    "Backrest Bolster Control Before","Backrest Bolster Control After",
+    "Backrest Diameter Control Before","Backrest Diameter Control After",
+    "Ratio Cushion Bolster Before","Ratio Cushion Bolster After",
+    "Ratio Cushion Diameter Before","Ratio Cushion Diameter After",
+    "Ratio Backrest Bolster Before","Ratio Backrest Bolster After",
+    "Ratio Backrest Diameter Before","Ratio Backrest Diameter After",
+    "Décision","Commentaire",
+    "Zone Lombaires","Zone Milieu Dos","Zone Épaules","Zone Assise","Zone Cuisses","Zone Maintien"
+  ];
+
+  const SEP = ";";
+  const escCsv = (v) => `"${String(v ?? "").replaceAll('"','""')}"`;
+  const lines = [headers.map(escCsv).join(SEP)];
+
+  state.records.forEach(r => {
+    const validatedCount = Object.values(r.zonesTouched || {}).filter(Boolean).length;
+    lines.push([
+      r.ts, r.testerId, r.tailleCm, r.poidsKg, r.sexe, r.duree,
+      r.busteCm, r.jambeCm,
+      r.tailleClassMain, r.tailleClassFull, r.morphoDetail,
+      r.seatTilt, r.seatLength, r.backrestTilt, r.seatHeight, r.cla,
+      r.globalScore, r.avgZone,
+      validatedCount,
+
+      r.cushionBolsterCtrlBefore, r.cushionBolsterCtrlAfter,
+      r.cushionDiameterCtrlBefore, r.cushionDiameterCtrlAfter,
+      r.backrestBolsterCtrlBefore, r.backrestBolsterCtrlAfter,
+      r.backrestDiameterCtrlBefore, r.backrestDiameterCtrlAfter,
+
+      r.ratioCushionBolsterBefore, r.ratioCushionBolsterAfter,
+      r.ratioCushionDiameterBefore, r.ratioCushionDiameterAfter,
+      r.ratioBackrestBolsterBefore, r.ratioBackrestBolsterAfter,
+      r.ratioBackrestDiameterBefore, r.ratioBackrestDiameterAfter,
+
+      r.candidate ? "Conserver" : "A_revoir",
+      r.comment,
+
+      r.zones?.lombaires, r.zones?.milieuDos, r.zones?.epaules,
+      r.zones?.assise, r.zones?.cuisses, r.zones?.maintien
+    ].map(escCsv).join(SEP));
+  });
+
+  const csvContent = "\uFEFF" + lines.join("\n");
+  const blob = new Blob([csvContent], { type:"text/csv;charset=utf-8;" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+
+  const now = new Date();
+  const stamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+  a.download = `forvia_tests_siege_${stamp}.csv`;
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+};
+
+/* buttons */
+$("btnPrev").addEventListener("click", ()=>{ if(!state.showTable && state.step>0){ state.step--; render(); } });
+$("btnNext").addEventListener("click", ()=>{ if(!state.showTable && state.step<steps.length-1){ collectInputs(); state.step++; if(steps[state.step].id==="done") state.saved=false; render(); } });
+$("btnTable").addEventListener("click", ()=>{ state.showTable=!state.showTable; render(); });
+$("btnNew").addEventListener("click", ()=> window.newTest());
+$("btnReset").addEventListener("click", ()=>{
+  if(confirm("Vider le formulaire actuel ? Les données déjà enregistrées dans le tableau seront conservées.")){
+    const keep = state.records;
+    resetForm();
+    state.records = keep;
+    render();
+  }
+});
+
+/* init */
+if(FORVIA_LOGO_DATAURL) $("forviaLogo").src = FORVIA_LOGO_DATAURL;
+render();
+</script>
+</body>
+</html>
