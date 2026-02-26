@@ -177,23 +177,77 @@
     }
 
     .list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+
+    /* ===== Pretty ratings list ===== */
     .item{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      position:relative;
       border:1px solid rgba(255,255,255,.12);
-      border-radius:16px;
-      padding:10px 12px;
-      background: rgba(0,0,0,.12);
+      border-radius:18px;
+      padding:12px 12px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.10));
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
     }
-    .item b{font-size:.92rem}
-    .item .sub{color:var(--muted);font-size:.84rem;margin-top:2px}
+
+    .item b{font-size:.95rem; letter-spacing:.2px}
+    .item .sub{color:rgba(167,176,216,.9); font-size:.82rem; margin-top:3px}
+
     .val{
-      font-weight:900;
-      padding:6px 10px;
-      border-radius:12px;
+      font-weight:950;
+      padding:8px 12px;
+      border-radius:14px;
+      min-width:78px;
+      text-align:center;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
-      min-width:64px;
-      text-align:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:2px;
+    }
+
+    .val small{
+      font-weight:800;
+      font-size:.70rem;
+      color:rgba(255,255,255,.70);
+      letter-spacing:.4px;
+    }
+
+    /* Couleurs selon score */
+    .val.good{
+      border-color: rgba(46,204,113,.45);
+      background: rgba(46,204,113,.12);
+    }
+    .val.mid{
+      border-color: rgba(241,196,15,.50);
+      background: rgba(241,196,15,.12);
+    }
+    .val.bad{
+      border-color: rgba(231,76,60,.50);
+      background: rgba(231,76,60,.12);
+    }
+
+    /* Mini progress bar */
+    .bar{
+      height:8px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      margin-top:10px;
+    }
+    .bar > i{
+      display:block;
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, var(--a1), var(--a2));
+      box-shadow: 0 8px 18px rgba(124,58,237,.25);
     }
 
     /* Bottom sheet */
@@ -829,7 +883,7 @@
 
   // ===== Emoji tuning (per zone) =====
   const EMOJI_TUNE_KEY = "seat_emoji_tune_map_v1";
-  const DEFAULT_EMOJI_TUNE = {}; // default per id => {dx:0,dy:0,sc:1}
+  const DEFAULT_EMOJI_TUNE = {};
   let emojiTune = loadJson(EMOJI_TUNE_KEY, DEFAULT_EMOJI_TUNE);
 
   function getEmojiTune(polyId){
@@ -862,7 +916,7 @@
         t.setAttribute("text-anchor", "middle");
         t.setAttribute("dominant-baseline", "middle");
         t.setAttribute("class", "mark");
-        t.textContent = "✅";
+        t.textContent = "☑️";
 
         const sc = Number(tTune.sc || 1);
         if(sc !== 1){
@@ -887,13 +941,31 @@
       const v = getScoreForZoneName(z);
       const group = MEMBER_TO_GROUP.get(z);
       const sub = group ? `Groupe: ${escapeHtml(group)}` : (v ? "Noté" : "Non noté");
+
+      const score = Number.isFinite(v) ? v : null;
+
+      let cls = "";
+      let lbl = "—";
+      if(score !== null){
+        if(score >= 8){ cls = "good"; lbl = "BON"; }
+        else if(score >= 5){ cls = "mid"; lbl = "MOYEN"; }
+        else { cls = "bad"; lbl = "FAIBLE"; }
+      }
+
+      const pct = score !== null ? Math.max(0, Math.min(100, (score/10)*100)) : 0;
+
       return `
         <div class="item">
-          <div>
+          <div style="flex:1; min-width:180px">
             <b>${escapeHtml(z)}</b>
             <div class="sub">${sub}</div>
+            <div class="bar"><i style="width:${pct}%"></i></div>
           </div>
-          <div class="val">${v ? (v+"/10") : "—"}</div>
+
+          <div class="val ${cls}">
+            <div>${score !== null ? (score+"/10") : "—"}</div>
+            <small>${score !== null ? lbl : ""}</small>
+          </div>
         </div>`;
     }).join("");
 
@@ -1369,8 +1441,8 @@
   applyZoneStyle(zStyle);
   applyAll();
   loadZoneToUI(zoneSelect.value);
-
   loadEmojiToUI(emojiZoneSelect.value);
+
   updateSummary();
   renderPeople();
 </script>
