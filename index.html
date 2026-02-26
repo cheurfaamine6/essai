@@ -34,6 +34,7 @@
       --mark-fill: rgba(255,255,255,.95);
       --mark-stroke: rgba(0,0,0,.55);
     }
+
     *{box-sizing:border-box}
     body{
       margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
@@ -222,7 +223,7 @@
     .sheetActions{display:flex;gap:10px;margin-top:14px}
     .sheetActions .btn{flex:1}
 
-    /* Reasons */
+    /* Reasons (hierarchical + zone-specific) */
     .reasonBox{margin-top:12px;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:10px;background:rgba(0,0,0,.14)}
     .reasonTitle{font-weight:900;margin-bottom:8px}
     .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -237,6 +238,41 @@
       user-select:none;
     }
     .chip.on{background: rgba(124,58,237,.25); border-color: rgba(124,58,237,.65)}
+
+    .reasonGroupTitle{
+      font-weight:900;
+      margin-top:6px;
+      margin-bottom:8px;
+      color: var(--txt);
+    }
+    .chip.big{
+      padding:10px 12px;
+      font-size:.9rem;
+    }
+    .subWrap{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.10);
+      border-radius:14px;
+      padding:10px;
+      margin-bottom:10px;
+    }
+    .subHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .subHead b{ font-size:.9rem; }
+    .badgeCount{
+      font-size:.78rem;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      color:var(--muted);
+      background: rgba(255,255,255,.06);
+    }
+
     textarea{
       width:100%; margin-top:10px;
       border:1px solid rgba(255,255,255,.14);
@@ -248,7 +284,7 @@
       resize:vertical;
     }
 
-    /* Table under image */
+    /* Table under image (collapsible) */
     .tableTitle{
       display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
       margin-top:6px;
@@ -264,7 +300,6 @@
     th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap;text-align:left}
     th{position:sticky;top:0;background:rgba(17,25,50,.92);z-index:2}
 
-    /* NEW: Collapsible table */
     .collapse{display:none}
     .collapse.show{display:block}
 
@@ -387,41 +422,57 @@
     <div class="seatFrame">
       <svg id="seatSvg" viewBox="0 0 1361 2048" preserveAspectRatio="xMidYMid meet">
         <image href="seat.png" x="0" y="0" width="1361" height="2048" />
+
         <g id="zonesLayer">
-          <polygon id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)" transform="translate(0 -58) scale(1.000)"
+          <polygon id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)"
+            transform="translate(0 -58) scale(1.000)"
             points="825,620 819,599 760,583 470,620 452,700 502,761 825,761 825,620" />
-          <polygon id="z_dossier_rouge" class="zone" data-zone="Dossier milieu (rouge)" transform="translate(35 -19) scale(1.000)"
+          <polygon id="z_dossier_rouge" class="zone" data-zone="Dossier milieu (rouge)"
+            transform="translate(35 -19) scale(1.000)"
             points="781,726 507,718 483,736 503,751 528,880 562,900 681,908 760,900 781,726" />
-          <polygon id="z_central_gris" class="zone" data-zone="Zone centrale (gris clair)" transform="translate(-21 76) scale(1.000)"
+          <polygon id="z_central_gris" class="zone" data-zone="Zone centrale (gris clair)"
+            transform="translate(-21 76) scale(1.000)"
             points="497,856 849,856 850,986 497,986" />
-          <polygon id="z_jaune" class="zone" data-zone="Bande jaune" transform="translate(21 -20) scale(1.000)"
+          <polygon id="z_jaune" class="zone" data-zone="Bande jaune"
+            transform="translate(21 -20) scale(1.000)"
             points="754,1143 717,1108 520,1112 505,1128 506,1187 566,1215 701,1219 754,1184 754,1143" />
-          <polygon id="z_magenta" class="zone" data-zone="Bande magenta" transform="translate(8 0) scale(1.000)"
+          <polygon id="z_magenta" class="zone" data-zone="Bande magenta"
+            transform="translate(8 0) scale(1.000)"
             points="770,1292 723,1268 527,1272 502,1295 502,1353 565,1378 725,1377 770,1346 770,1292" />
-          <polygon id="z_assise_vert" class="zone" data-zone="Assise bas (vert)" transform="translate(-3 -34) scale(1.000)"
+          <polygon id="z_assise_vert" class="zone" data-zone="Assise bas (vert)"
+            transform="translate(-3 -34) scale(1.000)"
             points="808,1485 787,1445 701,1437 486,1450 505,1563 563,1609 776,1609 808,1558 808,1485" />
-          <polygon id="z_bas_gauche_vert" class="zone" data-zone="Bas gauche (vert)" transform="translate(2 -54) scale(1.000)"
+          <polygon id="z_bas_gauche_vert" class="zone" data-zone="Bas gauche (vert)"
+            transform="translate(2 -54) scale(1.000)"
             points="277,1387 261,1450 273,1563 304,1599 367,1599 397,1455 395,1433 342,1410 304,1407 277,1387" />
-          <polygon id="z_flanc_gauche_vert" class="zone" data-zone="Flanc gauche (vert)" transform="translate(0 0) scale(1.000)"
+          <polygon id="z_flanc_gauche_vert" class="zone" data-zone="Flanc gauche (vert)"
+            transform="translate(0 0) scale(1.000)"
             points="447,749 378,754 324,818 338,939 404,964 447,920 447,749" />
-          <polygon id="z_flanc_gauche_noir" class="zone" data-zone="Flanc gauche (noir)" transform="translate(-22 0) scale(1.000)"
+          <polygon id="z_flanc_gauche_noir" class="zone" data-zone="Flanc gauche (noir)"
+            transform="translate(-22 0) scale(1.000)"
             points="448,916 416,923 351,990 321,1097 343,1179 397,1197 448,1129 448,916" />
-          <polygon id="z_flanc_droit_violet" class="zone" data-zone="Flanc droit (violet)" transform="translate(76 -49) scale(1.000)"
+          <polygon id="z_flanc_droit_violet" class="zone" data-zone="Flanc droit (violet)"
+            transform="translate(76 -49) scale(1.000)"
             points="929,813 894,799 842,830 825,933 844,986 894,986 929,918 929,813" />
-          <polygon id="z_flanc_droit_orange" class="zone" data-zone="Flanc droit (orange)" transform="translate(60 -37) scale(1.000)"
+          <polygon id="z_flanc_droit_orange" class="zone" data-zone="Flanc droit (orange)"
+            transform="translate(60 -37) scale(1.000)"
             points="928,980 844,1001 800,1093 814,1225 885,1245 928,1159 928,980" />
-          <polygon id="z_bas_droit_blanc" class="zone" data-zone="Bas droit (blanc)" transform="translate(80 -34) scale(1.000)"
+          <polygon id="z_bas_droit_blanc" class="zone" data-zone="Bas droit (blanc)"
+            transform="translate(80 -34) scale(1.000)"
             points="950,1257 857,1272 807,1334 818,1410 885,1429 950,1355 950,1257" />
-          <polygon id="z_bas_droit_cyan" class="zone" data-zone="Bas droit (cyan)" transform="translate(69 -35) scale(1.000)"
+          <polygon id="z_bas_droit_cyan" class="zone" data-zone="Bas droit (cyan)"
+            transform="translate(69 -35) scale(1.000)"
             points="968,1420 903,1429 839,1495 852,1608 934,1608 968,1560 968,1420" />
-          <polygon id="z_bas_gauche_orange" class="zone" data-zone="Bas gauche (orange)" transform="translate(-13 -69) scale(1.000)"
+          <polygon id="z_bas_gauche_orange" class="zone" data-zone="Bas gauche (orange)"
+            transform="translate(-13 -69) scale(1.000)"
             points="439,1302 382,1301 283,1365 297,1443 382,1443 439,1392 439,1302" />
         </g>
+
         <g id="marksLayer"></g>
       </svg>
     </div>
 
-    <!-- Collapsible table section -->
+    <!-- Collapsible table -->
     <div class="p" style="border-top:1px solid rgba(255,255,255,.06)">
       <div class="tableTitle">
         <div>
@@ -503,7 +554,17 @@
 
       <div class="reasonBox" id="reasonBox" style="display:none">
         <div class="reasonTitle">Pourquoi ? (si note ≤ 5)</div>
-        <div class="chips" id="chips"></div>
+
+        <div class="hint" id="reasonHint" style="margin-bottom:8px">
+          Choisis une catégorie puis des sous-raisons adaptées à cette zone.
+        </div>
+
+        <div class="reasonGroupTitle">Catégories</div>
+        <div class="chips" id="catChips"></div>
+
+        <div class="reasonGroupTitle" style="margin-top:10px">Sous-raisons</div>
+        <div id="subReasons"></div>
+
         <textarea id="reasonText" placeholder="Commentaire optionnel..."></textarea>
       </div>
 
@@ -616,7 +677,7 @@
     setTimeout(()=>t.classList.remove("show"), 1200);
   }
 
-  // Fullscreen
+  // ===== Fullscreen =====
   const fsBtn = $("fsBtn");
   function isFullscreen(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); }
   async function enterFullscreen(){
@@ -632,7 +693,7 @@
   document.addEventListener("webkitfullscreenchange", updateFsBtn);
   updateFsBtn();
 
-  // Orientation helper
+  // ===== Orientation helper =====
   const rotateOverlay = $("rotateOverlay");
   function checkOrientation(){
     const isMobile = window.matchMedia("(max-width: 980px)").matches;
@@ -643,7 +704,7 @@
   window.addEventListener("orientationchange", checkOrientation);
   checkOrientation();
 
-  // Collapsible table (DEFAULT HIDDEN)
+  // ===== Collapsible table (default hidden) =====
   const tableCollapse = $("tableCollapse");
   const toggleTableBtn = $("toggleTableBtn");
   let tableShown = false;
@@ -655,18 +716,195 @@
   toggleTableBtn.addEventListener("click", ()=> setTableShown(!tableShown));
   setTableShown(false);
 
-  // Ratings / People
+  // ===== Ratings / People =====
   const RATINGS_KEY = "seat_ratings_current_final";
   const PEOPLE_KEY  = "seat_people_passes_final";
 
-  const REASONS = [
-    "Trop de pression","Trop dur","Trop mou","Mauvais maintien",
-    "Gêne lombaire","Gêne cuisse","Mauvaise posture","Zone mal adaptée"
-  ];
+  // ===== Zone-specific hierarchical reasons (from your form) =====
+  const ZONE_REASON_TREES = {
+    "Dossier haut (bleu)": {
+      "__hint": "Confort du dossier • haut dossier (G1/G2) • appui tête si concerné",
+      "Présence haut de dossier (G1/G2)": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Dureté haut de dossier": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Appui tête (I)": [
+        "Présence trop faible","Présence trop forte",
+        "Dureté trop faible","Dureté trop forte",
+        "Gêne cervicale"
+      ],
+      "Ressenti": ["Pression localisée","Non homogène","Mauvais maintien","Mauvaise posture"]
+    },
+
+    "Dossier milieu (rouge)": {
+      "__hint": "Confort du dossier • zones pelvienne (E) et lombaire (F)",
+      "Zone pelvienne (E) – présence": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Zone pelvienne (E) – dureté": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Zone lombaire (F) – présence": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Zone lombaire (F) – dureté": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Ressenti": ["Pression non homogène","Points durs","Gêne lombaire","Mauvaise posture"]
+    },
+
+    "Zone centrale (gris clair)": {
+      "__hint": "Confort du dossier • homogénéité / pression",
+      "Pression": ["Non homogène","Déséquilibrée (gauche/droite)","Trop forte","Trop faible","Douleur localisée"],
+      "Dureté": ["Trop dur","Trop mou","Manque d’amorti","Rebond gênant"],
+      "Posture": ["Mauvaise posture","Manque de soutien","Instabilité / glisse"]
+    },
+
+    "Flanc droit (violet)": {
+      "__hint": "Maintien latéral • dossier (efficacité / confort)",
+      "Efficacité du dossier (maintien latéral)": ["Très faible","Faible","Moyenne","Bonne","Très bonne"],
+      "Confort maintien du dossier": ["Pression localisée","Trop serré","Pas assez de maintien","Déséquilibré"],
+      "Dureté parties latérales": ["Trop dur","Trop mou","Non homogène"]
+    },
+
+    "Flanc droit (orange)": {
+      "__hint": "Maintien latéral • dossier (zone D/H) + symétrie",
+      "Présence parties latérales (D/H)": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Dureté des parties latérales": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Symétrie du dossier": ["Très mauvaise","Mauvaise","Moyenne","Bonne","Très bonne"]
+    },
+
+    "Flanc gauche (vert)": {
+      "__hint": "Maintien latéral • dossier",
+      "Efficacité du dossier (maintien latéral)": ["Très faible","Faible","Moyenne","Bonne","Très bonne"],
+      "Confort maintien du dossier": ["Pression localisée","Trop serré","Pas assez de maintien","Déséquilibré"]
+    },
+
+    "Flanc gauche (noir)": {
+      "__hint": "Maintien latéral • dossier (zone basse) / symétrie",
+      "Symétrie du dossier": ["Très mauvaise","Mauvaise","Moyenne","Bonne","Très bonne"],
+      "Efficacité du dossier": ["Très faible","Faible","Moyenne","Bonne","Très bonne"],
+      "Confort": ["Douleur côté","Pression trop forte","Pas assez de maintien"]
+    },
+
+    "Assise bas (vert)": {
+      "__hint": "Confort de l’assise • sous ischions (A) / dureté / homogénéité",
+      "Homogénéité sous ischions (A)": ["Très mauvaise","Mauvaise","Moyenne","Bonne","Très bonne"],
+      "Dureté sous ischions": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Pression": ["Non homogène","Points durs","Douleur localisée","Engourdissement"],
+      "Longueur d’assise": [
+        "Beaucoup trop courte","Trop courte","Légèrement trop courte",
+        "Légèrement trop longue","Trop longue","Beaucoup trop longue"
+      ]
+    },
+
+    "Bande jaune": {
+      "__hint": "Avant assise • nez d’assise (B) / parties latérales avant (Cav)",
+      "Présence nez d’assise (B)": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Dureté nez d’assise": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Parties latérales avant (Cav) – présence": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Dureté parties latérales (Cav/Car)": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ]
+    },
+
+    "Bande magenta": {
+      "__hint": "Arrière assise • parties latérales arrière (Car) / maintien",
+      "Parties latérales arrière (Car) – présence": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Dureté parties latérales (Cav/Car)": [
+        "Beaucoup trop faible","Trop faible","Légèrement trop faible",
+        "Légèrement trop forte","Trop forte","Beaucoup trop forte"
+      ],
+      "Efficacité maintien assise": ["Très faible","Faible","Moyenne","Bonne","Très bonne"],
+      "Confort maintien assise": ["Trop serré","Pas assez de maintien","Pression côté","Déséquilibré"]
+    },
+
+    "Bas gauche (vert)": {
+      "__hint": "Maintien latéral • assise (symétrie / efficacité / confort)",
+      "Symétrie de l’assise": ["Très mauvaise","Mauvaise","Moyenne","Bonne","Très bonne"],
+      "Efficacité de l’assise": ["Très faible","Faible","Moyenne","Bonne","Très bonne"],
+      "Confort maintien assise": ["Pression côté","Trop serré","Pas assez de maintien","Déséquilibré"]
+    },
+
+    "Bas gauche (orange)": {
+      "__hint": "Assise • parties latérales / maintien latéral",
+      "Parties latérales (Cav/Car)": ["Présence trop faible","Présence trop forte","Dureté trop faible","Dureté trop forte","Pression non homogène"],
+      "Maintien latéral": ["Efficacité faible","Confort faible","Déséquilibré"]
+    },
+
+    "Bas droit (blanc)": {
+      "__hint": "Maintien latéral • assise (symétrie / efficacité / confort)",
+      "Symétrie de l’assise": ["Très mauvaise","Mauvaise","Moyenne","Bonne","Très bonne"],
+      "Efficacité de l’assise": ["Très faible","Faible","Moyenne","Bonne","Très bonne"],
+      "Confort maintien assise": ["Pression côté","Trop serré","Pas assez de maintien","Déséquilibré"]
+    },
+
+    "Bas droit (cyan)": {
+      "__hint": "Assise • maintien latéral / confort",
+      "Maintien latéral assise": ["Très faible","Faible","Moyen","Bon","Très bon"],
+      "Confort": ["Pression localisée","Points durs","Trop serré","Pas assez de maintien"]
+    }
+  };
+
+  const DEFAULT_REASON_TREE = {
+    "__hint": "Choisis une catégorie puis des sous-raisons.",
+    "Pression": ["Non homogène","Déséquilibrée","Trop forte","Trop faible","Douleur localisée"],
+    "Dureté": ["Trop dur","Trop mou","Manque d’amorti"],
+    "Maintien": ["Pas assez de maintien","Trop serré","Déséquilibré"],
+    "Posture": ["Mauvaise posture","Instabilité"]
+  };
 
   let ratings = loadJson(RATINGS_KEY, {});
   let activeZoneName = null;
-  let activeReasons = new Set();
+  let activeReasons = new Map(); // cat -> Set(sub)
+
+  function getReasonTreeForZone(zoneName){
+    return ZONE_REASON_TREES[zoneName] || DEFAULT_REASON_TREE;
+  }
+  function clearReasons(){ activeReasons = new Map(); }
+  function loadReasonsFromExisting(existing){
+    clearReasons();
+
+    if(existing?.reasonsTree && typeof existing.reasonsTree === "object"){
+      Object.entries(existing.reasonsTree).forEach(([cat, subs])=>{
+        activeReasons.set(cat, new Set(Array.isArray(subs) ? subs : []));
+      });
+      return;
+    }
+    if(Array.isArray(existing?.reasons) && existing.reasons.length){
+      activeReasons.set("Autre", new Set(existing.reasons));
+    }
+  }
 
   function getZones(){
     return Array.from(document.querySelectorAll(".zone")).map(z=>z.dataset.zone);
@@ -677,7 +915,7 @@
     return vals.reduce((a,b)=>a+b,0)/vals.length;
   }
 
-  // zone states (green + check)
+  // ===== Zone visuals (green + ✓) =====
   function updateZoneVisuals(){
     const marksLayer = $("marksLayer");
     if(marksLayer) marksLayer.innerHTML = "";
@@ -725,10 +963,72 @@
     updateZoneVisuals();
   }
 
-  // Bottom sheet
+  // ===== Reasons UI (zone-specific, hierarchical) =====
+  function renderReasons(score){
+    const show = Number(score) <= 5;
+    $("reasonBox").style.display = show ? "block" : "none";
+    if(!show) return;
+
+    const tree = getReasonTreeForZone(activeZoneName);
+    $("reasonHint").textContent = tree.__hint || "Choisis une catégorie puis des sous-raisons.";
+
+    const cats = Object.keys(tree).filter(k=>k !== "__hint");
+
+    $("catChips").innerHTML = cats.map(cat=>{
+      const on = activeReasons.has(cat);
+      return `<div class="chip big ${on ? "on" : ""}" data-cat="${escapeHtml(cat)}">${escapeHtml(cat)}</div>`;
+    }).join("");
+
+    document.querySelectorAll("#catChips .chip").forEach(ch=>{
+      ch.addEventListener("click", ()=>{
+        const cat = ch.dataset.cat;
+        if(activeReasons.has(cat)) activeReasons.delete(cat);
+        else activeReasons.set(cat, new Set());
+        renderReasons($("slider").value);
+      });
+    });
+
+    const selectedCats = Array.from(activeReasons.keys());
+    if(!selectedCats.length){
+      $("subReasons").innerHTML = `<div class="hint">Choisis au moins une catégorie pour voir les sous-raisons.</div>`;
+      return;
+    }
+
+    $("subReasons").innerHTML = selectedCats.map(cat=>{
+      const subs = Array.isArray(tree[cat]) ? tree[cat] : [];
+      const set = activeReasons.get(cat) || new Set();
+
+      const subsHtml = subs.map(s=>{
+        const on = set.has(s);
+        return `<div class="chip ${on ? "on" : ""}" data-cat="${escapeHtml(cat)}" data-sub="${escapeHtml(s)}">${escapeHtml(s)}</div>`;
+      }).join("");
+
+      return `
+        <div class="subWrap">
+          <div class="subHead">
+            <b>${escapeHtml(cat)}</b>
+            <span class="badgeCount">${set.size} sélection</span>
+          </div>
+          <div class="chips">${subsHtml}</div>
+        </div>`;
+    }).join("");
+
+    document.querySelectorAll("#subReasons .chip").forEach(ch=>{
+      ch.addEventListener("click", ()=>{
+        const cat = ch.dataset.cat;
+        const sub = ch.dataset.sub;
+        if(!activeReasons.has(cat)) activeReasons.set(cat, new Set());
+        const set = activeReasons.get(cat);
+        if(set.has(sub)) set.delete(sub);
+        else set.add(sub);
+        renderReasons($("slider").value);
+      });
+    });
+  }
+
+  // ===== Bottom sheet =====
   function openSheet(zoneName, el){
     activeZoneName = zoneName;
-    activeReasons = new Set();
 
     $("sheetZone").textContent = zoneName;
     document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
@@ -744,7 +1044,7 @@
       : "Aucune note encore • Choisis 1 à 10";
 
     $("reasonText").value = existing?.comment || "";
-    (existing?.reasons || []).forEach(r=>activeReasons.add(r));
+    loadReasonsFromExisting(existing);
     renderReasons(v);
 
     $("overlay").classList.add("show");
@@ -755,25 +1055,6 @@
     $("sheet").classList.remove("show");
     document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
   }
-  function renderReasons(score){
-    const show = Number(score) <= 5;
-    $("reasonBox").style.display = show ? "block" : "none";
-    if(!show) return;
-
-    $("chips").innerHTML = REASONS.map(r=>{
-      const on = activeReasons.has(r);
-      return `<div class="chip ${on?"on":""}" data-reason="${escapeHtml(r)}">${escapeHtml(r)}</div>`;
-    }).join("");
-
-    document.querySelectorAll(".chip").forEach(ch=>{
-      ch.addEventListener("click", ()=>{
-        const r = ch.dataset.reason;
-        if(activeReasons.has(r)) activeReasons.delete(r);
-        else activeReasons.add(r);
-        renderReasons($("slider").value);
-      });
-    });
-  }
 
   $("slider").addEventListener("input", ()=>{
     $("sliderVal").textContent = $("slider").value;
@@ -782,17 +1063,30 @@
 
   $("saveBtn").addEventListener("click", ()=>{
     if(!activeZoneName) return;
+
     const score = Number($("slider").value);
+
+    const reasonsTree = {};
+    activeReasons.forEach((set, cat)=>{
+      reasonsTree[cat] = Array.from(set || []);
+    });
+
+    const reasonsFlat = Object.entries(reasonsTree)
+      .flatMap(([cat, subs]) => (subs?.length ? subs.map(s=>`${cat}: ${s}`) : [`${cat}`]));
+
     ratings[activeZoneName] = {
       score,
-      reasons: score <= 5 ? Array.from(activeReasons) : [],
+      reasonsTree: score <= 5 ? reasonsTree : {},
+      reasonsFlat: score <= 5 ? reasonsFlat : [],
       comment: score <= 5 ? $("reasonText").value.trim() : ""
     };
+
     saveJson(RATINGS_KEY, ratings);
     updateSummary();
     toast("Note enregistrée");
     closeSheet();
   });
+
   $("overlay").addEventListener("click", closeSheet);
   $("closeBtn").addEventListener("click", closeSheet);
 
@@ -807,7 +1101,7 @@
     });
   });
 
-  // People table
+  // ===== People table =====
   function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
   function savePeople(arr){ saveJson(PEOPLE_KEY, arr); }
   function renderPeople(){
@@ -879,7 +1173,7 @@
       zones.forEach(z=>{
         const rz = p.ratings?.[z];
         row.push(rz?.score ?? "");
-        row.push((rz?.reasons || []).join(" | "));
+        row.push((rz?.reasonsFlat || []).join(" | "));
         row.push(rz?.comment ?? "");
       });
       lines.push(row.map(esc).join(SEP));
@@ -895,7 +1189,7 @@
     toast("CSV exporté");
   });
 
-  // SETTINGS: open/close
+  // ===== SETTINGS: open/close =====
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     settingsOverlay.classList.add("show");
@@ -912,7 +1206,7 @@
     }
   });
 
-  // SETTINGS: zone transparency
+  // ===== SETTINGS: zone transparency =====
   const ZSTYLE_KEY = "seat_zone_style_v1";
   const defaultStyle = { fillA:0.12, strokeA:0.55, strokeW:2 };
   let zStyle = loadJson(ZSTYLE_KEY, defaultStyle);
@@ -960,8 +1254,9 @@
   strokeAlpha.addEventListener("input", onStyleChange);
   strokeW.addEventListener("input", onStyleChange);
 
-  // SETTINGS: per-zone transforms
+  // ===== SETTINGS: per-zone transforms =====
   const ZTUNE_KEY = "seat_zone_tune_map_v2";
+
   const DEFAULT_TUNE = {
     "z_dossier_bleu": {dx:0, dy:-58, sc:1.000},
     "z_dossier_rouge": {dx:35, dy:-19, sc:1.000},
