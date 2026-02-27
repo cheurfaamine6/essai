@@ -1029,16 +1029,17 @@
     document.querySelectorAll(".zone").forEach(poly=>{
       poly.classList.remove("rated");
 
-      if(mode === "sujet"){
-        const on = !!greenClicked[poly.id];
-        if(!on){ hideZone(poly); return; }
+  if(mode === "sujet"){
+  const gKey = effectiveKeyForZone(poly.dataset.zone); // ✅ groupe si bolster
+  const on = !!greenClicked[gKey];                     // ✅ vert stocké par groupe
+  if(!on){ hideZone(poly); return; }
 
-        const green = "rgba(46,204,113,1)";
-        poly.style.fill = rgbaWithAlpha(green, fillA);
-        poly.style.stroke = rgbaWithAlpha(green, strokeA);
-        poly.style.strokeWidth = String(strokeW);
-        return;
-      }
+  const green = "rgba(46,204,113,1)";
+  poly.style.fill = rgbaWithAlpha(green, fillA);
+  poly.style.stroke = rgbaWithAlpha(green, strokeA);
+  poly.style.strokeWidth = String(strokeW);
+  return;
+}
 
       // mode stephane: afficher la couleur selon NOTE
       const score = getScoreForZoneName(poly.dataset.zone);
