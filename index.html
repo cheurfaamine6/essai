@@ -544,7 +544,7 @@
 <header>
   <div class="wrap top">
     <div class="brand">
-      <img class="logo" src="Forvia.png" alt="Forvia">
+<img class="logo" id="logoImg" src="forvia.png" alt="Forvia" loading="eager">     
       <div class="title">
         <b>Seat Comfort</b>
       </div>
@@ -1668,6 +1668,27 @@
   modeDureteBtn.addEventListener("click", ()=> setMode("durete"));
 
   setMode(mode);
+  // ===== Logo fallback (NEW) =====
+(function(){
+  const img = document.getElementById("logoImg");
+  if(!img) return;
+
+  const candidates = ["forvia.png","forvia.jpg","forvia.jpeg","forvia.webp","forvia.svg"];
+  let i = 0;
+
+  img.onerror = ()=>{
+    i++;
+    if(i < candidates.length){
+      img.src = candidates[i] + "?v=" + Date.now(); // cache-bust
+    }else{
+      img.style.display = "none";
+      console.warn("Logo introuvable. Mets le fichier forvia.(png/jpg/webp/svg) dans le même dossier que le HTML.");
+    }
+  };
+
+  // si le premier fichier n'existe pas, on déclenche la cascade
+  img.src = candidates[0] + "?v=" + Date.now();
+})();
 </script>
 </body>
 </html>
