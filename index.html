@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#070a14" />
   <title>Seat Comfort</title>
- 
+
   <style>
     :root{
       --bg0:#070a14; --bg1:#0b1020;
@@ -532,7 +532,7 @@
   <div class="wrap top">
     <div class="title">
       <b>Seat Comfort</b>
-      <span>Mode Sujet = tu notes • Mode Stéphane = affichage couleurs + export image (Seat_o)</span>
+      <span>Modes: Sujet (noter) • Stéphane (note) • Présence • Dureté</span>
     </div>
     <div class="row" style="gap:8px">
       <button class="btn icon" id="settingsBtn" title="Settings">⚙️ Settings</button>
@@ -563,21 +563,25 @@
     <div class="p row" style="border-top:1px solid rgba(255,255,255,.06)">
       <div class="row" style="gap:8px">
         <button class="btn small" id="modeSujetBtn">Sujet (noter)</button>
-        <button class="btn small" id="modeStephaneBtn">Pour Stéphane (affichage)</button>
+        <button class="btn small" id="modeStephaneBtn">Stéphane (note)</button>
+        <button class="btn small" id="modePresenceBtn">Présence</button>
+        <button class="btn small" id="modeDureteBtn">Dureté</button>
         <span class="pill" id="modePill">Mode —</span>
       </div>
-      <div class="hint">En mode Sujet : clic zone → note (bolsters groupés). En mode Stéphane : clic désactivé, affichage selon la note avec l’image Seat_o.</div>
+      <div class="hint">
+        Sujet: clic zone → note (bolsters groupés). Autres modes: affichage uniquement (Seat_o) basé sur la note / présence / dureté.
+      </div>
     </div>
 
     <div class="seatFrame">
       <svg id="seatSvg" viewBox="0 0 270.933 406.4" preserveAspectRatio="xMidYMid meet">
-        <!-- ✅ id sur l'image pour pouvoir changer seat.png / Seat_o.png -->
         <image id="seatImg" href="seat.png" x="0" y="0" width="270.933" height="406.4" />
 
         <g id="zonesLayer">
-          <!-- ✅ Coussin de tête -->
+          <!-- ✅ Coussin de tête (rect plus petit + plus haut) -->
           <rect id="z_tete" class="zone" data-zone="Coussin de tête"
-           x="110" y="8" width="50" height="32" rx="12" ry="12" />
+                x="110" y="8" width="50" height="32" rx="12" ry="12" />
+
           <!-- Dossier -->
           <path id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)"
             d="m 82.248776,115.24582 4.226224,-1.30038 3.576032,-0.97528 3.413487,-0.65019 3.576034,-0.65019 5.282777,-0.73146 3.90113,-0.48764 3.08839,-0.65019 1.46293,-0.16254 h 1.2191 l 2.11311,-0.0813 0.81273,-0.16255 1.70675,-0.16254 2.03183,-0.24382 1.62547,-0.0813 1.86929,0.0813 1.78802,-0.0813 1.86929,-0.0813 h 2.27566 2.27566 l 2.85054,-0.0363 h 1.72408 l 1.6666,-0.0575 1.60913,-0.11494 3.39067,0.0575 6.55147,-0.0575 4.59753,0.45976 2.87345,0.22987 2.36951,0.41311 1.78802,1.13783 0.97528,1.13783 0.81274,0.81273 0.97528,1.78802 0.32509,0.65019 0.24383,0.97528 0.32509,1.2191 0.0813,0.97528 0.16255,0.97528 -0.16255,0.89401 v 0.73146 l -0.24382,0.73147 -0.32509,1.05655 -5.44533,12.02848 -17.55507,-0.89401 -7.31462,-0.0813 -6.7457,0.0813 -9.67154,0.16255 -18.53036,-0.16255 -4.388768,0.0813 -2.438204,0.3251 -2.113111,0.48764 -2.194385,0.65019 -1.056555,0.81273 -3.169666,-6.98952 -2.275658,-6.25806 -0.894008,-2.84457 0.08127,-1.05656 0.325096,-0.73146 0.325094,-0.65019 0.48764,-0.48764 0.812734,-0.81273 z" />
@@ -591,6 +595,7 @@
           <path id="z_jaune" class="zone" data-zone="Bande jaune"
             d="m 95.496358,211.31109 12.191022,0.40637 8.04608,0.0813 h 7.9648 l 8.12735,-0.0813 5.77042,-0.0813 4.14495,-0.0813 2.4382,0.16255 1.62547,0.40636 0.81274,0.48764 0.65018,0.48764 0.56892,0.65019 0.89401,1.38165 v 1.30038 l 0.0813,1.05655 -0.16255,4.06368 -0.24382,4.47004 -0.81273,2.11311 -2.19439,1.46292 -2.03183,0.56892 -6.90825,0.97528 -6.50188,0.32509 -6.90825,0.0813 -8.53371,-0.0813 -8.20863,-0.32509 -6.25806,-0.48764 -5.201502,-1.05656 -1.381649,-0.73146 -0.894008,-0.97528 -0.650188,-1.30037 -0.406368,-1.21911 -0.08127,-10.80937 0.48764,-1.30038 0.812734,-0.97528 1.544199,-0.81274 z" />
 
+          <!-- Flancs dossier -->
           <path id="z_flanc_gauche_vert" class="zone" data-zone="Flanc gauche (vert)"
             d="m 57.379089,139.30277 -3.413488,8.2899 -1.950564,7.47716 -1.300376,7.63971 -0.650187,6.98952 -0.162547,3.57603 0.0099,0.19521 0.344813,-0.0575 0.574691,-0.68963 0.94824,-0.71837 1.839008,-0.0862 1.609132,0.40229 4.166508,1.55166 4.827399,2.12635 4.568788,2.15509 4.680799,2.84205 3.657307,2.19439 1.62547,1.2191 0.08128,0.16255 -0.162547,-6.09551 -0.406368,-5.12023 -1.219103,-7.39589 -1.869291,-6.01424 -2.925845,-6.33933 -2.682025,-4.06368 -3.250941,-3.65731 -5.770417,-4.71386 z" />
 
@@ -603,18 +608,21 @@
           <path id="z_flanc_droit_orange" class="zone" data-zone="Flanc droit (orange)"
             d="m 162.38444,183.51555 -0.16254,12.84121 0.32509,10.07792 0.16255,12.84121 0.48764,20.64347 0.16254,0.65019 2.11312,-0.97529 3.57603,-2.60075 4.87641,-3.08839 6.66443,-5.68914 4.71386,-6.01425 3.57603,-6.01423 3.25094,-9.59028 1.95057,-10.56555 0.65018,-9.59027 -0.16254,-5.68915 -2.60075,-1.13782 h -2.43821 l -3.08839,0.32509 -1.95057,0.16255 -6.98952,0.65018 -7.9648,1.30038 z" />
 
+          <!-- Assise -->
           <path id="z_magenta" class="zone" data-zone="Bande magenta"
             d="m 86.637547,262.35084 h 65.994073 l -0.48764,-14.30413 -2.4382,-2.11311 -2.11311,-0.97529 -1.78802,-0.16254 -51.364848,0.16254 -2.925847,0.65019 -1.62547,0.81274 -1.462921,1.13783 z" />
 
           <path id="z_assise_vert" class="zone" data-zone="Assise bas (vert)"
             d="m 81.598589,273.07894 73.633791,0.48766 3.73858,0.65018 1.78801,0.97528 1.30038,1.46291 0.48764,2.11312 1.78802,11.54084 0.48764,6.01424 v 2.92584 l -0.48764,1.46291 -1.13783,1.13784 -1.46293,1.13784 -2.27565,0.16253 h -1.95057 l -78.185098,0.16256 -3.088394,-0.81274 -1.462921,-1.30038 -0.812737,-1.30037 1.300377,-14.95433 1.300374,-5.68915 0.812737,-3.25094 1.462923,-1.95056 z" />
 
+          <!-- Bas droit -->
           <path id="z_bas_droit_blanc" class="zone" data-zone="Bas droit (blanc)"
             d="m 162.54699,243.98303 7.47716,30.23375 2.27566,-1.30037 3.25094,-1.3004 5.5266,-0.97528 6.33933,-1.13782 4.38877,-0.65018 3.90113,0.16253 3.08839,0.65019 2.4382,1.13784 -1.30037,-6.66443 -1.78802,-5.5266 -3.25094,-5.68914 -4.71386,-5.8517 -3.0884,-3.08839 -0.97528,-2.11311 -1.46292,-1.78801 -1.46292,-0.16255 -1.78802,0.65019 -2.60075,0.65018 z" />
 
           <path id="z_bas_droit_cyan" class="zone" data-zone="Bas droit (cyan)"
             d="m 170.02415,274.21678 2.43821,14.79177 1.13782,11.54084 0.16255,3.57602 1.13783,-0.16253 2.7633,0.32509 3.73858,-0.81274 5.36405,-1.46291 4.71387,-2.27568 3.57603,-2.60075 4.71386,-5.52659 2.27566,-5.52659 0.48764,-4.55131 0.48764,-5.68915 -1.95056,-4.87643 -0.48764,-0.48763 -2.27566,-1.13784 -2.92585,-0.65018 h -4.06367 l -15.76706,2.60074 -3.73858,1.46294 z" />
 
+          <!-- Bas gauche -->
           <path id="z_bas_gauche_orange" class="zone" data-zone="Bas gauche (orange)"
             d="m 69.082472,271.94113 6.664425,-24.21952 -6.014238,-2.92584 -5.364051,-1.13783 -4.388768,-0.48764 h -3.901128 l -1.13783,0.65019 -2.600751,2.60075 -2.925847,2.60075 -2.113111,2.60075 -2.11311,2.60075 -1.462921,2.60075 -1.625471,2.92585 -1.300376,3.73858 -1.300377,2.60075 -0.325094,0.97528 1.625471,-0.97528 2.275657,-0.81272 h 3.413487 l 3.413488,0.32509 3.250938,0.32509 4.226224,0.81272 3.250938,1.13785 2.438204,0.65018 2.438207,1.13782 z" />
 
@@ -682,6 +690,7 @@
   </aside>
 </main>
 
+<!-- rating sheet -->
 <div class="overlay" id="overlay"></div>
 <div class="sheet" id="sheet">
   <div class="sheetCard">
@@ -708,7 +717,7 @@
       <div class="scale"><span>1</span><span>5</span><span>10</span></div>
 
       <div class="reasonBox" id="reasonBox">
-        <div class="reasonTitle" id="criteriaTitle">Critères (échelle unique)</div>
+        <div class="reasonTitle" id="criteriaTitle">Critères (même échelle que la note)</div>
         <div class="hint" id="criteriaHint">Clique un critère → choisis l’évaluation.</div>
 
         <div id="criteriaList"></div>
@@ -736,6 +745,7 @@
   </div>
 </div>
 
+<!-- SETTINGS modal -->
 <div class="modalOverlay" id="settingsOverlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-label="Settings">
     <div class="modalHead">
@@ -899,24 +909,25 @@
 
   // ===== Images (same folder) =====
   const IMG_SUJET = "seat.png";
-  const IMG_STEPHANE = "Seat_o.png"; // ✅ ton nouveau fichier
-
-  function setSeatBackground(mode){
-    const img = $("seatImg");
-    if(!img) return;
-    const href = (mode === "stephane") ? IMG_STEPHANE : IMG_SUJET;
-
-    // SVG2
-    img.setAttribute("href", href);
-    // compat xlink (anciens navigateurs)
-    img.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
-  }
+  const IMG_STEPHANE = "Seat_o.png";
 
   // ===== Modes =====
-  const MODE_KEY = "seat_mode_v1";              // "sujet" | "stephane"
-  const GREEN_KEY = "seat_green_clicked_v2";    // stockage par clé effective (groupes bolsters)
+  // sujet = on note (vert)
+  // stephane = affichage note
+  // presence = affichage critère présence
+  // durete = affichage critère dureté
+  const MODE_KEY = "seat_mode_v2";
+  const GREEN_KEY = "seat_green_clicked_v2"; // stockage par clé effective (groupes bolsters)
   let mode = loadJson(MODE_KEY, "sujet");
   let greenClicked = loadJson(GREEN_KEY, {});
+
+  function setSeatBackground(m){
+    const img = $("seatImg");
+    if(!img) return;
+    const href = (m === "sujet") ? IMG_SUJET : IMG_STEPHANE;
+    img.setAttribute("href", href);
+    img.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
+  }
 
   // ===== Bolsters grouping =====
   const BOLSTER_GROUPS = [
@@ -934,21 +945,52 @@
     const g = BOLSTER_GROUPS.find(x=>x.key===key);
     return g ? g.members : [key];
   }
+  function isBolsterKey(key){
+    return BOLSTER_GROUPS.some(g => g.key === key);
+  }
 
-  // ===== Criteria model =====
+  // ===== Criteria model (✅ même échelle que la note) =====
+  const CRIT_SCALE = [
+    "Inacceptable",
+    "Très insatisfait",
+    "Insatisfait",
+    "Acceptable",
+    "Satisfait",
+    "Très satisfait",
+    "Optimum"
+  ];
+
   const CRITERIA = [
     { id:"presence",   label:"Présence" },
     { id:"durete",     label:"Dureté" },
     { id:"symetrie",   label:"Symétrie (bolsters assise/dos)" },
     { id:"homogeneite",label:"Homogénéité" }
   ];
+
+  // ✅ mêmes options pour tous (7 niveaux)
   const CRIT_OPTIONS = {
-    presence: ["Inacceptable", "Faible", "Moyenne", "Bonne", "Excellente"],
-    durete: ["Inacceptable", "Trop souple", "Correcte", "Ferme", "Très bien équilibrée"],
-    symetrie: ["Asymétrie forte", "Asymétrie modérée", "Asymétrie légère", "Bonne symétrie", "Excellente symétrie"],
-    homogeneite: ["Hétérogénéité forte", "Hétérogénéité modérée", "Hétérogénéité légère", "Bonne homogénéité", "Excellente homogénéité"]
+    presence: CRIT_SCALE,
+    durete: CRIT_SCALE,
+    symetrie: CRIT_SCALE,
+    homogeneite: CRIT_SCALE
   };
 
+  // mapping label -> "score" pour utiliser tes couleurs (sliderTheme)
+  // (on réutilise le code couleur 1..10)
+  const CRIT_TO_SCORE = {
+    "Inacceptable": 1,
+    "Très insatisfait": 2,
+    "Insatisfait": 4,
+    "Acceptable": 6,
+    "Satisfait": 8,
+    "Très satisfait": 9,
+    "Optimum": 10
+  };
+  function critLabelToScore(label){
+    return CRIT_TO_SCORE[label] ?? null;
+  }
+
+  // ===== Ratings =====
   let ratings = loadJson(RATINGS_KEY, {});
   let activeKey = null;          // clé effective (groupe si bolster)
   let activeCriteria = {};
@@ -962,6 +1004,10 @@
     const key = effectiveKeyForZone(zoneName);
     const v = ratings[key]?.score;
     return Number.isFinite(Number(v)) ? Number(v) : null;
+  }
+  function getCritForZoneName(zoneName, critId){
+    const key = effectiveKeyForZone(zoneName);
+    return ratings[key]?.criteria?.[critId] ?? "";
   }
   function avgGlobalComfort(){
     const zones = getZones();
@@ -1016,22 +1062,27 @@
     $("scoreWord").textContent = s.word;
   }
 
-  // zone style (settings)
+  // ===== zone style (settings) =====
   const ZSTYLE_KEY = "seat_zone_style_v1";
   const defaultStyle = { fillA:0.12, strokeA:0.55, strokeW:2 };
   let zStyle = loadJson(ZSTYLE_KEY, defaultStyle);
 
+  // ===== Rendering zones by mode =====
+  // sujet => vert (validation)
+  // stephane => couleur selon NOTE
+  // presence/durete => couleur selon CRITERE
   function updateZoneVisuals(){
     const fillA = Number(zStyle?.fillA ?? 0.12);
     const strokeA = Number(zStyle?.strokeA ?? 0.55);
     const strokeW = Number(zStyle?.strokeW ?? 2);
 
     document.querySelectorAll(".zone").forEach(poly=>{
+      const zoneName = poly.dataset.zone;
+
       if(mode === "sujet"){
-        const gKey = effectiveKeyForZone(poly.dataset.zone);
+        const gKey = effectiveKeyForZone(zoneName);
         const on = !!greenClicked[gKey];
         if(!on){ hideZone(poly); return; }
-
         const green = "rgba(46,204,113,1)";
         poly.style.fill = rgbaWithAlpha(green, fillA);
         poly.style.stroke = rgbaWithAlpha(green, strokeA);
@@ -1039,16 +1090,29 @@
         return;
       }
 
-      const score = getScoreForZoneName(poly.dataset.zone);
-      if(!Number.isFinite(score)){
-        hideZone(poly);
+      if(mode === "stephane"){
+        const score = getScoreForZoneName(zoneName);
+        if(!Number.isFinite(score)){ hideZone(poly); return; }
+        const theme = sliderTheme(Number(score));
+        poly.style.fill = rgbaWithAlpha(theme.col, fillA);
+        poly.style.stroke = rgbaWithAlpha(theme.col, strokeA);
+        poly.style.strokeWidth = String(strokeW);
         return;
       }
 
-      const theme = sliderTheme(Number(score));
-      poly.style.fill = rgbaWithAlpha(theme.col, fillA);
-      poly.style.stroke = rgbaWithAlpha(theme.col, strokeA);
-      poly.style.strokeWidth = String(strokeW);
+      if(mode === "presence" || mode === "durete"){
+        const critId = mode; // "presence" | "durete"
+        const label = getCritForZoneName(zoneName, critId);
+        const s = critLabelToScore(label);
+        if(!Number.isFinite(s)){ hideZone(poly); return; }
+        const theme = sliderTheme(Number(s));
+        poly.style.fill = rgbaWithAlpha(theme.col, fillA);
+        poly.style.stroke = rgbaWithAlpha(theme.col, strokeA);
+        poly.style.strokeWidth = String(strokeW);
+        return;
+      }
+
+      hideZone(poly);
     });
   }
 
@@ -1090,7 +1154,7 @@
     updateZoneVisuals();
   }
 
-  // ===== Sheet =====
+  // ===== Sheet / criteria rendering =====
   function setCriteriaDefaultsFromExisting(existing){
     activeCriteria = {};
     activeCritId = null;
@@ -1103,15 +1167,27 @@
   }
   function currentOptionsForCrit(_score, critId){ return CRIT_OPTIONS[critId] || []; }
 
+  function visibleCriteriaForActiveKey(){
+    // ✅ Symétrie seulement pour les bolsters
+    const isBolster = isBolsterKey(activeKey);
+    return CRITERIA.filter(c => (c.id !== "symetrie") ? true : isBolster);
+  }
+
   function renderCriteria(score){
-    $("criteriaTitle").textContent = "Critères (échelle unique)";
+    $("criteriaTitle").textContent = "Critères (même échelle que la note)";
     $("criteriaHint").textContent = "Clique un critère → choisis l’évaluation.";
 
     const listEl = $("criteriaList");
     const panel = $("criteriaPanel");
 
+    const criteriaList = visibleCriteriaForActiveKey();
+
+    if(!criteriaList.some(c=>c.id === activeCritId)){
+      activeCritId = null;
+    }
+
     if(!activeCritId){
-      listEl.innerHTML = CRITERIA.map(c=>{
+      listEl.innerHTML = criteriaList.map(c=>{
         const sel = activeCriteria[c.id] || "—";
         return `
           <div class="criteriaBtn" data-crit="${escapeHtml(c.id)}">
@@ -1132,7 +1208,7 @@
       return;
     }
 
-    const crit = CRITERIA.find(x=>x.id === activeCritId);
+    const crit = criteriaList.find(x=>x.id === activeCritId) || criteriaList[0];
     listEl.innerHTML = `
       <div class="criteriaBtn on" data-crit="${escapeHtml(activeCritId)}">
         <b>${escapeHtml(crit ? crit.label : "Critère")}</b>
@@ -1225,7 +1301,7 @@
     saveJson(RATINGS_KEY, ratings);
 
     if(mode === "sujet" && activeKey){
-      greenClicked[activeKey] = true; // validation verte au niveau groupe
+      greenClicked[activeKey] = true;
       saveJson(GREEN_KEY, greenClicked);
     }
 
@@ -1237,7 +1313,7 @@
   $("overlay").addEventListener("click", closeSheet);
   $("closeBtn").addEventListener("click", closeSheet);
 
-  // Click zones
+  // ✅ Click zones: on note seulement en mode Sujet
   document.querySelectorAll(".zone").forEach(el=>{
     el.addEventListener("click", (e)=>{
       e.stopPropagation();
@@ -1251,7 +1327,7 @@
         return;
       }
 
-      toast("Mode Stéphane : affichage uniquement");
+      toast("Mode affichage : clic désactivé");
     });
   });
 
@@ -1273,15 +1349,14 @@
     `).join("");
   }
 
-  // Capture PNG "Stéphane" (avec Seat_o)
+  // Capture PNG "Stéphane" (note) avec Seat_o
   async function captureSeatPngDataUrl(forceMode = "stephane"){
     const svg = document.getElementById("seatSvg");
     const clone = svg.cloneNode(true);
 
-    // ✅ met la bonne image dans le clone aussi
     const cloneImg = clone.querySelector("#seatImg");
     if(cloneImg){
-      const href = (forceMode === "stephane") ? IMG_STEPHANE : IMG_SUJET;
+      const href = (forceMode === "sujet") ? IMG_SUJET : IMG_STEPHANE;
       cloneImg.setAttribute("href", href);
       cloneImg.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
     }
@@ -1295,8 +1370,10 @@
     };
 
     clone.querySelectorAll(".zone").forEach(poly=>{
+      const zoneName = poly.dataset.zone;
+
       if(forceMode === "sujet"){
-        const gKey = effectiveKeyForZone(poly.dataset.zone);
+        const gKey = effectiveKeyForZone(zoneName);
         const on = !!greenClicked[gKey];
         if(!on){ hide(poly); return; }
         const green = "rgba(46,204,113,1)";
@@ -1304,7 +1381,8 @@
         return;
       }
 
-      const score = getScoreForZoneName(poly.dataset.zone);
+      // forceMode = "stephane" => note
+      const score = getScoreForZoneName(zoneName);
       if(!Number.isFinite(score)){ hide(poly); return; }
       const theme = sliderTheme(Number(score));
       poly.setAttribute("style", `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeW};`);
@@ -1344,9 +1422,10 @@
     const a = avgGlobalComfort();
     if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
+    // ✅ capture stéphane (NOTE) pour le CSV
     let shotPng = "";
     try{
-      shotPng = await captureSeatPngDataUrl("stephane"); // ✅ capture avec Seat_o
+      shotPng = await captureSeatPngDataUrl("stephane");
     }catch(e){
       shotPng = "";
     }
@@ -1517,9 +1596,11 @@
   strokeW.addEventListener("input", onStyleChange);
 
   // SETTINGS per-zone transforms
+  // ✅ v4 pour inclure z_tete dans defaults
   const ZTUNE_KEY = "seat_zone_tune_map_v4";
   const DEFAULT_TUNE = {
     "z_tete": {dx:0, dy:0, sc:1.000},
+
     "z_dossier_bleu": {dx:10, dy:4, sc:1.000},
     "z_dossier_rouge": {dx:10, dy:5, sc:1.000},
     "z_central_gris": {dx:11, dy:5, sc:1.000},
@@ -1540,6 +1621,12 @@
   if(!zoneTune || typeof zoneTune !== "object"){
     zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
     saveJson(ZTUNE_KEY, zoneTune);
+  }else{
+    // ✅ si tu avais déjà des réglages, on ajoute z_tete si absent
+    if(!zoneTune["z_tete"]){
+      zoneTune["z_tete"] = {...DEFAULT_TUNE["z_tete"]};
+      saveJson(ZTUNE_KEY, zoneTune);
+    }
   }
 
   const zoneSelect = $("zoneSelect");
@@ -1587,7 +1674,7 @@
 
   $("resetZoneBtn").addEventListener("click", ()=>{
     const id = zoneSelect.value;
-    zoneTune[id] = {...DEFAULT_TUNE[id]};
+    zoneTune[id] = {...(DEFAULT_TUNE[id] || {dx:0,dy:0,sc:1})};
     saveJson(ZTUNE_KEY, zoneTune);
     applyOne(id);
     loadZoneToUI(id);
@@ -1627,6 +1714,8 @@
   // Mode UI
   const modeSujetBtn = $("modeSujetBtn");
   const modeStephaneBtn = $("modeStephaneBtn");
+  const modePresenceBtn = $("modePresenceBtn");
+  const modeDureteBtn = $("modeDureteBtn");
   const modePill = $("modePill");
 
   function setMode(m){
@@ -1635,14 +1724,26 @@
 
     modeSujetBtn.classList.toggle("modeOn", mode === "sujet");
     modeStephaneBtn.classList.toggle("modeOn", mode === "stephane");
-    modePill.textContent = mode === "sujet" ? "Mode: Sujet (noter)" : "Mode: Stéphane (Seat_o)";
+    modePresenceBtn.classList.toggle("modeOn", mode === "presence");
+    modeDureteBtn.classList.toggle("modeOn", mode === "durete");
 
-    setSeatBackground(mode); // ✅ change l'image affichée
+    const label =
+      mode === "sujet" ? "Mode: Sujet (noter)" :
+      mode === "stephane" ? "Mode: Stéphane (note)" :
+      mode === "presence" ? "Mode: Présence" :
+      "Mode: Dureté";
+
+    modePill.textContent = label;
+
+    setSeatBackground(mode);
     closeSheet();
     updateZoneVisuals();
   }
+
   modeSujetBtn.addEventListener("click", ()=> setMode("sujet"));
   modeStephaneBtn.addEventListener("click", ()=> setMode("stephane"));
+  modePresenceBtn.addEventListener("click", ()=> setMode("presence"));
+  modeDureteBtn.addEventListener("click", ()=> setMode("durete"));
 
   // init
   applyUiAlpha(uiAlpha);
@@ -1655,7 +1756,6 @@
   updateSummary();
   renderPeople();
 
-  // ✅ IMPORTANT: applique l'image au lancement
   setMode(mode);
 </script>
 </body>
