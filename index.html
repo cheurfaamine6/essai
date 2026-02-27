@@ -1251,13 +1251,14 @@
     el.addEventListener("click", (e)=>{
       e.stopPropagation();
 
-      if(mode === "sujet"){
-        greenClicked[el.id] = true;
-        saveJson(GREEN_KEY, greenClicked);
-        updateZoneVisuals();
-        openSheet(el.dataset.zone, el);
-        return;
-      }
+     if(mode === "sujet"){
+  const gKey = effectiveKeyForZone(el.dataset.zone); // ✅ groupe si bolster
+  greenClicked[gKey] = true;                         // ✅ applique à tous les membres
+  saveJson(GREEN_KEY, greenClicked);
+  updateZoneVisuals();
+  openSheet(el.dataset.zone, el);
+  return;
+}
 
       toast("Mode Stéphane : affichage uniquement");
     });
