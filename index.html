@@ -1795,6 +1795,8 @@ loadZoneToUI(zoneSelect.value);
   // si le premier fichier n'existe pas, on déclenche la cascade
   img.src = candidates[0] + "?v=" + Date.now();
 })();
+/* Hide right-side profile panel (we use a modal instead) */
+aside.card{ display:none; }
 </script>
 </body>
 </html>
