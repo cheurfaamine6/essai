@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#070a14" />
   <title>Seat Comfort</title>
- 
+
   <style>
     :root{
       --bg0:#070a14; --bg1:#0b1020;
@@ -254,14 +254,13 @@
       transition:.22s cubic-bezier(.2,.8,.2,1); z-index:30; padding: 12px 12px calc(14px + env(safe-area-inset-bottom));}
     .sheet.show{transform: translateY(0)}
     .sheetCard{max-width:760px; margin:0 auto; background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.14);
-      border-radius:22px; box-shadow: var(--shadow); overflow:hidden}
+      border-radius:22px; box-shadow: 0 18px 55px rgba(0,0,0,.45); overflow:hidden}
     .grab{height:18px; display:grid; place-items:center; background: rgba(255,255,255,.03); border-bottom:1px solid rgba(255,255,255,.08)}
     .grab::before{content:""; width:56px; height:5px; border-radius:999px; background: rgba(255,255,255,.22)}
     .sheetBody{padding:14px}
     .zoneTitle{font-weight:950;font-size:1.08rem}
     .zoneMeta{color:var(--muted);font-size:.85rem;margin-top:2px}
 
-    /* ===== Slider styled + dynamic color (ONLY rating slider) ===== */
     .sheetScoreHeader{
       display:flex;
       align-items:center;
@@ -282,7 +281,6 @@
       background: var(--scolSoft);
       font-weight:950;
       letter-spacing:.2px;
-
       max-width:100%;
       flex: 1 1 auto;
       justify-content:flex-start;
@@ -303,10 +301,6 @@
     @media (max-width:720px){
       .sheetScoreHeader .hint{ display:none; }
       .scoreChip{ justify-content:center; }
-    }
-    @media (max-width:420px){
-      .scoreChip{ padding:7px 10px; }
-      .scoreChip .label{ font-size:.78rem; }
     }
 
     .ratingSlider{
@@ -463,7 +457,7 @@
 
     .toast{position:fixed; left:50%; bottom:18px; transform: translateX(-50%) translateY(20px); opacity:0; pointer-events:none;
       background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:10px 12px; z-index:60;
-      transition:.2s; box-shadow: var(--shadow); max-width:92vw;}
+      transition:.2s; box-shadow: 0 18px 55px rgba(0,0,0,.45); max-width:92vw;}
     .toast.show{opacity:1; transform: translateX(-50%) translateY(0)}
 
     .rotateOverlay{
@@ -480,7 +474,7 @@
       background: rgba(17,25,50,.92);
       border-radius:22px;
       padding:16px;
-      box-shadow: var(--shadow);
+      box-shadow: 0 18px 55px rgba(0,0,0,.45);
     }
     .rotateOverlay .box b{font-size:1.1rem}
     .rotateOverlay .box p{color:var(--muted);margin:8px 0 0}
@@ -502,7 +496,7 @@
       background: rgba(17,25,50,var(--settings-bg-alpha));
       border:1px solid rgba(255,255,255,.14);
       border-radius: 22px;
-      box-shadow: var(--shadow);
+      box-shadow: 0 18px 55px rgba(0,0,0,.45);
     }
     .modalHead{
       position:sticky; top:0;
@@ -583,7 +577,7 @@
         <button class="btn small" id="modeStephaneBtn">Pour Stéphane (affichage)</button>
         <span class="pill" id="modePill">Mode —</span>
       </div>
-      <div class="hint">En mode Sujet : clic zone → note. En mode Stéphane : clic désactivé, uniquement l’affichage selon la note.</div>
+      <div class="hint">En mode Sujet : clic zone → note (bolsters groupés). En mode Stéphane : clic désactivé, affichage selon la note.</div>
     </div>
 
     <div class="seatFrame">
@@ -918,7 +912,7 @@
 
   // ===== Modes =====
   const MODE_KEY = "seat_mode_v1";              // "sujet" | "stephane"
-  const GREEN_KEY = "seat_green_clicked_v1";    // map zoneId->true
+  const GREEN_KEY = "seat_green_clicked_v2";    // ✅ v2: stockage par clé effective (groupes bolsters)
   let mode = loadJson(MODE_KEY, "sujet");
   let greenClicked = loadJson(GREEN_KEY, {});
 
@@ -954,7 +948,7 @@
   };
 
   let ratings = loadJson(RATINGS_KEY, {});
-  let activeKey = null;
+  let activeKey = null;          // clé effective (groupe si bolster)
   let activeCriteria = {};
   let activeCritId = null;
   let activePolyId = null;
@@ -1021,34 +1015,32 @@
   }
 
   // ✅ SAME image, but display depends on mode
+  // ✅ greenClicked est stocké par "clé effective" => bolsters groupés partout
   function updateZoneVisuals(){
     const fillA = Number(zStyle?.fillA ?? 0.12);
     const strokeA = Number(zStyle?.strokeA ?? 0.55);
     const strokeW = Number(zStyle?.strokeW ?? 2);
 
     document.querySelectorAll(".zone").forEach(poly=>{
-      poly.classList.remove("rated");
+      if(mode === "sujet"){
+        const gKey = effectiveKeyForZone(poly.dataset.zone);
+        const on = !!greenClicked[gKey];
+        if(!on){ hideZone(poly); return; }
 
-  if(mode === "sujet"){
-  const gKey = effectiveKeyForZone(poly.dataset.zone); // ✅ groupe si bolster
-  const on = !!greenClicked[gKey];                     // ✅ vert stocké par groupe
-  if(!on){ hideZone(poly); return; }
+        const green = "rgba(46,204,113,1)";
+        poly.style.fill = rgbaWithAlpha(green, fillA);
+        poly.style.stroke = rgbaWithAlpha(green, strokeA);
+        poly.style.strokeWidth = String(strokeW);
+        return;
+      }
 
-  const green = "rgba(46,204,113,1)";
-  poly.style.fill = rgbaWithAlpha(green, fillA);
-  poly.style.stroke = rgbaWithAlpha(green, strokeA);
-  poly.style.strokeWidth = String(strokeW);
-  return;
-}
-
-      // mode stephane: afficher la couleur selon NOTE
+      // mode stephane: afficher la couleur selon NOTE (ratings, déjà groupés)
       const score = getScoreForZoneName(poly.dataset.zone);
       if(!Number.isFinite(score)){
         hideZone(poly);
         return;
       }
 
-      poly.classList.add("rated");
       const theme = sliderTheme(Number(score));
       poly.style.fill = rgbaWithAlpha(theme.col, fillA);
       poly.style.stroke = rgbaWithAlpha(theme.col, strokeA);
@@ -1176,7 +1168,7 @@
 
   function openSheet(zoneName, el){
     activePolyId = el?.id || null;
-    activeKey = effectiveKeyForZone(zoneName);
+    activeKey = effectiveKeyForZone(zoneName); // ✅ groupe si bolster
 
     $("sheetZone").textContent = effectiveDisplayName(zoneName);
 
@@ -1230,10 +1222,11 @@
 
     saveJson(RATINGS_KEY, ratings);
 
+    // ✅ en mode Sujet: on valide en "vert" au niveau groupe
     if(mode === "sujet" && activeKey){
-  greenClicked[activeKey] = true; // ✅ activeKey est déjà la clé groupe si bolster
-  saveJson(GREEN_KEY, greenClicked);
-}
+      greenClicked[activeKey] = true;
+      saveJson(GREEN_KEY, greenClicked);
+    }
 
     updateSummary();
     toast("Note enregistrée");
@@ -1244,20 +1237,20 @@
   $("closeBtn").addEventListener("click", closeSheet);
 
   // ✅ Click on zones:
-  // - Sujet: ouvrir la note (et valider en vert)
+  // - Sujet: ouvrir la note (et valider en vert au niveau groupe)
   // - Stéphane: pas de note (affichage uniquement)
   document.querySelectorAll(".zone").forEach(el=>{
     el.addEventListener("click", (e)=>{
       e.stopPropagation();
 
-     if(mode === "sujet"){
-  const gKey = effectiveKeyForZone(el.dataset.zone); // ✅ groupe si bolster
-  greenClicked[gKey] = true;                         // ✅ applique à tous les membres
-  saveJson(GREEN_KEY, greenClicked);
-  updateZoneVisuals();
-  openSheet(el.dataset.zone, el);
-  return;
-}
+      if(mode === "sujet"){
+        const gKey = effectiveKeyForZone(el.dataset.zone); // ✅
+        greenClicked[gKey] = true;                         // ✅ groupé
+        saveJson(GREEN_KEY, greenClicked);
+        updateZoneVisuals();
+        openSheet(el.dataset.zone, el);
+        return;
+      }
 
       toast("Mode Stéphane : affichage uniquement");
     });
@@ -1296,10 +1289,15 @@
 
     clone.querySelectorAll(".zone").forEach(poly=>{
       if(forceMode === "sujet"){
-        const on = !!greenClicked[poly.id];
+        // ✅ vert au niveau groupe aussi
+        const gKey = effectiveKeyForZone(poly.dataset.zone);
+        const on = !!greenClicked[gKey];
         if(!on){ hide(poly); return; }
         const green = "rgba(46,204,113,1)";
-        poly.setAttribute("style", `fill:${rgbaWithAlpha(green, fillA)};stroke:${rgbaWithAlpha(green, strokeA)};stroke-width:${strokeW};`);
+        poly.setAttribute(
+          "style",
+          `fill:${rgbaWithAlpha(green, fillA)};stroke:${rgbaWithAlpha(green, strokeA)};stroke-width:${strokeW};`
+        );
         return;
       }
 
@@ -1307,7 +1305,10 @@
       const score = getScoreForZoneName(poly.dataset.zone);
       if(!Number.isFinite(score)){ hide(poly); return; }
       const theme = sliderTheme(Number(score));
-      poly.setAttribute("style", `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeW};`);
+      poly.setAttribute(
+        "style",
+        `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeW};`
+      );
     });
 
     const xml = new XMLSerializer().serializeToString(clone);
@@ -1432,7 +1433,7 @@
     toast("CSV exporté");
   });
 
-  // SETTINGS open/close
+  // ===== SETTINGS open/close =====
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     settingsOverlay.classList.add("show");
@@ -1632,7 +1633,7 @@
     toast("Settings reset");
   });
 
-  // Mode UI
+  // ===== Mode UI =====
   const modeSujetBtn = $("modeSujetBtn");
   const modeStephaneBtn = $("modeStephaneBtn");
   const modePill = $("modePill");
