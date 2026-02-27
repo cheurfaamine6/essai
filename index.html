@@ -1673,7 +1673,7 @@
   const img = document.getElementById("logoImg");
   if(!img) return;
 
-  const candidates = ["forvia.png","forvia.jpg","forvia.jpeg","forvia.webp","forvia.svg"];
+  const candidates = ["Forvia.png","Forvia.jpg","Forvia.jpeg","Forvia.webp","Forvia.svg"];
   let i = 0;
 
   img.onerror = ()=>{
@@ -1682,7 +1682,7 @@
       img.src = candidates[i] + "?v=" + Date.now(); // cache-bust
     }else{
       img.style.display = "none";
-      console.warn("Logo introuvable. Mets le fichier forvia.(png/jpg/webp/svg) dans le même dossier que le HTML.");
+      console.warn("Logo introuvable. Mets le fichier Forvia.(png/jpg/webp/svg) dans le même dossier que le HTML.");
     }
   };
 
