@@ -54,7 +54,6 @@
     .top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
     .title{display:flex;flex-direction:column;gap:2px}
     .title b{font-size:1.05rem;letter-spacing:.2px}
-    /* ✅ subtitle removed */
 
     .btn{
       border:1px solid rgba(255,255,255,.14);
@@ -245,7 +244,7 @@
       transition:.22s cubic-bezier(.2,.8,.2,1); z-index:30; padding: 12px 12px calc(14px + env(safe-area-inset-bottom));}
     .sheet.show{transform: translateY(0)}
     .sheetCard{max-width:760px; margin:0 auto; background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.14);
-      border-radius:22px; box-shadow: var(--shadow); overflow:hidden}
+      border-radius:22px; box-shadow: 0 18px 55px rgba(0,0,0,.45); overflow:hidden}
     .grab{height:18px; display:grid; place-items:center; background: rgba(255,255,255,.03); border-bottom:1px solid rgba(255,255,255,.08)}
     .grab::before{content:""; width:56px; height:5px; border-radius:999px; background: rgba(255,255,255,.22)}
     .sheetBody{padding:14px}
@@ -260,7 +259,6 @@
       margin-top:10px;
       flex-wrap: wrap;
     }
-    .sheetScoreHeader > *{ min-width:0; }
 
     .scoreChip{
       display:inline-flex;
@@ -417,7 +415,6 @@
       margin-top:10px;
       display:block;
     }
-    /* ✅ Smaller comment box */
     textarea{
       width:100%;
       border:1px solid rgba(255,255,255,.14);
@@ -425,7 +422,7 @@
       color:var(--txt);
       border-radius:14px;
       padding:9px 10px;
-      min-height:56px; /* was ~90 */
+      min-height:56px;
       resize:vertical;
       margin-top:8px;
     }
@@ -449,7 +446,7 @@
 
     .toast{position:fixed; left:50%; bottom:18px; transform: translateX(-50%) translateY(20px); opacity:0; pointer-events:none;
       background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:10px 12px; z-index:60;
-      transition:.2s; box-shadow: var(--shadow); max-width:92vw;}
+      transition:.2s; box-shadow: 0 18px 55px rgba(0,0,0,.45); max-width:92vw;}
     .toast.show{opacity:1; transform: translateX(-50%) translateY(0)}
 
     .rotateOverlay{
@@ -466,7 +463,7 @@
       background: rgba(17,25,50,.92);
       border-radius:22px;
       padding:16px;
-      box-shadow: var(--shadow);
+      box-shadow: 0 18px 55px rgba(0,0,0,.45);
     }
     .rotateOverlay .box b{font-size:1.1rem}
     .rotateOverlay .box p{color:var(--muted);margin:8px 0 0}
@@ -487,7 +484,7 @@
       background: rgba(17,25,50,var(--settings-bg-alpha));
       border:1px solid rgba(255,255,255,.14);
       border-radius: 22px;
-      box-shadow: var(--shadow);
+      box-shadow: 0 18px 55px rgba(0,0,0,.45);
     }
     .modalHead{
       position:sticky; top:0;
@@ -560,7 +557,6 @@
       </div>
     </div>
 
-    <!-- ✅ removed extra explanatory text under mode buttons -->
     <div class="p row" style="border-top:1px solid rgba(255,255,255,.06)">
       <div class="row" style="gap:8px">
         <button class="btn small" id="modeSujetBtn">Sujet</button>
@@ -627,9 +623,7 @@
 
     <div class="p" style="border-top:1px solid rgba(255,255,255,.06)">
       <div class="tableTitle">
-        <div>
-          <b>Historique des personnes</b>
-        </div>
+        <div><b>Historique des personnes</b></div>
         <div class="row" style="gap:8px">
           <span class="pill" id="peopleCountPill">0 personne</span>
           <button class="btn small" id="toggleTableBtn">Afficher tableau</button>
@@ -682,6 +676,7 @@
   </aside>
 </main>
 
+<!-- rating sheet -->
 <div class="overlay" id="overlay"></div>
 <div class="sheet" id="sheet">
   <div class="sheetCard">
@@ -691,7 +686,7 @@
       <div class="zoneMeta" id="sheetMeta">Choisis une note et enregistre.</div>
 
       <div class="sheetScoreHeader">
-        <div class="hint">Fais glisser pour noter</div>
+        <div class="hint">Glisser</div>
         <div class="scoreChip" id="scoreChip">
           <span class="dot"></span>
           <span class="label" id="scoreWord">Satisfait</span>
@@ -701,14 +696,14 @@
       <input id="slider" class="ratingSlider" type="range" min="1" max="10" step="1" value="7" />
 
       <div class="scoreRow">
-        <div class="hint">1 = inconfort</div>
+        <div class="hint">1</div>
         <div class="scoreBig"><span id="sliderVal">7</span>/10</div>
-        <div class="hint">10 = excellent</div>
+        <div class="hint">10</div>
       </div>
       <div class="scale"><span>1</span><span>5</span><span>10</span></div>
 
       <div class="reasonBox" id="reasonBox">
-        <div class="reasonTitle" id="criteriaTitle">Critères</div>
+        <div class="reasonTitle">Critères</div>
         <div id="criteriaList"></div>
 
         <div id="criteriaPanel" style="display:none">
@@ -734,6 +729,7 @@
   </div>
 </div>
 
+<!-- SETTINGS modal -->
 <div class="modalOverlay" id="settingsOverlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-label="Settings">
     <div class="modalHead">
@@ -825,7 +821,7 @@
         </div>
       </div>
 
-      <div class="hint">Sauvegarde locale (localStorage).</div>
+      <div class="hint">Sauvegarde locale</div>
     </div>
   </div>
 </div>
@@ -889,11 +885,11 @@
   toggleTableBtn.addEventListener("click", ()=> setTableShown(!tableShown));
   setTableShown(false);
 
-  // Data keys
+  // Keys
   const RATINGS_KEY = "seat_ratings_current_final_v6";
   const PEOPLE_KEY  = "seat_people_passes_final_v6";
 
-  // Images (same folder)
+  // Images
   const IMG_SUJET = "seat.png";
   const IMG_STEPHANE = "Seat_o.png";
 
@@ -929,7 +925,7 @@
   }
   function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
 
-  // Criteria model (same scale as note)
+  // Criteria scale (same labels as note)
   const CRIT_SCALE = [
     "Inacceptable",
     "Très insatisfait",
@@ -962,7 +958,7 @@
   };
   function critLabelToScore(label){ return CRIT_TO_SCORE[label] ?? null; }
 
-  // Ratings
+  // Ratings state
   let ratings = loadJson(RATINGS_KEY, {});
   let activeKey = null;
   let activeCriteria = {};
@@ -1029,7 +1025,7 @@
     $("scoreWord").textContent = s.word;
   }
 
-  // zone style
+  // Zone style controls
   const ZSTYLE_KEY = "seat_zone_style_v1";
   const defaultStyle = { fillA:0.12, strokeA:0.55, strokeW:2 };
   let zStyle = loadJson(ZSTYLE_KEY, defaultStyle);
@@ -1219,9 +1215,7 @@
     $("sliderVal").textContent = v;
     applySliderUI(v);
 
-    $("sheetMeta").textContent = existing?.score
-      ? `Note : ${existing.score}/10`
-      : `Choisis 1 à 10`;
+    $("sheetMeta").textContent = existing?.score ? `Note : ${existing.score}/10` : `Choisis 1 à 10`;
 
     $("reasonText").value = existing?.comment || "";
     setCriteriaDefaultsFromExisting(existing);
@@ -1272,7 +1266,6 @@
   document.querySelectorAll(".zone").forEach(el=>{
     el.addEventListener("click", (e)=>{
       e.stopPropagation();
-
       if(mode === "sujet"){
         const gKey = effectiveKeyForZone(el.dataset.zone);
         greenClicked[gKey] = true;
@@ -1281,12 +1274,11 @@
         openSheet(el.dataset.zone, el);
         return;
       }
-
       toast("Mode affichage");
     });
   });
 
-  // People table
+  // People store
   function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
   function savePeople(arr){ saveJson(PEOPLE_KEY, arr); }
   function renderPeople(){
@@ -1304,8 +1296,31 @@
     `).join("");
   }
 
-  // Capture PNG (note mode)
-  async function captureSeatPngDataUrl(){
+  // ===== CSV helpers (organized) =====
+  function buildExportZoneKeys(){
+    const zoneNames = Array.from(document.querySelectorAll(".zone")).map(z => z.dataset.zone);
+    const keys = [];
+    const seen = new Set();
+    for(const z of zoneNames){
+      const k = effectiveKeyForZone(z);
+      if(!seen.has(k)){
+        seen.add(k);
+        keys.push(k);
+      }
+    }
+    return keys;
+  }
+  function displayNameForKey(key){
+    const members = membersForKey(key);
+    if(members.length > 1) return `${key} [${members.join(" + ")}]`;
+    return key;
+  }
+  function getRatingByKey(entryRatings, key){
+    return entryRatings?.[key] || null;
+  }
+
+  // ===== Capture renderer for modes (Seat_o) =====
+  async function captureSeatPngDataUrlForMode(modeToRender){
     const svg = document.getElementById("seatSvg");
     const clone = svg.cloneNode(true);
 
@@ -1322,10 +1337,26 @@
     const hide = (poly)=> poly.setAttribute("style", "fill:rgba(0,0,0,0);stroke:rgba(0,0,0,0);stroke-width:0;");
 
     clone.querySelectorAll(".zone").forEach(poly=>{
-      const score = getScoreForZoneName(poly.dataset.zone);
-      if(!Number.isFinite(score)){ hide(poly); return; }
-      const theme = sliderTheme(Number(score));
-      poly.setAttribute("style", `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeW};`);
+      const zoneName = poly.dataset.zone;
+
+      if(modeToRender === "stephane"){
+        const score = getScoreForZoneName(zoneName);
+        if(!Number.isFinite(score)){ hide(poly); return; }
+        const theme = sliderTheme(Number(score));
+        poly.setAttribute("style", `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeW};`);
+        return;
+      }
+
+      if(modeToRender === "presence" || modeToRender === "durete"){
+        const label = getCritForZoneName(zoneName, modeToRender);
+        const s = critLabelToScore(label);
+        if(!Number.isFinite(s)){ hide(poly); return; }
+        const theme = sliderTheme(Number(s));
+        poly.setAttribute("style", `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeW};`);
+        return;
+      }
+
+      hide(poly);
     });
 
     const xml = new XMLSerializer().serializeToString(clone);
@@ -1345,6 +1376,7 @@
     return canvas.toDataURL("image/png");
   }
 
+  // Save person (with 3 captures)
   $("savePersonBtn").addEventListener("click", async ()=>{
     const nom = $("nom").value.trim();
     const prenom = $("prenom").value.trim();
@@ -1356,15 +1388,19 @@
     const a = avgGlobalComfort();
     if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
-    let shotPng = "";
-    try{ shotPng = await captureSeatPngDataUrl(); }catch(e){ shotPng = ""; }
+    let shotNote = "", shotPresence = "", shotDurete = "";
+    try{ shotNote = await captureSeatPngDataUrlForMode("stephane"); }catch(e){ shotNote = ""; }
+    try{ shotPresence = await captureSeatPngDataUrlForMode("presence"); }catch(e){ shotPresence = ""; }
+    try{ shotDurete = await captureSeatPngDataUrlForMode("durete"); }catch(e){ shotDurete = ""; }
 
     const entry = {
       ts: new Date().toLocaleString("fr-FR"),
       nom, prenom, taille, poids,
       globalAvg: a.toFixed(1),
       ratings,
-      shotPng
+      shotNote,
+      shotPresence,
+      shotDurete
     };
 
     const people = loadPeople();
@@ -1383,6 +1419,7 @@
     updateSummary();
   });
 
+  // Reset
   $("resetBtn").addEventListener("click", ()=>{
     if(confirm("Réinitialiser les notes actuelles ?")){
       ratings = {};
@@ -1395,36 +1432,57 @@
     }
   });
 
+  // Export CSV (organized + 3 captures)
   $("exportBtn").addEventListener("click", ()=>{
     const people = loadPeople();
-    const zones = getZones();
     const SEP = ";";
     const esc = (v)=>`"${String(v??"").replaceAll('"','""')}"`;
 
-    const critCols = CRITERIA.map(c=>c.label);
-    const zoneCols = zones.flatMap(z=>[
-      `${z} score`,
-      ...critCols.map(cc=>`${z} ${cc}`),
-      `${z} comment`
-    ]);
+    const zoneKeys = buildExportZoneKeys();
 
-    const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale", ...zoneCols, "Capture PNG (dataURL)"];
-    const lines = [headers.map(esc).join(SEP)];
+    const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale"];
 
-    people.forEach(p=>{
+    const perZoneHeaders = [];
+    for(const key of zoneKeys){
+      const zn = displayNameForKey(key);
+      perZoneHeaders.push(
+        `${zn} - Score`,
+        `${zn} - Présence`,
+        `${zn} - Dureté`,
+        `${zn} - Symétrie`,
+        `${zn} - Homogénéité`,
+        `${zn} - Commentaire`
+      );
+    }
+
+    const captureHeaders = [
+      "Capture - Note (dataURL PNG)",
+      "Capture - Présence (dataURL PNG)",
+      "Capture - Dureté (dataURL PNG)"
+    ];
+
+    const allHeaders = [...headers, ...perZoneHeaders, ...captureHeaders];
+    const lines = [allHeaders.map(esc).join(SEP)];
+
+    for(const p of people){
       const row = [p.ts, p.nom, p.prenom, p.taille, p.poids, p.globalAvg];
 
-      zones.forEach(z=>{
-        const key = effectiveKeyForZone(z);
-        const rz = p.ratings?.[key];
-        row.push(rz?.score ?? "");
-        CRITERIA.forEach(c=> row.push(rz?.criteria?.[c.id] ?? ""));
-        row.push(rz?.comment ?? "");
-      });
+      for(const key of zoneKeys){
+        const rz = getRatingByKey(p.ratings, key);
 
-      row.push(p.shotPng ?? "");
+        const score = rz?.score ?? "";
+        const pres  = rz?.criteria?.presence ?? "";
+        const dur   = rz?.criteria?.durete ?? "";
+        const sym   = (isBolsterKey(key) ? (rz?.criteria?.symetrie ?? "") : "");
+        const homo  = rz?.criteria?.homogeneite ?? "";
+        const comm  = rz?.comment ?? "";
+
+        row.push(score, pres, dur, sym, homo, comm);
+      }
+
+      row.push(p.shotNote ?? "", p.shotPresence ?? "", p.shotDurete ?? "");
       lines.push(row.map(esc).join(SEP));
-    });
+    }
 
     const csv = "\uFEFF" + lines.join("\n");
     const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
@@ -1436,7 +1494,7 @@
     toast("CSV exporté");
   });
 
-  // Settings open/close
+  // SETTINGS open/close
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     settingsOverlay.classList.add("show");
@@ -1453,7 +1511,7 @@
     }
   });
 
-  // Settings UI alpha
+  // SETTINGS: UI alpha
   const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
   const defaultUiAlpha = { bg: 0.95, panel: 0.12, table: 0.10 };
   let uiAlpha = loadJson(SET_UI_ALPHA_KEY, defaultUiAlpha);
@@ -1485,7 +1543,7 @@
   setPanelA?.addEventListener("input", onUiAlphaChange);
   setTableA?.addEventListener("input", onUiAlphaChange);
 
-  // Zone style controls
+  // Zone style sliders
   const fillAlpha = $("fillAlpha");
   const strokeAlpha = $("strokeAlpha");
   const strokeW = $("strokeW");
@@ -1525,7 +1583,7 @@
   // Zone transforms
   const ZTUNE_KEY = "seat_zone_tune_map_v4";
   const DEFAULT_TUNE = {
-    "z_tete": {dx:-2, dy:30, sc:1.000},
+    "z_tete": {dx:0, dy:0, sc:1.000},
     "z_dossier_bleu": {dx:10, dy:4, sc:1.000},
     "z_dossier_rouge": {dx:10, dy:5, sc:1.000},
     "z_central_gris": {dx:11, dy:5, sc:1.000},
