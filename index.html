@@ -1479,24 +1479,31 @@
   strokeW.addEventListener("input", onStyleChange);
 
   // SETTINGS per-zone transforms
-  const ZTUNE_KEY = "seat_zone_tune_map_v2";
-  const DEFAULT_TUNE = {
-    "z_dossier_bleu": {dx:10, dy:-3, sc:1.000},
-    "z_dossier_rouge": {dx:10, dy:5, sc:1.000},
-    "z_central_gris": {dx:11, dy:5, sc:1.000},
-    "z_jaune": {dx:11, dy:5, sc:1.000},
-    "z_magenta": {dx:10, dy:0, sc:1.000},
-    "z_assise_vert": {dx:10, dy:4, sc:1.000},
-    "z_bas_gauche_vert": {dx:11, dy:4, sc:1.000},
-    "z_flanc_gauche_vert": {dx:10, dy:5, sc:1.000},
-    "z_flanc_gauche_noir": {dx:10, dy:5, sc:1.000},
-    "z_flanc_droit_violet": {dx:10, dy:4, sc:1.000},
-    "z_flanc_droit_orange": {dx:10, dy:5, sc:1.000},
-    "z_bas_droit_blanc": {dx:10, dy:4, sc:1.000},
-    "z_bas_droit_cyan": {dx:11, dy:5, sc:1.000},
-    "z_bas_gauche_orange": {dx:1, dy:4, sc:1.000}
-  };
-  let zoneTune = loadJson(ZTUNE_KEY, DEFAULT_TUNE);
+const ZTUNE_KEY = "seat_zone_tune_map_v3"; // ✅ NEW version => force new defaults once per device
+
+const DEFAULT_TUNE = {
+  "z_dossier_bleu":        {dx:10, dy:-3, sc:1.000},
+  "z_dossier_rouge":       {dx:10, dy: 5, sc:1.000},
+  "z_central_gris":        {dx:11, dy: 5, sc:1.000},
+  "z_jaune":               {dx:11, dy: 5, sc:1.000},
+  "z_magenta":             {dx:10, dy: 0, sc:1.000},
+  "z_assise_vert":         {dx:10, dy: 4, sc:1.000},
+  "z_bas_gauche_vert":     {dx:11, dy: 4, sc:1.000},
+  "z_flanc_gauche_vert":   {dx:10, dy: 5, sc:1.000},
+  "z_flanc_gauche_noir":   {dx:10, dy: 5, sc:1.000},
+  "z_flanc_droit_violet":  {dx:10, dy: 4, sc:1.000},
+  "z_flanc_droit_orange":  {dx:10, dy: 5, sc:1.000},
+  "z_bas_droit_blanc":     {dx:10, dy: 4, sc:1.000},
+  "z_bas_droit_cyan":      {dx:11, dy: 5, sc:1.000},
+  "z_bas_gauche_orange":   {dx: 1, dy: 4, sc:1.000}
+};
+
+// ✅ If user has local overrides => keep them, otherwise use defaults
+let zoneTune = loadJson(ZTUNE_KEY, null);
+if(!zoneTune || typeof zoneTune !== "object"){
+  zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
+  saveJson(ZTUNE_KEY, zoneTune);
+}
 
   const zoneSelect = $("zoneSelect");
   const zdxEl = $("zdx"), zdyEl = $("zdy"), zscEl = $("zsc");
