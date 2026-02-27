@@ -845,12 +845,116 @@
     </div>
   </div>
 </div>
+<!-- PROFILE modal -->
+<div class="modalOverlay" id="profileOverlay" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Profil testeur">
+    <div class="modalHead">
+      <b>👤 Profil testeur</b>
+      <div class="row" style="gap:8px">
+        <button class="btn small ghost" id="profileCancelBtn">Annuler</button>
+        <button class="btn small" id="profileOkBtn">Continuer</button>
+      </div>
+    </div>
 
+    <div class="modalBody">
+      <div class="section">
+        <h3>Informations</h3>
+
+        <div class="twoCol">
+          <div class="field">
+            <label>Nom</label>
+            <input id="p_nom" placeholder="Ex: Dupont">
+          </div>
+          <div class="field">
+            <label>Prénom</label>
+            <input id="p_prenom" placeholder="Ex: Amine">
+          </div>
+          <div class="field">
+            <label>Taille (cm)</label>
+            <input id="p_taille" inputmode="numeric" placeholder="178">
+          </div>
+          <div class="field">
+            <label>Poids (kg)</label>
+            <input id="p_poids" inputmode="numeric" placeholder="75">
+          </div>
+        </div>
+
+        <div class="hint" style="margin-top:10px">
+          Remplis le profil puis clique sur <b>Continuer</b> pour passer à la suite (notation des zones).
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="toast" id="toast">OK</div>
 
 <script>
   const $ = (id)=>document.getElementById(id);
+// ===== PROFILE modal logic =====
+const profileOverlay = $("profileOverlay");
+let profileNextAction = null; // function to call after profile is valid
 
+function openProfileModal(nextAction){
+  profileNextAction = nextAction || null;
+
+  // préremplir depuis les champs existants (si tu les gardes dans le HTML)
+  $("p_nom").value = ($("nom")?.value || "").trim();
+  $("p_prenom").value = ($("prenom")?.value || "").trim();
+  $("p_taille").value = ($("taille")?.value || "").trim();
+  $("p_poids").value = ($("poids")?.value || "").trim();
+
+  profileOverlay.classList.add("show");
+  profileOverlay.setAttribute("aria-hidden","false");
+  setTimeout(()=> $("p_nom").focus(), 50);
+}
+
+function closeProfileModal(){
+  profileOverlay.classList.remove("show");
+  profileOverlay.setAttribute("aria-hidden","true");
+}
+
+function readProfileFromModal(){
+  const nom = $("p_nom").value.trim();
+  const prenom = $("p_prenom").value.trim();
+  const taille = $("p_taille").value.trim();
+  const poids = $("p_poids").value.trim();
+  return { nom, prenom, taille, poids };
+}
+
+function writeProfileBackToHiddenInputs(p){
+  // on garde tes inputs existants (nom/prenom/taille/poids) comme "storage"
+  if($("nom")) $("nom").value = p.nom;
+  if($("prenom")) $("prenom").value = p.prenom;
+  if($("taille")) $("taille").value = p.taille;
+  if($("poids")) $("poids").value = p.poids;
+}
+
+$("profileCancelBtn").addEventListener("click", ()=>{
+  closeProfileModal();
+  profileNextAction = null;
+});
+
+$("profileOkBtn").addEventListener("click", ()=>{
+  const p = readProfileFromModal();
+  if(!p.nom || !p.prenom){
+    toast("⚠️ Nom + prénom requis");
+    return;
+  }
+  // optionnel: contrôle taille/poids si tu veux
+  writeProfileBackToHiddenInputs(p);
+  closeProfileModal();
+
+  if(typeof profileNextAction === "function"){
+    profileNextAction(p);
+  }else{
+    toast("✅ Profil OK — passe à la suite");
+  }
+});
+
+// fermer si clic dehors
+profileOverlay.addEventListener("click", (e)=>{
+  if(e.target === profileOverlay) closeProfileModal();
+});
   function loadJson(key, fallback){
     try { return JSON.parse(localStorage.getItem(key) || "") || fallback; }
     catch { return fallback; }
@@ -1431,13 +1535,9 @@
   }
 
   // Save person (3 captures)
-  $("savePersonBtn").addEventListener("click", async ()=>{
-    const nom = $("nom").value.trim();
-    const prenom = $("prenom").value.trim();
-    const taille = $("taille").value.trim();
-    const poids = $("poids").value.trim();
-
-    if(!nom || !prenom){ toast("⚠️ Nom + prénom requis"); return; }
+ $("savePersonBtn").addEventListener("click", async ()=>{
+  openProfileModal(async (p)=>{
+    // ici le profil est validé => on peut sauvegarder
     const a = avgGlobalComfort();
     if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
@@ -1448,13 +1548,30 @@
 
     const entry = {
       ts: new Date().toLocaleString("fr-FR"),
-      nom, prenom, taille, poids,
+      nom: p.nom, prenom: p.prenom, taille: p.taille, poids: p.poids,
       globalAvg: a.toFixed(1),
       ratings,
       shotNote,
       shotPresence,
       shotDurete
     };
+
+    const people = loadPeople();
+    people.push(entry);
+    savePeople(people);
+
+    toast("✅ Enregistré");
+    renderPeople();
+
+    // reset notes pour la prochaine personne
+    ratings = {};
+    saveJson(RATINGS_KEY, ratings);
+    greenClicked = {};
+    saveJson(GREEN_KEY, greenClicked);
+
+    updateSummary();
+  });
+});
 
     const people = loadPeople();
     people.push(entry);
@@ -1473,16 +1590,25 @@
 
   // Reset
   $("resetBtn").addEventListener("click", ()=>{
-    if(confirm("Réinitialiser les notes actuelles ?")){
-      ratings = {};
-      saveJson(RATINGS_KEY, ratings);
-      greenClicked = {};
-      saveJson(GREEN_KEY, greenClicked);
-      updateSummary();
-      toast("Réinitialisé");
-      closeSheet();
-    }
+  if(!confirm("Réinitialiser les notes actuelles et changer de personne ?")) return;
+
+  // reset notes
+  ratings = {};
+  saveJson(RATINGS_KEY, ratings);
+  greenClicked = {};
+  saveJson(GREEN_KEY, greenClicked);
+
+  updateSummary();
+  closeSheet();
+  toast("Réinitialisé");
+
+  // demander le profil pour la nouvelle personne
+  openProfileModal(()=>{
+    toast("✅ Profil chargé — passe à la suite");
+    // optionnel : tu peux forcer le mode sujet
+    setMode("sujet");
   });
+});
 
   // Export CSV organized + 3 captures
   $("exportBtn").addEventListener("click", ()=>{
