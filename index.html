@@ -30,7 +30,7 @@
       --scolBorder: rgba(124,58,237,.55);
       --pct: 66%;
 
-      /* ✅ Settings transparency */
+      /* Settings transparency */
       --settings-bg-alpha: .95;
       --settings-panel-alpha: .12;
       --settings-table-alpha: .10;
@@ -75,7 +75,7 @@
     .btn.small{padding:8px 10px;border-radius:12px}
     .btn.icon{display:inline-flex;gap:8px;align-items:center}
 
-    /* ✅ mode active */
+    /* mode active */
     .btn.modeOn{
       border-color: rgba(46,204,113,.55);
       background: rgba(46,204,113,.16);
@@ -130,7 +130,7 @@
       outline:none;
     }
 
-    /* ✅ Settings sliders */
+    /* Settings sliders */
     .modal input[type="range"]{
       width:100%;
       accent-color: var(--a1);
@@ -165,7 +165,7 @@
       stroke-width: var(--zone-stroke-width);
       cursor:pointer;
       transition:.12s;
-      pointer-events: all; /* clickable même transparent */
+      pointer-events: all;
     }
     .zone.active{
       fill: var(--zone-fill-active);
@@ -548,7 +548,7 @@
   <div class="wrap top">
     <div class="title">
       <b>Seat Comfort</b>
-      <span>Zones cliquables → note 1–10 → critères + commentaires</span>
+      <span>Mode Sujet = tu notes • Mode Stéphane = affichage couleurs + export image</span>
     </div>
     <div class="row" style="gap:8px">
       <button class="btn icon" id="settingsBtn" title="Settings">⚙️ Settings</button>
@@ -576,14 +576,14 @@
       </div>
     </div>
 
-    <!-- ✅ Mode buttons -->
+    <!-- Mode buttons -->
     <div class="p row" style="border-top:1px solid rgba(255,255,255,.06)">
       <div class="row" style="gap:8px">
-        <button class="btn small" id="modeSujetBtn">Sujet</button>
-        <button class="btn small" id="modeStephaneBtn">Pour Stéphane</button>
+        <button class="btn small" id="modeSujetBtn">Sujet (noter)</button>
+        <button class="btn small" id="modeStephaneBtn">Pour Stéphane (affichage)</button>
         <span class="pill" id="modePill">Mode —</span>
       </div>
-      <div class="hint">Sujet = clic → vert • Stéphane = clic → note → couleur</div>
+      <div class="hint">En mode Sujet : clic zone → note. En mode Stéphane : clic désactivé, uniquement l’affichage selon la note.</div>
     </div>
 
     <div class="seatFrame">
@@ -917,9 +917,9 @@
   const PEOPLE_KEY  = "seat_people_passes_final_v6";
 
   // ===== Modes =====
-  const MODE_KEY = "seat_mode_v1";           // "sujet" | "stephane"
-  const GREEN_KEY = "seat_green_clicked_v1"; // map zoneId -> true
-  let mode = loadJson(MODE_KEY, "stephane");
+  const MODE_KEY = "seat_mode_v1";              // "sujet" | "stephane"
+  const GREEN_KEY = "seat_green_clicked_v1";    // map zoneId->true
+  let mode = loadJson(MODE_KEY, "sujet");
   let greenClicked = loadJson(GREEN_KEY, {});
 
   // ===== Bolsters grouping =====
@@ -957,6 +957,7 @@
   let activeKey = null;
   let activeCriteria = {};
   let activeCritId = null;
+  let activePolyId = null;
 
   function getZones(){
     return Array.from(document.querySelectorAll(".zone")).map(z=>z.dataset.zone);
@@ -1019,7 +1020,7 @@
     $("scoreWord").textContent = s.word;
   }
 
-  // ✅ Mode-based visuals on the SAME image
+  // ✅ SAME image, but display depends on mode
   function updateZoneVisuals(){
     const fillA = Number(zStyle?.fillA ?? 0.12);
     const strokeA = Number(zStyle?.strokeA ?? 0.55);
@@ -1039,6 +1040,7 @@
         return;
       }
 
+      // mode stephane: afficher la couleur selon NOTE
       const score = getScoreForZoneName(poly.dataset.zone);
       if(!Number.isFinite(score)){
         hideZone(poly);
@@ -1172,6 +1174,7 @@
   }
 
   function openSheet(zoneName, el){
+    activePolyId = el?.id || null;
     activeKey = effectiveKeyForZone(zoneName);
 
     $("sheetZone").textContent = effectiveDisplayName(zoneName);
@@ -1184,7 +1187,6 @@
 
     $("slider").value = v;
     $("sliderVal").textContent = v;
-
     applySliderUI(v);
 
     const isGrouped = (activeKey !== zoneName);
@@ -1226,6 +1228,13 @@
     };
 
     saveJson(RATINGS_KEY, ratings);
+
+    // ✅ en mode Sujet, on garde la zone validée (verte) même après la note
+    if(mode === "sujet" && activePolyId){
+      greenClicked[activePolyId] = true;
+      saveJson(GREEN_KEY, greenClicked);
+    }
+
     updateSummary();
     toast("Note enregistrée");
     closeSheet();
@@ -1234,23 +1243,26 @@
   $("overlay").addEventListener("click", closeSheet);
   $("closeBtn").addEventListener("click", closeSheet);
 
-  // ✅ Click logic depends on mode
+  // ✅ Click on zones:
+  // - Sujet: ouvrir la note (et valider en vert)
+  // - Stéphane: pas de note (affichage uniquement)
   document.querySelectorAll(".zone").forEach(el=>{
     el.addEventListener("click", (e)=>{
       e.stopPropagation();
 
       if(mode === "sujet"){
-        greenClicked[el.id] = !greenClicked[el.id];
+        greenClicked[el.id] = true;
         saveJson(GREEN_KEY, greenClicked);
         updateZoneVisuals();
+        openSheet(el.dataset.zone, el);
         return;
       }
 
-      openSheet(el.dataset.zone, el);
+      toast("Mode Stéphane : affichage uniquement");
     });
   });
 
-  // ===== People table =====
+  // People table
   function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
   function savePeople(arr){ saveJson(PEOPLE_KEY, arr); }
   function renderPeople(){
@@ -1268,11 +1280,36 @@
     `).join("");
   }
 
-  // ✅ SVG screenshot (dataURL PNG)
-  async function captureSeatPngDataUrl(){
+  // ✅ Capture PNG of "Mode Stéphane" render for CSV/person
+  async function captureSeatPngDataUrl(forceMode = "stephane"){
     const svg = document.getElementById("seatSvg");
-    const xml = new XMLSerializer().serializeToString(svg);
+    const clone = svg.cloneNode(true);
 
+    const fillA = Number(zStyle?.fillA ?? 0.12);
+    const strokeA = Number(zStyle?.strokeA ?? 0.55);
+    const strokeW = Number(zStyle?.strokeW ?? 2);
+
+    const hide = (poly)=>{
+      poly.setAttribute("style", "fill:rgba(0,0,0,0);stroke:rgba(0,0,0,0);stroke-width:0;");
+    };
+
+    clone.querySelectorAll(".zone").forEach(poly=>{
+      if(forceMode === "sujet"){
+        const on = !!greenClicked[poly.id];
+        if(!on){ hide(poly); return; }
+        const green = "rgba(46,204,113,1)";
+        poly.setAttribute("style", `fill:${rgbaWithAlpha(green, fillA)};stroke:${rgbaWithAlpha(green, strokeA)};stroke-width:${strokeW};`);
+        return;
+      }
+
+      // stephane: couleur selon notes
+      const score = getScoreForZoneName(poly.dataset.zone);
+      if(!Number.isFinite(score)){ hide(poly); return; }
+      const theme = sliderTheme(Number(score));
+      poly.setAttribute("style", `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeW};`);
+    });
+
+    const xml = new XMLSerializer().serializeToString(clone);
     const svgBlob = new Blob([xml], {type:"image/svg+xml;charset=utf-8"});
     const url = URL.createObjectURL(svgBlob);
 
@@ -1306,10 +1343,10 @@
     const a = avgGlobalComfort();
     if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
+    // ✅ capture stéphane (couleurs selon notes) pour chaque personne
     let shotPng = "";
     try{
-      // capture seulement en mode Stéphane (notes)
-      if(mode === "stephane") shotPng = await captureSeatPngDataUrl();
+      shotPng = await captureSeatPngDataUrl("stephane");
     }catch(e){
       shotPng = "";
     }
@@ -1329,8 +1366,13 @@
     toast("✅ Personne enregistrée");
     renderPeople();
 
+    // reset current person ratings + greens
     ratings = {};
     saveJson(RATINGS_KEY, ratings);
+
+    greenClicked = {};
+    saveJson(GREEN_KEY, greenClicked);
+
     updateSummary();
   });
 
@@ -1338,6 +1380,10 @@
     if(confirm("Réinitialiser les notes actuelles (personne en cours) ?")){
       ratings = {};
       saveJson(RATINGS_KEY, ratings);
+
+      greenClicked = {};
+      saveJson(GREEN_KEY, greenClicked);
+
       updateSummary();
       toast("Réinitialisé");
       closeSheet();
@@ -1385,7 +1431,7 @@
     toast("CSV exporté");
   });
 
-  // ===== SETTINGS open/close =====
+  // SETTINGS open/close
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     settingsOverlay.classList.add("show");
@@ -1402,7 +1448,7 @@
     }
   });
 
-  // ===== SETTINGS: modal/panels/table transparency =====
+  // SETTINGS: modal/panels/table transparency
   const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
   const defaultUiAlpha = { bg: 0.95, panel: 0.12, table: 0.10 };
   let uiAlpha = loadJson(SET_UI_ALPHA_KEY, defaultUiAlpha);
@@ -1436,7 +1482,7 @@
   setPanelA?.addEventListener("input", onUiAlphaChange);
   setTableA?.addEventListener("input", onUiAlphaChange);
 
-  // ===== SETTINGS: zone transparency =====
+  // SETTINGS: zone transparency
   const ZSTYLE_KEY = "seat_zone_style_v1";
   const defaultStyle = { fillA:0.12, strokeA:0.55, strokeW:2 };
   let zStyle = loadJson(ZSTYLE_KEY, defaultStyle);
@@ -1472,13 +1518,13 @@
     zStyle = { fillA: Number(fillAlpha.value), strokeA: Number(strokeAlpha.value), strokeW: Number(strokeW.value) };
     saveJson(ZSTYLE_KEY, zStyle);
     applyZoneStyle(zStyle);
-    updateZoneVisuals(); // ✅ refresh colors with new alpha/width
+    updateZoneVisuals();
   }
   fillAlpha.addEventListener("input", onStyleChange);
   strokeAlpha.addEventListener("input", onStyleChange);
   strokeW.addEventListener("input", onStyleChange);
 
-  // ===== SETTINGS per-zone transforms =====
+  // SETTINGS per-zone transforms
   const ZTUNE_KEY = "seat_zone_tune_map_v3";
   const DEFAULT_TUNE = {
     "z_dossier_bleu": {dx:10, dy:4, sc:1.000},
@@ -1585,7 +1631,7 @@
     toast("Settings reset");
   });
 
-  // ===== Mode UI =====
+  // Mode UI
   const modeSujetBtn = $("modeSujetBtn");
   const modeStephaneBtn = $("modeStephaneBtn");
   const modePill = $("modePill");
@@ -1596,16 +1642,15 @@
 
     modeSujetBtn.classList.toggle("modeOn", mode === "sujet");
     modeStephaneBtn.classList.toggle("modeOn", mode === "stephane");
-    modePill.textContent = mode === "sujet" ? "Mode: Sujet (vert)" : "Mode: Pour Stéphane (notes)";
+    modePill.textContent = mode === "sujet" ? "Mode: Sujet (noter)" : "Mode: Stéphane (affichage)";
 
     closeSheet();
     updateZoneVisuals();
   }
-
   modeSujetBtn.addEventListener("click", ()=> setMode("sujet"));
   modeStephaneBtn.addEventListener("click", ()=> setMode("stephane"));
 
-  // ===== init =====
+  // init
   applyUiAlpha(uiAlpha);
   applyZoneStyle(zStyle);
 
@@ -1616,7 +1661,7 @@
   updateSummary();
   renderPeople();
 
-  setMode(mode); // init mode + visuals
+  setMode(mode);
 </script>
 </body>
 </html>
