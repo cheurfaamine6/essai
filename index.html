@@ -24,13 +24,11 @@
       --zone-stroke-active: rgba(124,58,237,.98);
       --zone-stroke-width-active: 3px;
 
-      /* Slider dynamic theming (only for rating slider) */
       --scol: rgba(124,58,237,1);
       --scolSoft: rgba(124,58,237,.14);
       --scolBorder: rgba(124,58,237,.55);
       --pct: 66%;
 
-      /* Settings transparency */
       --settings-bg-alpha: .95;
       --settings-panel-alpha: .12;
       --settings-table-alpha: .10;
@@ -75,7 +73,6 @@
     .btn.small{padding:8px 10px;border-radius:12px}
     .btn.icon{display:inline-flex;gap:8px;align-items:center}
 
-    /* mode active */
     .btn.modeOn{
       border-color: rgba(46,204,113,.55);
       background: rgba(46,204,113,.16);
@@ -130,17 +127,12 @@
       outline:none;
     }
 
-    /* Settings sliders */
-    .modal input[type="range"]{
-      width:100%;
-      accent-color: var(--a1);
-    }
+    .modal input[type="range"]{ width:100%; accent-color: var(--a1); }
     .modal input[type="range"]::-webkit-slider-runnable-track{ background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.12); height:10px; border-radius:999px; }
     .modal input[type="range"]::-webkit-slider-thumb{ -webkit-appearance:auto; }
     .modal input[type="range"]::-moz-range-track{ background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.12); height:10px; border-radius:999px; }
     .modal input[type="range"]::-moz-range-progress{ background: rgba(255,255,255,.20); height:10px; border-radius:999px; }
 
-    /* Seat SVG */
     .seatFrame{
       width:100%;
       border-top: 1px solid rgba(255,255,255,.06);
@@ -247,14 +239,13 @@
     .bar > i.s78, .bar > i.s9 { background: rgba(46,204,113,1); }
     .bar > i.s10              { background: rgba(0,229,255,1); }
 
-    /* Bottom sheet */
     .overlay{position:fixed; inset:0; background: rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:.18s; z-index:20}
     .overlay.show{opacity:1; pointer-events:auto}
     .sheet{position:fixed; left:0; right:0; bottom:0; transform: translateY(105%);
       transition:.22s cubic-bezier(.2,.8,.2,1); z-index:30; padding: 12px 12px calc(14px + env(safe-area-inset-bottom));}
     .sheet.show{transform: translateY(0)}
     .sheetCard{max-width:760px; margin:0 auto; background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.14);
-      border-radius:22px; box-shadow: 0 18px 55px rgba(0,0,0,.45); overflow:hidden}
+      border-radius:22px; box-shadow: var(--shadow); overflow:hidden}
     .grab{height:18px; display:grid; place-items:center; background: rgba(255,255,255,.03); border-bottom:1px solid rgba(255,255,255,.08)}
     .grab::before{content:""; width:56px; height:5px; border-radius:999px; background: rgba(255,255,255,.22)}
     .sheetBody{padding:14px}
@@ -457,7 +448,7 @@
 
     .toast{position:fixed; left:50%; bottom:18px; transform: translateX(-50%) translateY(20px); opacity:0; pointer-events:none;
       background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:10px 12px; z-index:60;
-      transition:.2s; box-shadow: 0 18px 55px rgba(0,0,0,.45); max-width:92vw;}
+      transition:.2s; box-shadow: var(--shadow); max-width:92vw;}
     .toast.show{opacity:1; transform: translateX(-50%) translateY(0)}
 
     .rotateOverlay{
@@ -474,12 +465,11 @@
       background: rgba(17,25,50,.92);
       border-radius:22px;
       padding:16px;
-      box-shadow: 0 18px 55px rgba(0,0,0,.45);
+      box-shadow: var(--shadow);
     }
     .rotateOverlay .box b{font-size:1.1rem}
     .rotateOverlay .box p{color:var(--muted);margin:8px 0 0}
 
-    /* SETTINGS modal */
     .modalOverlay{
       position:fixed; inset:0; z-index:80;
       background: rgba(0,0,0,.60);
@@ -496,7 +486,7 @@
       background: rgba(17,25,50,var(--settings-bg-alpha));
       border:1px solid rgba(255,255,255,.14);
       border-radius: 22px;
-      box-shadow: 0 18px 55px rgba(0,0,0,.45);
+      box-shadow: var(--shadow);
     }
     .modalHead{
       position:sticky; top:0;
@@ -542,7 +532,7 @@
   <div class="wrap top">
     <div class="title">
       <b>Seat Comfort</b>
-      <span>Mode Sujet = tu notes • Mode Stéphane = affichage couleurs + export image</span>
+      <span>Mode Sujet = tu notes • Mode Stéphane = affichage couleurs + export image (Seat_o)</span>
     </div>
     <div class="row" style="gap:8px">
       <button class="btn icon" id="settingsBtn" title="Settings">⚙️ Settings</button>
@@ -570,19 +560,19 @@
       </div>
     </div>
 
-    <!-- Mode buttons -->
     <div class="p row" style="border-top:1px solid rgba(255,255,255,.06)">
       <div class="row" style="gap:8px">
         <button class="btn small" id="modeSujetBtn">Sujet (noter)</button>
         <button class="btn small" id="modeStephaneBtn">Pour Stéphane (affichage)</button>
         <span class="pill" id="modePill">Mode —</span>
       </div>
-      <div class="hint">En mode Sujet : clic zone → note (bolsters groupés). En mode Stéphane : clic désactivé, affichage selon la note.</div>
+      <div class="hint">En mode Sujet : clic zone → note (bolsters groupés). En mode Stéphane : clic désactivé, affichage selon la note avec l’image Seat_o.</div>
     </div>
 
     <div class="seatFrame">
       <svg id="seatSvg" viewBox="0 0 270.933 406.4" preserveAspectRatio="xMidYMid meet">
-        <image href="seat.png" x="0" y="0" width="270.933" height="406.4" />
+        <!-- ✅ id sur l'image pour pouvoir changer seat.png / Seat_o.png -->
+        <image id="seatImg" href="seat.png" x="0" y="0" width="270.933" height="406.4" />
 
         <g id="zonesLayer">
           <!-- Dossier -->
@@ -598,7 +588,6 @@
           <path id="z_jaune" class="zone" data-zone="Bande jaune"
             d="m 95.496358,211.31109 12.191022,0.40637 8.04608,0.0813 h 7.9648 l 8.12735,-0.0813 5.77042,-0.0813 4.14495,-0.0813 2.4382,0.16255 1.62547,0.40636 0.81274,0.48764 0.65018,0.48764 0.56892,0.65019 0.89401,1.38165 v 1.30038 l 0.0813,1.05655 -0.16255,4.06368 -0.24382,4.47004 -0.81273,2.11311 -2.19439,1.46292 -2.03183,0.56892 -6.90825,0.97528 -6.50188,0.32509 -6.90825,0.0813 -8.53371,-0.0813 -8.20863,-0.32509 -6.25806,-0.48764 -5.201502,-1.05656 -1.381649,-0.73146 -0.894008,-0.97528 -0.650188,-1.30037 -0.406368,-1.21911 -0.08127,-10.80937 0.48764,-1.30038 0.812734,-0.97528 1.544199,-0.81274 z" />
 
-          <!-- Flancs dossier -->
           <path id="z_flanc_gauche_vert" class="zone" data-zone="Flanc gauche (vert)"
             d="m 57.379089,139.30277 -3.413488,8.2899 -1.950564,7.47716 -1.300376,7.63971 -0.650187,6.98952 -0.162547,3.57603 0.0099,0.19521 0.344813,-0.0575 0.574691,-0.68963 0.94824,-0.71837 1.839008,-0.0862 1.609132,0.40229 4.166508,1.55166 4.827399,2.12635 4.568788,2.15509 4.680799,2.84205 3.657307,2.19439 1.62547,1.2191 0.08128,0.16255 -0.162547,-6.09551 -0.406368,-5.12023 -1.219103,-7.39589 -1.869291,-6.01424 -2.925845,-6.33933 -2.682025,-4.06368 -3.250941,-3.65731 -5.770417,-4.71386 z" />
 
@@ -611,21 +600,18 @@
           <path id="z_flanc_droit_orange" class="zone" data-zone="Flanc droit (orange)"
             d="m 162.38444,183.51555 -0.16254,12.84121 0.32509,10.07792 0.16255,12.84121 0.48764,20.64347 0.16254,0.65019 2.11312,-0.97529 3.57603,-2.60075 4.87641,-3.08839 6.66443,-5.68914 4.71386,-6.01425 3.57603,-6.01423 3.25094,-9.59028 1.95057,-10.56555 0.65018,-9.59027 -0.16254,-5.68915 -2.60075,-1.13782 h -2.43821 l -3.08839,0.32509 -1.95057,0.16255 -6.98952,0.65018 -7.9648,1.30038 z" />
 
-          <!-- Assise -->
           <path id="z_magenta" class="zone" data-zone="Bande magenta"
             d="m 86.637547,262.35084 h 65.994073 l -0.48764,-14.30413 -2.4382,-2.11311 -2.11311,-0.97529 -1.78802,-0.16254 -51.364848,0.16254 -2.925847,0.65019 -1.62547,0.81274 -1.462921,1.13783 z" />
 
           <path id="z_assise_vert" class="zone" data-zone="Assise bas (vert)"
             d="m 81.598589,273.07894 73.633791,0.48766 3.73858,0.65018 1.78801,0.97528 1.30038,1.46291 0.48764,2.11312 1.78802,11.54084 0.48764,6.01424 v 2.92584 l -0.48764,1.46291 -1.13783,1.13784 -1.46293,1.13784 -2.27565,0.16253 h -1.95057 l -78.185098,0.16256 -3.088394,-0.81274 -1.462921,-1.30038 -0.812737,-1.30037 1.300377,-14.95433 1.300374,-5.68915 0.812737,-3.25094 1.462923,-1.95056 z" />
 
-          <!-- Bas droit -->
           <path id="z_bas_droit_blanc" class="zone" data-zone="Bas droit (blanc)"
             d="m 162.54699,243.98303 7.47716,30.23375 2.27566,-1.30037 3.25094,-1.3004 5.5266,-0.97528 6.33933,-1.13782 4.38877,-0.65018 3.90113,0.16253 3.08839,0.65019 2.4382,1.13784 -1.30037,-6.66443 -1.78802,-5.5266 -3.25094,-5.68914 -4.71386,-5.8517 -3.0884,-3.08839 -0.97528,-2.11311 -1.46292,-1.78801 -1.46292,-0.16255 -1.78802,0.65019 -2.60075,0.65018 z" />
 
           <path id="z_bas_droit_cyan" class="zone" data-zone="Bas droit (cyan)"
             d="m 170.02415,274.21678 2.43821,14.79177 1.13782,11.54084 0.16255,3.57602 1.13783,-0.16253 2.7633,0.32509 3.73858,-0.81274 5.36405,-1.46291 4.71387,-2.27568 3.57603,-2.60075 4.71386,-5.52659 2.27566,-5.52659 0.48764,-4.55131 0.48764,-5.68915 -1.95056,-4.87643 -0.48764,-0.48763 -2.27566,-1.13784 -2.92585,-0.65018 h -4.06367 l -15.76706,2.60074 -3.73858,1.46294 z" />
 
-          <!-- Bas gauche -->
           <path id="z_bas_gauche_orange" class="zone" data-zone="Bas gauche (orange)"
             d="m 69.082472,271.94113 6.664425,-24.21952 -6.014238,-2.92584 -5.364051,-1.13783 -4.388768,-0.48764 h -3.901128 l -1.13783,0.65019 -2.600751,2.60075 -2.925847,2.60075 -2.113111,2.60075 -2.11311,2.60075 -1.462921,2.60075 -1.625471,2.92585 -1.300376,3.73858 -1.300377,2.60075 -0.325094,0.97528 1.625471,-0.97528 2.275657,-0.81272 h 3.413487 l 3.413488,0.32509 3.250938,0.32509 4.226224,0.81272 3.250938,1.13785 2.438204,0.65018 2.438207,1.13782 z" />
 
@@ -693,7 +679,6 @@
   </aside>
 </main>
 
-<!-- rating sheet -->
 <div class="overlay" id="overlay"></div>
 <div class="sheet" id="sheet">
   <div class="sheetCard">
@@ -748,7 +733,6 @@
   </div>
 </div>
 
-<!-- SETTINGS modal -->
 <div class="modalOverlay" id="settingsOverlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-label="Settings">
     <div class="modalHead">
@@ -910,9 +894,24 @@
   const RATINGS_KEY = "seat_ratings_current_final_v6";
   const PEOPLE_KEY  = "seat_people_passes_final_v6";
 
+  // ===== Images (same folder) =====
+  const IMG_SUJET = "seat.png";
+  const IMG_STEPHANE = "Seat_o.png"; // ✅ ton nouveau fichier
+
+  function setSeatBackground(mode){
+    const img = $("seatImg");
+    if(!img) return;
+    const href = (mode === "stephane") ? IMG_STEPHANE : IMG_SUJET;
+
+    // SVG2
+    img.setAttribute("href", href);
+    // compat xlink (anciens navigateurs)
+    img.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
+  }
+
   // ===== Modes =====
   const MODE_KEY = "seat_mode_v1";              // "sujet" | "stephane"
-  const GREEN_KEY = "seat_green_clicked_v2";    // ✅ v2: stockage par clé effective (groupes bolsters)
+  const GREEN_KEY = "seat_green_clicked_v2";    // stockage par clé effective (groupes bolsters)
   let mode = loadJson(MODE_KEY, "sujet");
   let greenClicked = loadJson(GREEN_KEY, {});
 
@@ -1014,8 +1013,11 @@
     $("scoreWord").textContent = s.word;
   }
 
-  // ✅ SAME image, but display depends on mode
-  // ✅ greenClicked est stocké par "clé effective" => bolsters groupés partout
+  // zone style (settings)
+  const ZSTYLE_KEY = "seat_zone_style_v1";
+  const defaultStyle = { fillA:0.12, strokeA:0.55, strokeW:2 };
+  let zStyle = loadJson(ZSTYLE_KEY, defaultStyle);
+
   function updateZoneVisuals(){
     const fillA = Number(zStyle?.fillA ?? 0.12);
     const strokeA = Number(zStyle?.strokeA ?? 0.55);
@@ -1034,7 +1036,6 @@
         return;
       }
 
-      // mode stephane: afficher la couleur selon NOTE (ratings, déjà groupés)
       const score = getScoreForZoneName(poly.dataset.zone);
       if(!Number.isFinite(score)){
         hideZone(poly);
@@ -1073,11 +1074,9 @@
           <div style="flex:1; min-width:180px">
             <b>${escapeHtml(z)}</b>
             <div class="sub">${sub}</div>
-
             <div class="bar"><i class="${meta.cls}" style="width:${pct}%"></i></div>
             <div class="scoreLabel">${score !== null ? meta.label : ""}</div>
           </div>
-
           <div class="val ${meta.cls}">
             <div>${scoreText}</div>
             <small>${score !== null ? meta.label.toUpperCase() : ""}</small>
@@ -1088,6 +1087,7 @@
     updateZoneVisuals();
   }
 
+  // ===== Sheet =====
   function setCriteriaDefaultsFromExisting(existing){
     activeCriteria = {};
     activeCritId = null;
@@ -1168,7 +1168,7 @@
 
   function openSheet(zoneName, el){
     activePolyId = el?.id || null;
-    activeKey = effectiveKeyForZone(zoneName); // ✅ groupe si bolster
+    activeKey = effectiveKeyForZone(zoneName);
 
     $("sheetZone").textContent = effectiveDisplayName(zoneName);
 
@@ -1219,12 +1219,10 @@
       criteria: activeCriteria,
       comment: $("reasonText").value.trim()
     };
-
     saveJson(RATINGS_KEY, ratings);
 
-    // ✅ en mode Sujet: on valide en "vert" au niveau groupe
     if(mode === "sujet" && activeKey){
-      greenClicked[activeKey] = true;
+      greenClicked[activeKey] = true; // validation verte au niveau groupe
       saveJson(GREEN_KEY, greenClicked);
     }
 
@@ -1236,16 +1234,14 @@
   $("overlay").addEventListener("click", closeSheet);
   $("closeBtn").addEventListener("click", closeSheet);
 
-  // ✅ Click on zones:
-  // - Sujet: ouvrir la note (et valider en vert au niveau groupe)
-  // - Stéphane: pas de note (affichage uniquement)
+  // Click zones
   document.querySelectorAll(".zone").forEach(el=>{
     el.addEventListener("click", (e)=>{
       e.stopPropagation();
 
       if(mode === "sujet"){
-        const gKey = effectiveKeyForZone(el.dataset.zone); // ✅
-        greenClicked[gKey] = true;                         // ✅ groupé
+        const gKey = effectiveKeyForZone(el.dataset.zone);
+        greenClicked[gKey] = true;
         saveJson(GREEN_KEY, greenClicked);
         updateZoneVisuals();
         openSheet(el.dataset.zone, el);
@@ -1274,10 +1270,18 @@
     `).join("");
   }
 
-  // ✅ Capture PNG of "Mode Stéphane" render for CSV/person
+  // Capture PNG "Stéphane" (avec Seat_o)
   async function captureSeatPngDataUrl(forceMode = "stephane"){
     const svg = document.getElementById("seatSvg");
     const clone = svg.cloneNode(true);
+
+    // ✅ met la bonne image dans le clone aussi
+    const cloneImg = clone.querySelector("#seatImg");
+    if(cloneImg){
+      const href = (forceMode === "stephane") ? IMG_STEPHANE : IMG_SUJET;
+      cloneImg.setAttribute("href", href);
+      cloneImg.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
+    }
 
     const fillA = Number(zStyle?.fillA ?? 0.12);
     const strokeA = Number(zStyle?.strokeA ?? 0.55);
@@ -1289,26 +1293,18 @@
 
     clone.querySelectorAll(".zone").forEach(poly=>{
       if(forceMode === "sujet"){
-        // ✅ vert au niveau groupe aussi
         const gKey = effectiveKeyForZone(poly.dataset.zone);
         const on = !!greenClicked[gKey];
         if(!on){ hide(poly); return; }
         const green = "rgba(46,204,113,1)";
-        poly.setAttribute(
-          "style",
-          `fill:${rgbaWithAlpha(green, fillA)};stroke:${rgbaWithAlpha(green, strokeA)};stroke-width:${strokeW};`
-        );
+        poly.setAttribute("style", `fill:${rgbaWithAlpha(green, fillA)};stroke:${rgbaWithAlpha(green, strokeA)};stroke-width:${strokeW};`);
         return;
       }
 
-      // stephane: couleur selon notes
       const score = getScoreForZoneName(poly.dataset.zone);
       if(!Number.isFinite(score)){ hide(poly); return; }
       const theme = sliderTheme(Number(score));
-      poly.setAttribute(
-        "style",
-        `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeW};`
-      );
+      poly.setAttribute("style", `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeW};`);
     });
 
     const xml = new XMLSerializer().serializeToString(clone);
@@ -1345,10 +1341,9 @@
     const a = avgGlobalComfort();
     if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
-    // ✅ capture stéphane (couleurs selon notes) pour chaque personne
     let shotPng = "";
     try{
-      shotPng = await captureSeatPngDataUrl("stephane");
+      shotPng = await captureSeatPngDataUrl("stephane"); // ✅ capture avec Seat_o
     }catch(e){
       shotPng = "";
     }
@@ -1368,7 +1363,6 @@
     toast("✅ Personne enregistrée");
     renderPeople();
 
-    // reset current person ratings + greens
     ratings = {};
     saveJson(RATINGS_KEY, ratings);
 
@@ -1433,7 +1427,7 @@
     toast("CSV exporté");
   });
 
-  // ===== SETTINGS open/close =====
+  // SETTINGS open/close
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     settingsOverlay.classList.add("show");
@@ -1450,7 +1444,7 @@
     }
   });
 
-  // SETTINGS: modal/panels/table transparency
+  // SETTINGS: UI alpha
   const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
   const defaultUiAlpha = { bg: 0.95, panel: 0.12, table: 0.10 };
   let uiAlpha = loadJson(SET_UI_ALPHA_KEY, defaultUiAlpha);
@@ -1473,22 +1467,16 @@
       setTableAVal.textContent = Number(a.table).toFixed(2);
     }
   }
-
   function onUiAlphaChange(){
     uiAlpha = { bg: Number(setBgA.value), panel: Number(setPanelA.value), table: Number(setTableA.value) };
     saveJson(SET_UI_ALPHA_KEY, uiAlpha);
     applyUiAlpha(uiAlpha);
   }
-
   setBgA?.addEventListener("input", onUiAlphaChange);
   setPanelA?.addEventListener("input", onUiAlphaChange);
   setTableA?.addEventListener("input", onUiAlphaChange);
 
   // SETTINGS: zone transparency
-  const ZSTYLE_KEY = "seat_zone_style_v1";
-  const defaultStyle = { fillA:0.12, strokeA:0.55, strokeW:2 };
-  let zStyle = loadJson(ZSTYLE_KEY, defaultStyle);
-
   const fillAlpha = $("fillAlpha");
   const strokeAlpha = $("strokeAlpha");
   const strokeW = $("strokeW");
@@ -1515,7 +1503,6 @@
     strokeAlphaVal.textContent = Number(style.strokeA).toFixed(2);
     strokeWVal.textContent = style.strokeW;
   }
-
   function onStyleChange(){
     zStyle = { fillA: Number(fillAlpha.value), strokeA: Number(strokeAlpha.value), strokeW: Number(strokeW.value) };
     saveJson(ZSTYLE_KEY, zStyle);
@@ -1633,7 +1620,7 @@
     toast("Settings reset");
   });
 
-  // ===== Mode UI =====
+  // Mode UI
   const modeSujetBtn = $("modeSujetBtn");
   const modeStephaneBtn = $("modeStephaneBtn");
   const modePill = $("modePill");
@@ -1644,8 +1631,9 @@
 
     modeSujetBtn.classList.toggle("modeOn", mode === "sujet");
     modeStephaneBtn.classList.toggle("modeOn", mode === "stephane");
-    modePill.textContent = mode === "sujet" ? "Mode: Sujet (noter)" : "Mode: Stéphane (affichage)";
+    modePill.textContent = mode === "sujet" ? "Mode: Sujet (noter)" : "Mode: Stéphane (Seat_o)";
 
+    setSeatBackground(mode); // ✅ change l'image affichée
     closeSheet();
     updateZoneVisuals();
   }
@@ -1663,6 +1651,7 @@
   updateSummary();
   renderPeople();
 
+  // ✅ IMPORTANT: applique l'image au lancement
   setMode(mode);
 </script>
 </body>
