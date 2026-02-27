@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#070a14" />
   <title>Seat Comfort</title>
- 
+
   <style>
     :root{
       --bg0:#070a14; --bg1:#0b1020;
@@ -24,16 +24,13 @@
       --zone-stroke-active: rgba(124,58,237,.98);
       --zone-stroke-width-active: 3px;
 
-      --mark-fill: rgba(255,255,255,.95);
-      --mark-stroke: rgba(0,0,0,.55);
-
       /* Slider dynamic theming (only for rating slider) */
       --scol: rgba(124,58,237,1);
       --scolSoft: rgba(124,58,237,.14);
       --scolBorder: rgba(124,58,237,.55);
       --pct: 66%;
 
-      /* ✅ Settings transparency (NEW) */
+      /* ✅ Settings transparency */
       --settings-bg-alpha: .95;     /* fond modal */
       --settings-panel-alpha: .12;  /* sections/panels */
       --settings-table-alpha: .10;  /* tableWrap */
@@ -126,12 +123,11 @@
       outline:none;
     }
 
-    /* ✅ Settings sliders should stay simple + not bug */
+    /* ✅ Settings sliders */
     .modal input[type="range"]{
       width:100%;
       accent-color: var(--a1);
     }
-    /* avoid inherited weird track/thumb rules elsewhere */
     .modal input[type="range"]::-webkit-slider-runnable-track{ background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.12); height:10px; border-radius:999px; }
     .modal input[type="range"]::-webkit-slider-thumb{ -webkit-appearance:auto; }
     .modal input[type="range"]::-moz-range-track{ background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.12); height:10px; border-radius:999px; }
@@ -162,38 +158,14 @@
       stroke-width: var(--zone-stroke-width);
       cursor:pointer;
       transition:.12s;
+      pointer-events: all; /* ✅ clickable même transparent */
     }
-    .zone:hover{fill: var(--zone-fill-hover); stroke: var(--zone-stroke-hover)}
+    /* ✅ hover uniquement si noté (sinon on ne veut pas voir les zones au début) */
+    .zone.rated:hover{fill: var(--zone-fill-hover); stroke: var(--zone-stroke-hover)}
     .zone.active{
       fill: var(--zone-fill-active);
       stroke: var(--zone-stroke-active);
       stroke-width: var(--zone-stroke-width-active);
-    }
-
-    .zone.rated{
-      fill: var(--zone-fill);
-      stroke: var(--zone-stroke);
-      stroke-width: var(--zone-stroke-width);
-    }
-    .zone.rated:hover{
-      fill: var(--zone-fill-hover);
-      stroke: var(--zone-stroke-hover);
-    }
-    .zone.rated.active{
-      fill: var(--zone-fill-active);
-      stroke: var(--zone-stroke-active);
-      stroke-width: var(--zone-stroke-width-active);
-    }
-
-    .mark{
-      font-size: 52px;
-      font-weight: 900;
-      paint-order: stroke fill;
-      fill: var(--mark-fill);
-      stroke: var(--mark-stroke);
-      stroke-width: 5px;
-      pointer-events:none;
-      user-select:none;
     }
 
     .list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
@@ -327,10 +299,6 @@
       .sheetScoreHeader .hint{ display:none; }
       .scoreChip{ justify-content:center; }
     }
-    @media (max-width:420px){
-      .scoreChip{ padding:7px 10px; }
-      .scoreChip .label{ font-size:.78rem; }
-    }
 
     .ratingSlider{
       width:100%;
@@ -339,7 +307,6 @@
       background: transparent;
     }
 
-    /* WebKit (only .ratingSlider) */
     .ratingSlider::-webkit-slider-runnable-track{
       height:10px;
       border-radius:999px;
@@ -358,10 +325,9 @@
       background: rgba(255,255,255,.95);
       border: 2px solid rgba(0,0,0,.35);
       box-shadow: 0 10px 22px rgba(0,0,0,.35);
-      margin-top:-6px; /* ✅ perfect center: -(22-10)/2 */
+      margin-top:-6px;
     }
 
-    /* Firefox (only .ratingSlider) */
     .ratingSlider::-moz-range-track{
       height:10px;
       border-radius:999px;
@@ -478,7 +444,7 @@
       border:1px solid rgba(255,255,255,.12);
       border-radius:16px;
       margin-top:10px;
-      background: rgba(0,0,0,var(--settings-table-alpha)); /* ✅ now driven by variable */
+      background: rgba(0,0,0,var(--settings-table-alpha));
     }
     table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:820px}
     th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap;text-align:left}
@@ -524,14 +490,14 @@
       width:min(920px, 100%);
       max-height: 82vh;
       overflow:auto;
-      background: rgba(17,25,50,var(--settings-bg-alpha)); /* ✅ variable */
+      background: rgba(17,25,50,var(--settings-bg-alpha));
       border:1px solid rgba(255,255,255,.14);
       border-radius: 22px;
       box-shadow: var(--shadow);
     }
     .modalHead{
       position:sticky; top:0;
-      background: rgba(17,25,50,var(--settings-bg-alpha)); /* ✅ variable */
+      background: rgba(17,25,50,var(--settings-bg-alpha));
       backdrop-filter: blur(10px);
       border-bottom:1px solid rgba(255,255,255,.10);
       padding:12px;
@@ -543,7 +509,7 @@
       border:1px solid rgba(255,255,255,.10);
       border-radius:18px;
       padding:12px;
-      background: rgba(0,0,0,var(--settings-panel-alpha)); /* ✅ variable */
+      background: rgba(0,0,0,var(--settings-panel-alpha));
       margin-bottom:12px;
     }
     .section h3{margin:0 0 8px;font-size:.95rem}
@@ -602,7 +568,6 @@
     </div>
 
     <div class="seatFrame">
-      <!-- ✅ SVG cleaned: only ONE marksLayer, correct closing tags -->
       <svg id="seatSvg" viewBox="0 0 270.933 406.4" preserveAspectRatio="xMidYMid meet">
         <image href="seat.png" x="0" y="0" width="270.933" height="406.4" />
 
@@ -654,8 +619,6 @@
           <path id="z_bas_gauche_vert" class="zone" data-zone="Bas gauche (vert)"
             d="m 68.919925,272.75385 -1.13783,6.17678 -1.462923,7.47717 -0.812734,6.50187 -1.300377,9.75284 -0.325094,0.16253 -3.25094,-0.16253 -3.250938,-0.65019 -3.901128,-1.46293 -3.250941,-1.62547 -3.576034,-2.27566 -3.088394,-3.0884 -2.763297,-3.57603 -1.788018,-3.41349 -1.62547,-5.52659 -0.325093,-2.60075 0.48764,-3.73859 0.812736,-3.73859 0.975281,-3.08837 0.162547,-1.13785 1.62547,-0.97528 1.462924,-0.48762 2.275657,-0.16256 2.113111,0.16256 2.275657,0.16253 2.113111,0.16256 1.950564,0.65019 h 0.975283 l 2.438204,0.48762 2.600754,0.65019 2.438204,0.81275 2.438204,0.97528 2.438204,1.46291 z" />
         </g>
-
-        <g id="marksLayer"></g>
       </svg>
     </div>
 
@@ -734,7 +697,6 @@
         </div>
       </div>
 
-      <!-- ✅ only this slider has custom styling -->
       <input id="slider" class="ratingSlider" type="range" min="1" max="10" step="1" value="7" />
 
       <div class="scoreRow">
@@ -785,7 +747,6 @@
     </div>
 
     <div class="modalBody">
-      <!-- ✅ NEW: Transparency controls for the Settings UI -->
       <div class="section">
         <h3>Transparence du panneau Settings</h3>
 
@@ -865,40 +826,6 @@
           </div>
 
           <div class="mono" id="zoneOut" style="margin-top:8px"></div>
-        </div>
-
-        <div class="section">
-          <h3>Réglage des emojis (par zone)</h3>
-
-          <div class="field">
-            <label>Zone (emoji)</label>
-            <select id="emojiZoneSelect"></select>
-          </div>
-
-          <div class="sl">
-            <label>Emoji DX</label>
-            <input id="mdx" type="range" min="-220" max="220" step="1" value="0">
-            <div class="mono" id="mdxVal">0</div>
-          </div>
-
-          <div class="sl">
-            <label>Emoji DY</label>
-            <input id="mdy" type="range" min="-220" max="220" step="1" value="0">
-            <div class="mono" id="mdyVal">0</div>
-          </div>
-
-          <div class="sl">
-            <label>Emoji Scale</label>
-            <input id="msc" type="range" min="0.50" max="1.80" step="0.01" value="1.00">
-            <div class="mono" id="mscVal">1.00</div>
-          </div>
-
-          <div class="row" style="margin-top:10px">
-            <button class="btn small ghost" id="resetEmojiBtn">Reset emoji</button>
-            <button class="btn small" id="copyEmojiBtn">Copier config</button>
-          </div>
-
-          <div class="mono" id="emojiOut" style="margin-top:8px"></div>
         </div>
       </div>
 
@@ -1021,49 +948,6 @@
     return vals.reduce((a,b)=>a+b,0)/vals.length;
   }
 
-  // ===== Emoji tuning =====
-  const EMOJI_TUNE_KEY = "seat_emoji_tune_map_v1";
-  let emojiTune = loadJson(EMOJI_TUNE_KEY, {});
-  function getEmojiTune(polyId){
-    const t = emojiTune?.[polyId];
-    return t ? t : {dx:0, dy:0, sc:1};
-  }
-
-  function updateZoneVisuals(){
-    const marksLayer = $("marksLayer");
-    if(marksLayer) marksLayer.innerHTML = "";
-
-    document.querySelectorAll(".zone").forEach(poly=>{
-      const zName = poly.dataset.zone;
-      const scored = Number.isFinite(getScoreForZoneName(zName));
-      poly.classList.toggle("rated", scored);
-
-      if(scored && marksLayer){
-        const bb = poly.getBBox();
-        let cx = bb.x + bb.width / 2;
-        let cy = bb.y + bb.height / 2;
-
-        const tTune = getEmojiTune(poly.id);
-        cx += Number(tTune.dx || 0);
-        cy += Number(tTune.dy || 0);
-
-        const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        t.setAttribute("x", cx);
-        t.setAttribute("y", cy);
-        t.setAttribute("text-anchor", "middle");
-        t.setAttribute("dominant-baseline", "middle");
-        t.setAttribute("class", "mark");
-        t.textContent = "☑️";
-
-        const sc = Number(tTune.sc || 1);
-        if(sc !== 1){
-          t.setAttribute("transform", `translate(${cx} ${cy}) scale(${sc}) translate(${-cx} ${-cy})`);
-        }
-        marksLayer.appendChild(t);
-      }
-    });
-  }
-
   function scoreMeta(score){
     if(score === 1)  return { cls:"s1",  label:"Inacceptable" };
     if(score === 2)  return { cls:"s2",  label:"Très insatisfait" };
@@ -1096,6 +980,41 @@
     document.documentElement.style.setProperty("--pct", pct + "%");
 
     $("scoreWord").textContent = s.word;
+  }
+
+  // ✅ Zones: plus d'emojis. Une zone notée devient colorée selon la note.
+  function updateZoneVisuals(){
+    function rgbaWithAlpha(rgbaStr, alpha){
+      const m = String(rgbaStr).match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i);
+      if(!m) return `rgba(124,58,237,${alpha})`;
+      const r = Number(m[1]), g = Number(m[2]), b = Number(m[3]);
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    document.querySelectorAll(".zone").forEach(poly=>{
+      const score = getScoreForZoneName(poly.dataset.zone);
+
+      // non noté => invisible
+      if(!Number.isFinite(score)){
+        poly.classList.remove("rated");
+        poly.style.fill = "rgba(0,0,0,0)";
+        poly.style.stroke = "rgba(0,0,0,0)";
+        poly.style.strokeWidth = "0";
+        return;
+      }
+
+      // noté => visible + couleur
+      poly.classList.add("rated");
+
+      const theme = sliderTheme(Number(score));
+      const fillA = Number(zStyle?.fillA ?? 0.12);
+      const strokeA = Number(zStyle?.strokeA ?? 0.55);
+      const strokeW = Number(zStyle?.strokeW ?? 2);
+
+      poly.style.fill = rgbaWithAlpha(theme.col, fillA);
+      poly.style.stroke = rgbaWithAlpha(theme.col, strokeA);
+      poly.style.strokeWidth = String(strokeW);
+    });
   }
 
   function updateSummary(){
@@ -1401,7 +1320,7 @@
     }
   });
 
-  // ===== SETTINGS: modal/panels/table transparency (NEW) =====
+  // ===== SETTINGS: modal/panels/table transparency =====
   const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
   const defaultUiAlpha = { bg: 0.95, panel: 0.12, table: 0.10 };
   let uiAlpha = loadJson(SET_UI_ALPHA_KEY, defaultUiAlpha);
@@ -1448,10 +1367,9 @@
   const strokeWVal = $("strokeWVal");
 
   function applyZoneStyle(style){
-    const fillRGB = "79,140,255";
-    const strokeRGB = "79,140,255";
-    document.documentElement.style.setProperty("--zone-fill", `rgba(${fillRGB},${style.fillA})`);
-    document.documentElement.style.setProperty("--zone-stroke", `rgba(${strokeRGB},${style.strokeA})`);
+    // (variables gardées, mais la couleur finale des zones notées vient du JS)
+    document.documentElement.style.setProperty("--zone-fill", `rgba(79,140,255,${style.fillA})`);
+    document.documentElement.style.setProperty("--zone-stroke", `rgba(79,140,255,${style.strokeA})`);
     document.documentElement.style.setProperty("--zone-stroke-width", `${style.strokeW}px`);
 
     document.documentElement.style.setProperty("--zone-fill-hover", `rgba(124,58,237,${Math.min(style.fillA + 0.06, 0.45)})`);
@@ -1473,37 +1391,37 @@
     zStyle = { fillA: Number(fillAlpha.value), strokeA: Number(strokeAlpha.value), strokeW: Number(strokeW.value) };
     saveJson(ZSTYLE_KEY, zStyle);
     applyZoneStyle(zStyle);
+    updateZoneVisuals(); // ✅ applique alpha/épaisseur sur les zones déjà notées
   }
   fillAlpha.addEventListener("input", onStyleChange);
   strokeAlpha.addEventListener("input", onStyleChange);
   strokeW.addEventListener("input", onStyleChange);
 
   // SETTINGS per-zone transforms
-const ZTUNE_KEY = "seat_zone_tune_map_v3"; // ✅ NEW version => force new defaults once per device
+  const ZTUNE_KEY = "seat_zone_tune_map_v3";
 
-const DEFAULT_TUNE = {
-  "z_dossier_bleu": {dx:10, dy:4, sc:1.000},
- "z_dossier_rouge": {dx:10, dy:5, sc:1.000}, 
-"z_central_gris": {dx:11, dy:5, sc:1.000}, 
-"z_jaune": {dx:11, dy:5, sc:1.000},
- "z_magenta": {dx:10, dy:4, sc:1.000},
- "z_assise_vert": {dx:10, dy:4, sc:1.000}, 
-"z_bas_gauche_vert": {dx:11, dy:4, sc:1.000}, 
-"z_flanc_gauche_vert": {dx:10, dy:5, sc:1.000},
- "z_flanc_gauche_noir": {dx:10, dy:5, sc:1.000}, 
-"z_flanc_droit_violet": {dx:10, dy:4, sc:1.000}, 
-"z_flanc_droit_orange": {dx:10, dy:5, sc:1.000}, 
-"z_bas_droit_blanc": {dx:10, dy:4, sc:1.000},
- "z_bas_droit_cyan": {dx:11, dy:5, sc:1.000}, 
-"z_bas_gauche_orange": {dx:11, dy:4, sc:1.000}
-};
+  const DEFAULT_TUNE = {
+    "z_dossier_bleu": {dx:10, dy:4, sc:1.000},
+    "z_dossier_rouge": {dx:10, dy:5, sc:1.000},
+    "z_central_gris": {dx:11, dy:5, sc:1.000},
+    "z_jaune": {dx:11, dy:5, sc:1.000},
+    "z_magenta": {dx:10, dy:4, sc:1.000},
+    "z_assise_vert": {dx:10, dy:4, sc:1.000},
+    "z_bas_gauche_vert": {dx:11, dy:4, sc:1.000},
+    "z_flanc_gauche_vert": {dx:10, dy:5, sc:1.000},
+    "z_flanc_gauche_noir": {dx:10, dy:5, sc:1.000},
+    "z_flanc_droit_violet": {dx:10, dy:4, sc:1.000},
+    "z_flanc_droit_orange": {dx:10, dy:5, sc:1.000},
+    "z_bas_droit_blanc": {dx:10, dy:4, sc:1.000},
+    "z_bas_droit_cyan": {dx:11, dy:5, sc:1.000},
+    "z_bas_gauche_orange": {dx:11, dy:4, sc:1.000}
+  };
 
-// ✅ If user has local overrides => keep them, otherwise use defaults
-let zoneTune = loadJson(ZTUNE_KEY, null);
-if(!zoneTune || typeof zoneTune !== "object"){
-  zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
-  saveJson(ZTUNE_KEY, zoneTune);
-}
+  let zoneTune = loadJson(ZTUNE_KEY, null);
+  if(!zoneTune || typeof zoneTune !== "object"){
+    zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
+    saveJson(ZTUNE_KEY, zoneTune);
+  }
 
   const zoneSelect = $("zoneSelect");
   const zdxEl = $("zdx"), zdyEl = $("zdy"), zscEl = $("zsc");
@@ -1567,59 +1485,6 @@ if(!zoneTune || typeof zoneTune !== "object"){
     catch{ toast("⚠️ Copie impossible"); }
   });
 
-  // SETTINGS per-emoji transforms
-  const emojiZoneSelect = $("emojiZoneSelect");
-  const mdxEl = $("mdx"), mdyEl = $("mdy"), mscEl = $("msc");
-  const mdxVal = $("mdxVal"), mdyVal = $("mdyVal"), mscVal = $("mscVal");
-  const emojiOut = $("emojiOut");
-
-  polys.forEach(p=>{
-    const opt = document.createElement("option");
-    opt.value = p.id;
-    opt.textContent = p.dataset.zone;
-    emojiZoneSelect.appendChild(opt);
-  });
-
-  function loadEmojiToUI(polyId){
-    const t = getEmojiTune(polyId);
-    mdxEl.value = t.dx; mdyEl.value = t.dy; mscEl.value = t.sc;
-    mdxVal.textContent = t.dx;
-    mdyVal.textContent = t.dy;
-    mscVal.textContent = Number(t.sc).toFixed(2);
-    emojiOut.textContent = `${polyId}: emoji dx=${t.dx}, dy=${t.dy}, scale=${Number(t.sc).toFixed(2)}`;
-  }
-
-  function onEmojiTuneChange(){
-    const id = emojiZoneSelect.value;
-    emojiTune[id] = { dx:Number(mdxEl.value), dy:Number(mdyEl.value), sc:Number(mscEl.value) };
-    saveJson(EMOJI_TUNE_KEY, emojiTune);
-    loadEmojiToUI(id);
-    updateZoneVisuals();
-  }
-
-  emojiZoneSelect.addEventListener("change", ()=> loadEmojiToUI(emojiZoneSelect.value));
-  mdxEl.addEventListener("input", onEmojiTuneChange);
-  mdyEl.addEventListener("input", onEmojiTuneChange);
-  mscEl.addEventListener("input", onEmojiTuneChange);
-
-  $("resetEmojiBtn").addEventListener("click", ()=>{
-    const id = emojiZoneSelect.value;
-    emojiTune[id] = {dx:0, dy:0, sc:1};
-    saveJson(EMOJI_TUNE_KEY, emojiTune);
-    loadEmojiToUI(id);
-    updateZoneVisuals();
-    toast("Emoji reset");
-  });
-
-  $("copyEmojiBtn").addEventListener("click", async ()=>{
-    const lines = polys.map(p=>{
-      const t = getEmojiTune(p.id);
-      return `${p.id}: emoji dx=${t.dx}, dy=${t.dy}, scale=${Number(t.sc).toFixed(2)}`;
-    }).join("\n");
-    try{ await navigator.clipboard.writeText(lines); toast("✅ Config emoji copiée"); }
-    catch{ toast("⚠️ Copie impossible"); }
-  });
-
   $("resetSettingsBtn").addEventListener("click", ()=>{
     if(!confirm("Réinitialiser les Settings (zones + transparence) ?")) return;
 
@@ -1632,11 +1497,6 @@ if(!zoneTune || typeof zoneTune !== "object"){
     saveJson(ZSTYLE_KEY, zStyle);
     applyZoneStyle(zStyle);
 
-    emojiTune = {};
-    saveJson(EMOJI_TUNE_KEY, emojiTune);
-    loadEmojiToUI(emojiZoneSelect.value);
-
-    // ✅ Reset Settings UI transparency too
     uiAlpha = {...defaultUiAlpha};
     saveJson(SET_UI_ALPHA_KEY, uiAlpha);
     applyUiAlpha(uiAlpha);
@@ -1646,19 +1506,14 @@ if(!zoneTune || typeof zoneTune !== "object"){
   });
 
   // init
-  applyUiAlpha(uiAlpha);        // ✅ init settings UI alpha
+  applyUiAlpha(uiAlpha);
   applyZoneStyle(zStyle);
   applyAll();
   loadZoneToUI(zoneSelect.value);
-  loadEmojiToUI(emojiZoneSelect.value);
 
   applySliderUI(Number($("slider").value));
   updateSummary();
   renderPeople();
-
-  // collapsible table button
-  const tableShownBtn = $("toggleTableBtn");
-  tableShownBtn?.addEventListener?.("click", ()=>{});
 </script>
 </body>
 </html>
