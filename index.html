@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#070a14" />
-  <title>seat comf</title>
+  <title>Seat Comfort</title>
 
   <style>
     :root{
@@ -54,25 +54,6 @@
     .top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
     .title{display:flex;flex-direction:column;gap:2px}
     .title b{font-size:1.05rem;letter-spacing:.2px}
-
-    /* ===== Logo ===== */
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width: 180px;
-    }
-    .logo{
-  height:48px;          /* ✅ plus grand (essaie 44–56px) */
-  width:auto;
-  max-width:220px;      /* évite qu’il prenne trop de place */
-  object-fit:contain;
-  display:block;
-  filter: drop-shadow(0 8px 18px rgba(0,0,0,.35));
-}
-@media (max-width:520px){
-  .logo{ height:36px; max-width:160px; }
-}
 
     .btn{
       border:1px solid rgba(255,255,255,.14);
@@ -544,13 +525,9 @@
 <body>
 <header>
   <div class="wrap top">
-    <div class="brand">
-<img class="logo" id="logoImg" src="Forvia.png" alt="Forvia" loading="eager">     
-      <div class="title">
-        <b></b>
-      </div>
+    <div class="title">
+      <b>Seat Comfort</b>
     </div>
-
     <div class="row" style="gap:8px">
       <button class="btn icon" id="settingsBtn" title="Settings">⚙️ Settings</button>
       <button class="btn" id="fsBtn">Plein écran</button>
@@ -845,116 +822,12 @@
     </div>
   </div>
 </div>
-<!-- PROFILE modal -->
-<div class="modalOverlay" id="profileOverlay" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-label="Profil testeur">
-    <div class="modalHead">
-      <b>👤 Profil testeur</b>
-      <div class="row" style="gap:8px">
-        <button class="btn small ghost" id="profileCancelBtn">Annuler</button>
-        <button class="btn small" id="profileOkBtn">Continuer</button>
-      </div>
-    </div>
 
-    <div class="modalBody">
-      <div class="section">
-        <h3>Informations</h3>
-
-        <div class="twoCol">
-          <div class="field">
-            <label>Nom</label>
-            <input id="p_nom" placeholder="Ex: Dupont">
-          </div>
-          <div class="field">
-            <label>Prénom</label>
-            <input id="p_prenom" placeholder="Ex: Amine">
-          </div>
-          <div class="field">
-            <label>Taille (cm)</label>
-            <input id="p_taille" inputmode="numeric" placeholder="178">
-          </div>
-          <div class="field">
-            <label>Poids (kg)</label>
-            <input id="p_poids" inputmode="numeric" placeholder="75">
-          </div>
-        </div>
-
-        <div class="hint" style="margin-top:10px">
-          Remplis le profil puis clique sur <b>Continuer</b> pour passer à la suite (notation des zones).
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 <div class="toast" id="toast">OK</div>
 
 <script>
   const $ = (id)=>document.getElementById(id);
-// ===== PROFILE modal logic =====
-const profileOverlay = $("profileOverlay");
-let profileNextAction = null; // function to call after profile is valid
 
-function openProfileModal(nextAction){
-  profileNextAction = nextAction || null;
-
-  // préremplir depuis les champs existants (si tu les gardes dans le HTML)
-  $("p_nom").value = ($("nom")?.value || "").trim();
-  $("p_prenom").value = ($("prenom")?.value || "").trim();
-  $("p_taille").value = ($("taille")?.value || "").trim();
-  $("p_poids").value = ($("poids")?.value || "").trim();
-
-  profileOverlay.classList.add("show");
-  profileOverlay.setAttribute("aria-hidden","false");
-  setTimeout(()=> $("p_nom").focus(), 50);
-}
-
-function closeProfileModal(){
-  profileOverlay.classList.remove("show");
-  profileOverlay.setAttribute("aria-hidden","true");
-}
-
-function readProfileFromModal(){
-  const nom = $("p_nom").value.trim();
-  const prenom = $("p_prenom").value.trim();
-  const taille = $("p_taille").value.trim();
-  const poids = $("p_poids").value.trim();
-  return { nom, prenom, taille, poids };
-}
-
-function writeProfileBackToHiddenInputs(p){
-  // on garde tes inputs existants (nom/prenom/taille/poids) comme "storage"
-  if($("nom")) $("nom").value = p.nom;
-  if($("prenom")) $("prenom").value = p.prenom;
-  if($("taille")) $("taille").value = p.taille;
-  if($("poids")) $("poids").value = p.poids;
-}
-
-$("profileCancelBtn").addEventListener("click", ()=>{
-  closeProfileModal();
-  profileNextAction = null;
-});
-
-$("profileOkBtn").addEventListener("click", ()=>{
-  const p = readProfileFromModal();
-  if(!p.nom || !p.prenom){
-    toast("⚠️ Nom + prénom requis");
-    return;
-  }
-  // optionnel: contrôle taille/poids si tu veux
-  writeProfileBackToHiddenInputs(p);
-  closeProfileModal();
-
-  if(typeof profileNextAction === "function"){
-    profileNextAction(p);
-  }else{
-    toast("✅ Profil OK — passe à la suite");
-  }
-});
-
-// fermer si clic dehors
-profileOverlay.addEventListener("click", (e)=>{
-  if(e.target === profileOverlay) closeProfileModal();
-});
   function loadJson(key, fallback){
     try { return JSON.parse(localStorage.getItem(key) || "") || fallback; }
     catch { return fallback; }
@@ -997,7 +870,7 @@ profileOverlay.addEventListener("click", (e)=>{
   window.addEventListener("orientationchange", checkOrientation);
   checkOrientation();
 
-  // ===== Password for table =====
+  // ===== Password for table (NEW) =====
   const TABLE_PASSWORD = "1234"; // 🔒 change ici
   const TABLE_UNLOCK_KEY = "seat_table_unlocked_session_v1";
   function isTableUnlocked(){ return sessionStorage.getItem(TABLE_UNLOCK_KEY) === "1"; }
@@ -1066,7 +939,7 @@ profileOverlay.addEventListener("click", (e)=>{
   }
   function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
 
-  // Criteria scale
+  // Criteria scale (same labels as note)
   const CRIT_SCALE = [
     "Inacceptable",
     "Très insatisfait",
@@ -1099,7 +972,7 @@ profileOverlay.addEventListener("click", (e)=>{
   };
   function critLabelToScore(label){ return CRIT_TO_SCORE[label] ?? null; }
 
-  // Ratings
+  // Ratings state
   let ratings = loadJson(RATINGS_KEY, {});
   let activeKey = null;
   let activeCriteria = {};
@@ -1165,7 +1038,7 @@ profileOverlay.addEventListener("click", (e)=>{
     $("scoreWord").textContent = s.word;
   }
 
-  // Zone style
+  // Zone style controls
   const ZSTYLE_KEY = "seat_zone_style_v1";
   const defaultStyle = { fillA:0.12, strokeA:0.55, strokeW:2 };
   let zStyle = loadJson(ZSTYLE_KEY, defaultStyle);
@@ -1253,7 +1126,7 @@ profileOverlay.addEventListener("click", (e)=>{
     updateZoneVisuals();
   }
 
-  // Criteria rendering
+  // Sheet / criteria rendering
   function setCriteriaDefaultsFromExisting(existing){
     activeCriteria = {};
     activeCritId = null;
@@ -1434,7 +1307,7 @@ profileOverlay.addEventListener("click", (e)=>{
     `).join("");
   }
 
-  // CSV helpers
+  // ===== CSV helpers (organized) =====
   function buildExportZoneKeys(){
     const zoneNames = Array.from(document.querySelectorAll(".zone")).map(z => z.dataset.zone);
     const keys = [];
@@ -1457,10 +1330,12 @@ profileOverlay.addEventListener("click", (e)=>{
     return entryRatings?.[key] || null;
   }
 
-  // Embed background image for captures
+  // ===== Embed background image in captures (NEW) =====
   const _imgDataUrlCache = new Map();
+
   async function loadImageAsDataURL(url){
     if(_imgDataUrlCache.has(url)) return _imgDataUrlCache.get(url);
+    // NOTE: pour que fetch marche, ouvre via un serveur (Live Server), pas file://
     const res = await fetch(url, { cache: "force-cache" });
     const blob = await res.blob();
     const dataUrl = await new Promise((resolve, reject)=>{
@@ -1472,27 +1347,38 @@ profileOverlay.addEventListener("click", (e)=>{
     _imgDataUrlCache.set(url, dataUrl);
     return dataUrl;
   }
+
   function setSvgImageHref(imgEl, href){
     imgEl.setAttribute("href", href);
     imgEl.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
   }
 
+  // ===== Capture renderer for modes (Seat_o + zones) =====
   async function captureSeatPngDataUrlForMode(modeToRender){
     const svg = document.getElementById("seatSvg");
     const clone = svg.cloneNode(true);
 
+    // ✅ Embarquer Seat_o.png en dataURL => la capture contient le siège + zones
     let bgDataUrl = "";
-    try{ bgDataUrl = await loadImageAsDataURL(IMG_STEPHANE); }
-    catch(e){ bgDataUrl = IMG_STEPHANE; }
+    try{
+      bgDataUrl = await loadImageAsDataURL(IMG_STEPHANE);
+    }catch(e){
+      bgDataUrl = IMG_STEPHANE; // fallback
+    }
 
     const cloneImg = clone.querySelector("#seatImg");
-    if(cloneImg){ setSvgImageHref(cloneImg, bgDataUrl); }
+    if(cloneImg){
+      setSvgImageHref(cloneImg, bgDataUrl);
+    }
 
     const fillA = Number(zStyle?.fillA ?? 0.12);
     const strokeA = Number(zStyle?.strokeA ?? 0.55);
     const strokeW = Number(zStyle?.strokeW ?? 2);
 
-    const hide = (poly)=> poly.setAttribute("style","fill:rgba(0,0,0,0);stroke:rgba(0,0,0,0);stroke-width:0;");
+    const hide = (poly)=> poly.setAttribute(
+      "style",
+      "fill:rgba(0,0,0,0);stroke:rgba(0,0,0,0);stroke-width:0;"
+    );
 
     clone.querySelectorAll(".zone").forEach(poly=>{
       const zoneName = poly.dataset.zone;
@@ -1534,10 +1420,14 @@ profileOverlay.addEventListener("click", (e)=>{
     return canvas.toDataURL("image/png");
   }
 
-  // Save person (3 captures)
- $("savePersonBtn").addEventListener("click", async ()=>{
-  openProfileModal(async (p)=>{
-    // ici le profil est validé => on peut sauvegarder
+  // Save person (with 3 captures)
+  $("savePersonBtn").addEventListener("click", async ()=>{
+    const nom = $("nom").value.trim();
+    const prenom = $("prenom").value.trim();
+    const taille = $("taille").value.trim();
+    const poids = $("poids").value.trim();
+
+    if(!nom || !prenom){ toast("⚠️ Nom + prénom requis"); return; }
     const a = avgGlobalComfort();
     if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
@@ -1548,7 +1438,7 @@ profileOverlay.addEventListener("click", (e)=>{
 
     const entry = {
       ts: new Date().toLocaleString("fr-FR"),
-      nom: p.nom, prenom: p.prenom, taille: p.taille, poids: p.poids,
+      nom, prenom, taille, poids,
       globalAvg: a.toFixed(1),
       ratings,
       shotNote,
@@ -1563,25 +1453,9 @@ profileOverlay.addEventListener("click", (e)=>{
     toast("✅ Enregistré");
     renderPeople();
 
-    // reset notes pour la prochaine personne
     ratings = {};
     saveJson(RATINGS_KEY, ratings);
-    greenClicked = {};
-    saveJson(GREEN_KEY, greenClicked);
 
-    updateSummary();
-  });
-});
-
-    const people = loadPeople();
-    people.push(entry);
-    savePeople(people);
-
-    toast("✅ Enregistré");
-    renderPeople();
-
-    ratings = {};
-    saveJson(RATINGS_KEY, ratings);
     greenClicked = {};
     saveJson(GREEN_KEY, greenClicked);
 
@@ -1590,33 +1464,25 @@ profileOverlay.addEventListener("click", (e)=>{
 
   // Reset
   $("resetBtn").addEventListener("click", ()=>{
-  if(!confirm("Réinitialiser les notes actuelles et changer de personne ?")) return;
-
-  // reset notes
-  ratings = {};
-  saveJson(RATINGS_KEY, ratings);
-  greenClicked = {};
-  saveJson(GREEN_KEY, greenClicked);
-
-  updateSummary();
-  closeSheet();
-  toast("Réinitialisé");
-
-  // demander le profil pour la nouvelle personne
-  openProfileModal(()=>{
-    toast("✅ Profil chargé — passe à la suite");
-    // optionnel : tu peux forcer le mode sujet
-    setMode("sujet");
+    if(confirm("Réinitialiser les notes actuelles ?")){
+      ratings = {};
+      saveJson(RATINGS_KEY, ratings);
+      greenClicked = {};
+      saveJson(GREEN_KEY, greenClicked);
+      updateSummary();
+      toast("Réinitialisé");
+      closeSheet();
+    }
   });
-});
 
-  // Export CSV organized + 3 captures
+  // Export CSV (organized + 3 captures)
   $("exportBtn").addEventListener("click", ()=>{
     const people = loadPeople();
     const SEP = ";";
     const esc = (v)=>`"${String(v??"").replaceAll('"','""')}"`;
 
     const zoneKeys = buildExportZoneKeys();
+
     const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale"];
 
     const perZoneHeaders = [];
@@ -1671,7 +1537,7 @@ profileOverlay.addEventListener("click", (e)=>{
     toast("CSV exporté");
   });
 
-  // Settings open/close
+  // SETTINGS open/close
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     settingsOverlay.classList.add("show");
@@ -1688,7 +1554,7 @@ profileOverlay.addEventListener("click", (e)=>{
     }
   });
 
-  // Settings UI alpha
+  // SETTINGS: UI alpha
   const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
   const defaultUiAlpha = { bg: 0.95, panel: 0.12, table: 0.10 };
   let uiAlpha = loadJson(SET_UI_ALPHA_KEY, defaultUiAlpha);
@@ -1701,22 +1567,24 @@ profileOverlay.addEventListener("click", (e)=>{
     document.documentElement.style.setProperty("--settings-panel-alpha", String(a.panel));
     document.documentElement.style.setProperty("--settings-table-alpha", String(a.table));
 
-    setBgA.value = a.bg;
-    setPanelA.value = a.panel;
-    setTableA.value = a.table;
+    if(setBgA){
+      setBgA.value = a.bg;
+      setPanelA.value = a.panel;
+      setTableA.value = a.table;
 
-    setBgAVal.textContent = Number(a.bg).toFixed(2);
-    setPanelAVal.textContent = Number(a.panel).toFixed(2);
-    setTableAVal.textContent = Number(a.table).toFixed(2);
+      setBgAVal.textContent = Number(a.bg).toFixed(2);
+      setPanelAVal.textContent = Number(a.panel).toFixed(2);
+      setTableAVal.textContent = Number(a.table).toFixed(2);
+    }
   }
   function onUiAlphaChange(){
     uiAlpha = { bg: Number(setBgA.value), panel: Number(setPanelA.value), table: Number(setTableA.value) };
     saveJson(SET_UI_ALPHA_KEY, uiAlpha);
     applyUiAlpha(uiAlpha);
   }
-  setBgA.addEventListener("input", onUiAlphaChange);
-  setPanelA.addEventListener("input", onUiAlphaChange);
-  setTableA.addEventListener("input", onUiAlphaChange);
+  setBgA?.addEventListener("input", onUiAlphaChange);
+  setPanelA?.addEventListener("input", onUiAlphaChange);
+  setTableA?.addEventListener("input", onUiAlphaChange);
 
   // Zone style sliders
   const fillAlpha = $("fillAlpha");
@@ -1754,120 +1622,121 @@ profileOverlay.addEventListener("click", (e)=>{
   fillAlpha.addEventListener("input", onStyleChange);
   strokeAlpha.addEventListener("input", onStyleChange);
   strokeW.addEventListener("input", onStyleChange);
-// ===== SETTINGS: per-zone transforms (A AJOUTER) =====
-const ZTUNE_KEY = "seat_zone_tune_map_v4"; // nouvelle version si tu veux forcer des nouveaux defaults
 
-const DEFAULT_TUNE = {
-  "z_tete": {dx:-2, dy:30, sc:1.000},
-  "z_dossier_bleu": {dx:10, dy:-3, sc:1.000},
-  "z_dossier_rouge": {dx:10, dy:5, sc:1.000},
-  "z_central_gris": {dx:11, dy:5, sc:1.000},
-  "z_jaune": {dx:11, dy:5, sc:1.000},
-  "z_magenta": {dx:10, dy:0, sc:1.000},
-  "z_assise_vert": {dx:10, dy:4, sc:1.000},
-  "z_bas_gauche_vert": {dx:11, dy:4, sc:1.000},
-  "z_flanc_gauche_vert": {dx:10, dy:5, sc:1.000},
-  "z_flanc_gauche_noir": {dx:10, dy:5, sc:1.000},
-  "z_flanc_droit_violet": {dx:10, dy:4, sc:1.000},
-  "z_flanc_droit_orange": {dx:10, dy:5, sc:1.000},
-  "z_bas_droit_blanc": {dx:10, dy:4, sc:1.000},
-  "z_bas_droit_cyan": {dx:11, dy:5, sc:1.000},
-  "z_bas_gauche_orange": {dx:1, dy:4, sc:1.000}
-};
+  // Zone transforms
+  const ZTUNE_KEY = "seat_zone_tune_map_v4";
+  const DEFAULT_TUNE = {
+    "z_tete": {dx:0, dy:0, sc:1.000},
+    "z_dossier_bleu": {dx:10, dy:4, sc:1.000},
+    "z_dossier_rouge": {dx:10, dy:5, sc:1.000},
+    "z_central_gris": {dx:11, dy:5, sc:1.000},
+    "z_jaune": {dx:11, dy:5, sc:1.000},
+    "z_magenta": {dx:10, dy:4, sc:1.000},
+    "z_assise_vert": {dx:10, dy:4, sc:1.000},
+    "z_bas_gauche_vert": {dx:11, dy:4, sc:1.000},
+    "z_flanc_gauche_vert": {dx:10, dy:5, sc:1.000},
+    "z_flanc_gauche_noir": {dx:10, dy:5, sc:1.000},
+    "z_flanc_droit_violet": {dx:10, dy:4, sc:1.000},
+    "z_flanc_droit_orange": {dx:10, dy:5, sc:1.000},
+    "z_bas_droit_blanc": {dx:10, dy:4, sc:1.000},
+    "z_bas_droit_cyan": {dx:11, dy:5, sc:1.000},
+    "z_bas_gauche_orange": {dx:11, dy:4, sc:1.000}
+  };
 
-// charge ou initialise
-let zoneTune = loadJson(ZTUNE_KEY, null);
-if(!zoneTune || typeof zoneTune !== "object"){
-  zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
-  saveJson(ZTUNE_KEY, zoneTune);
-} else {
-  // si une nouvelle zone est ajoutée plus tard
-  Object.keys(DEFAULT_TUNE).forEach(k=>{
-    if(!zoneTune[k]) zoneTune[k] = {...DEFAULT_TUNE[k]};
+  let zoneTune = loadJson(ZTUNE_KEY, null);
+  if(!zoneTune || typeof zoneTune !== "object"){
+    zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
+    saveJson(ZTUNE_KEY, zoneTune);
+  }else{
+    if(!zoneTune["z_tete"]){
+      zoneTune["z_tete"] = {...DEFAULT_TUNE["z_tete"]};
+      saveJson(ZTUNE_KEY, zoneTune);
+    }
+  }
+
+  const zoneSelect = $("zoneSelect");
+  const zdxEl = $("zdx"), zdyEl = $("zdy"), zscEl = $("zsc");
+  const zdxVal = $("zdxVal"), zdyVal = $("zdyVal"), zscVal = $("zscVal");
+  const zoneOut = $("zoneOut");
+  const polys = Array.from(document.querySelectorAll(".zone"));
+
+  polys.forEach(p=>{
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    opt.textContent = p.dataset.zone;
+    zoneSelect.appendChild(opt);
   });
-  saveJson(ZTUNE_KEY, zoneTune);
-}
 
-// UI refs
-const zoneSelect = $("zoneSelect");
-const zdxEl = $("zdx"), zdyEl = $("zdy"), zscEl = $("zsc");
-const zdxVal = $("zdxVal"), zdyVal = $("zdyVal"), zscVal = $("zscVal");
-const zoneOut = $("zoneOut");
-const polys = Array.from(document.querySelectorAll(".zone"));
+  function applyOne(polyId){
+    const p = document.getElementById(polyId);
+    if(!p) return;
+    const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
+    p.setAttribute("transform", `translate(${t.dx} ${t.dy}) scale(${t.sc})`);
+  }
+  function applyAll(){ polys.forEach(p=>applyOne(p.id)); }
 
-// remplit le select
-zoneSelect.innerHTML = "";
-polys.forEach(p=>{
-  const opt = document.createElement("option");
-  opt.value = p.id;
-  opt.textContent = p.dataset.zone;
-  zoneSelect.appendChild(opt);
-});
+  function loadZoneToUI(polyId){
+    const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
+    zdxEl.value = t.dx; zdyEl.value = t.dy; zscEl.value = t.sc;
+    zdxVal.textContent = t.dx;
+    zdyVal.textContent = t.dy;
+    zscVal.textContent = Number(t.sc).toFixed(3);
+    zoneOut.textContent = `${polyId}: translate(${t.dx},${t.dy}) scale(${Number(t.sc).toFixed(3)})`;
+  }
+  function onZoneTuneChange(){
+    const id = zoneSelect.value;
+    zoneTune[id] = { dx:Number(zdxEl.value), dy:Number(zdyEl.value), sc:Number(zscEl.value) };
+    saveJson(ZTUNE_KEY, zoneTune);
+    applyOne(id);
+    loadZoneToUI(id);
+    updateZoneVisuals();
+  }
 
-function applyOne(polyId){
-  const p = document.getElementById(polyId);
-  if(!p) return;
-  const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
-  p.setAttribute("transform", `translate(${t.dx} ${t.dy}) scale(${t.sc})`);
-}
-function applyAll(){ polys.forEach(p=>applyOne(p.id)); }
+  zoneSelect.addEventListener("change", ()=> loadZoneToUI(zoneSelect.value));
+  zdxEl.addEventListener("input", onZoneTuneChange);
+  zdyEl.addEventListener("input", onZoneTuneChange);
+  zscEl.addEventListener("input", onZoneTuneChange);
 
-function loadZoneToUI(polyId){
-  const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
-  zdxEl.value = t.dx; zdyEl.value = t.dy; zscEl.value = t.sc;
+  $("resetZoneBtn").addEventListener("click", ()=>{
+    const id = zoneSelect.value;
+    zoneTune[id] = {...(DEFAULT_TUNE[id] || {dx:0,dy:0,sc:1})};
+    saveJson(ZTUNE_KEY, zoneTune);
+    applyOne(id);
+    loadZoneToUI(id);
+    updateZoneVisuals();
+    toast("Zone reset");
+  });
 
-  zdxVal.textContent = t.dx;
-  zdyVal.textContent = t.dy;
-  zscVal.textContent = Number(t.sc).toFixed(3);
+  $("copyZoneBtn").addEventListener("click", async ()=>{
+    const lines = polys.map(p=>{
+      const t = zoneTune[p.id] || {dx:0, dy:0, sc:1};
+      return `${p.id}: translate(${t.dx},${t.dy}) scale(${Number(t.sc).toFixed(3)})`;
+    }).join("\n");
+    try{ await navigator.clipboard.writeText(lines); toast("✅ Copié"); }
+    catch{ toast("⚠️ Copie impossible"); }
+  });
 
-  zoneOut.textContent = `${polyId}: transform="translate(${t.dx} ${t.dy}) scale(${Number(t.sc).toFixed(3)})"`;
-}
+  $("resetSettingsBtn").addEventListener("click", ()=>{
+    if(!confirm("Réinitialiser Settings ?")) return;
 
-function onZoneTuneChange(){
-  const id = zoneSelect.value;
-  zoneTune[id] = { dx:Number(zdxEl.value), dy:Number(zdyEl.value), sc:Number(zscEl.value) };
-  saveJson(ZTUNE_KEY, zoneTune);
+    zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
+    saveJson(ZTUNE_KEY, zoneTune);
+    applyAll();
+    loadZoneToUI(zoneSelect.value);
 
-  applyOne(id);
-  loadZoneToUI(id);
-  updateZoneVisuals();
-}
+    zStyle = {...defaultStyle};
+    saveJson(ZSTYLE_KEY, zStyle);
+    applyZoneStyle(zStyle);
 
-zoneSelect.addEventListener("change", ()=> loadZoneToUI(zoneSelect.value));
-zdxEl.addEventListener("input", onZoneTuneChange);
-zdyEl.addEventListener("input", onZoneTuneChange);
-zscEl.addEventListener("input", onZoneTuneChange);
+    uiAlpha = {...defaultUiAlpha};
+    saveJson(SET_UI_ALPHA_KEY, uiAlpha);
+    applyUiAlpha(uiAlpha);
 
-$("resetZoneBtn").addEventListener("click", ()=>{
-  const id = zoneSelect.value;
-  zoneTune[id] = {...(DEFAULT_TUNE[id] || {dx:0,dy:0,sc:1})};
-  saveJson(ZTUNE_KEY, zoneTune);
-  applyOne(id);
-  loadZoneToUI(id);
-  updateZoneVisuals();
-  toast("Zone reset");
-});
+    updateZoneVisuals();
+    toast("Settings reset");
+  });
 
-$("copyZoneBtn").addEventListener("click", async ()=>{
-  const lines = polys.map(p=>{
-    const t = zoneTune[p.id] || {dx:0, dy:0, sc:1};
-    return `${p.id}: translate(${t.dx},${t.dy}) scale(${Number(t.sc).toFixed(3)})`;
-  }).join("\n");
-  try{ await navigator.clipboard.writeText(lines); toast("✅ Config copiée"); }
-  catch{ toast("⚠️ Copie impossible"); }
-});
-
-// init transforms + UI
-applyAll();
-loadZoneToUI(zoneSelect.value);
-  // Init
-  applyUiAlpha(uiAlpha);
-  applyZoneStyle(zStyle);
-  applySliderUI(7);
-  updateSummary();
-  renderPeople();
-
-  // Modes
+  // Modes UI
   const modeSujetBtn = $("modeSujetBtn");
   const modeStephaneBtn = $("modeStephaneBtn");
   const modePresenceBtn = $("modePresenceBtn");
@@ -1899,30 +1768,17 @@ loadZoneToUI(zoneSelect.value);
   modePresenceBtn.addEventListener("click", ()=> setMode("presence"));
   modeDureteBtn.addEventListener("click", ()=> setMode("durete"));
 
+  // Init
+  applyUiAlpha(uiAlpha);
+  applyZoneStyle(zStyle);
+
+  applyAll();
+  loadZoneToUI(zoneSelect.value);
+
+  applySliderUI(Number($("slider").value));
+  updateSummary();
+  renderPeople();
   setMode(mode);
-  // ===== Logo fallback (NEW) =====
-(function(){
-  const img = document.getElementById("logoImg");
-  if(!img) return;
-
-  const candidates = ["Forvia.png","Forvia.jpg","Forvia.jpeg","Forvia.webp","Forvia.svg"];
-  let i = 0;
-
-  img.onerror = ()=>{
-    i++;
-    if(i < candidates.length){
-      img.src = candidates[i] + "?v=" + Date.now(); // cache-bust
-    }else{
-      img.style.display = "none";
-      console.warn("Logo introuvable. Mets le fichier Forvia.(png/jpg/webp/svg) dans le même dossier que le HTML.");
-    }
-  };
-
-  // si le premier fichier n'existe pas, on déclenche la cascade
-  img.src = candidates[0] + "?v=" + Date.now();
-})();
-/* Hide right-side profile panel (we use a modal instead) */
-aside.card{ display:none; }
 </script>
 </body>
 </html>
