@@ -63,15 +63,16 @@
       min-width: 180px;
     }
     .logo{
-      height:34px;          /* ajuste si besoin */
-      width:auto;
-      object-fit:contain;
-      display:block;
-      filter: drop-shadow(0 8px 18px rgba(0,0,0,.35));
-    }
-    @media (max-width:520px){
-      .logo{ height:28px; }
-    }
+  height:48px;          /* ✅ plus grand (essaie 44–56px) */
+  width:auto;
+  max-width:220px;      /* évite qu’il prenne trop de place */
+  object-fit:contain;
+  display:block;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,.35));
+}
+@media (max-width:520px){
+  .logo{ height:36px; max-width:160px; }
+}
 
     .btn{
       border:1px solid rgba(255,255,255,.14);
