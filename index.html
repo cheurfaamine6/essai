@@ -55,6 +55,24 @@
     .title{display:flex;flex-direction:column;gap:2px}
     .title b{font-size:1.05rem;letter-spacing:.2px}
 
+    /* ===== Logo ===== */
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 180px;
+    }
+    .logo{
+      height:34px;          /* ajuste si besoin */
+      width:auto;
+      object-fit:contain;
+      display:block;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,.35));
+    }
+    @media (max-width:520px){
+      .logo{ height:28px; }
+    }
+
     .btn{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.07);
@@ -525,9 +543,13 @@
 <body>
 <header>
   <div class="wrap top">
-    <div class="title">
-      <b>Seat Comfort</b>
+    <div class="brand">
+      <img class="logo" src="forvia.png" alt="Forvia">
+      <div class="title">
+        <b>Seat Comfort</b>
+      </div>
     </div>
+
     <div class="row" style="gap:8px">
       <button class="btn icon" id="settingsBtn" title="Settings">⚙️ Settings</button>
       <button class="btn" id="fsBtn">Plein écran</button>
@@ -870,7 +892,7 @@
   window.addEventListener("orientationchange", checkOrientation);
   checkOrientation();
 
-  // ===== Password for table (NEW) =====
+  // ===== Password for table =====
   const TABLE_PASSWORD = "1234"; // 🔒 change ici
   const TABLE_UNLOCK_KEY = "seat_table_unlocked_session_v1";
   function isTableUnlocked(){ return sessionStorage.getItem(TABLE_UNLOCK_KEY) === "1"; }
@@ -939,7 +961,7 @@
   }
   function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
 
-  // Criteria scale (same labels as note)
+  // Criteria scale
   const CRIT_SCALE = [
     "Inacceptable",
     "Très insatisfait",
@@ -972,7 +994,7 @@
   };
   function critLabelToScore(label){ return CRIT_TO_SCORE[label] ?? null; }
 
-  // Ratings state
+  // Ratings
   let ratings = loadJson(RATINGS_KEY, {});
   let activeKey = null;
   let activeCriteria = {};
@@ -1038,7 +1060,7 @@
     $("scoreWord").textContent = s.word;
   }
 
-  // Zone style controls
+  // Zone style
   const ZSTYLE_KEY = "seat_zone_style_v1";
   const defaultStyle = { fillA:0.12, strokeA:0.55, strokeW:2 };
   let zStyle = loadJson(ZSTYLE_KEY, defaultStyle);
@@ -1126,7 +1148,7 @@
     updateZoneVisuals();
   }
 
-  // Sheet / criteria rendering
+  // Criteria rendering
   function setCriteriaDefaultsFromExisting(existing){
     activeCriteria = {};
     activeCritId = null;
@@ -1307,7 +1329,7 @@
     `).join("");
   }
 
-  // ===== CSV helpers (organized) =====
+  // CSV helpers
   function buildExportZoneKeys(){
     const zoneNames = Array.from(document.querySelectorAll(".zone")).map(z => z.dataset.zone);
     const keys = [];
@@ -1330,12 +1352,10 @@
     return entryRatings?.[key] || null;
   }
 
-  // ===== Embed background image in captures (NEW) =====
+  // Embed background image for captures
   const _imgDataUrlCache = new Map();
-
   async function loadImageAsDataURL(url){
     if(_imgDataUrlCache.has(url)) return _imgDataUrlCache.get(url);
-    // NOTE: pour que fetch marche, ouvre via un serveur (Live Server), pas file://
     const res = await fetch(url, { cache: "force-cache" });
     const blob = await res.blob();
     const dataUrl = await new Promise((resolve, reject)=>{
@@ -1347,38 +1367,27 @@
     _imgDataUrlCache.set(url, dataUrl);
     return dataUrl;
   }
-
   function setSvgImageHref(imgEl, href){
     imgEl.setAttribute("href", href);
     imgEl.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
   }
 
-  // ===== Capture renderer for modes (Seat_o + zones) =====
   async function captureSeatPngDataUrlForMode(modeToRender){
     const svg = document.getElementById("seatSvg");
     const clone = svg.cloneNode(true);
 
-    // ✅ Embarquer Seat_o.png en dataURL => la capture contient le siège + zones
     let bgDataUrl = "";
-    try{
-      bgDataUrl = await loadImageAsDataURL(IMG_STEPHANE);
-    }catch(e){
-      bgDataUrl = IMG_STEPHANE; // fallback
-    }
+    try{ bgDataUrl = await loadImageAsDataURL(IMG_STEPHANE); }
+    catch(e){ bgDataUrl = IMG_STEPHANE; }
 
     const cloneImg = clone.querySelector("#seatImg");
-    if(cloneImg){
-      setSvgImageHref(cloneImg, bgDataUrl);
-    }
+    if(cloneImg){ setSvgImageHref(cloneImg, bgDataUrl); }
 
     const fillA = Number(zStyle?.fillA ?? 0.12);
     const strokeA = Number(zStyle?.strokeA ?? 0.55);
     const strokeW = Number(zStyle?.strokeW ?? 2);
 
-    const hide = (poly)=> poly.setAttribute(
-      "style",
-      "fill:rgba(0,0,0,0);stroke:rgba(0,0,0,0);stroke-width:0;"
-    );
+    const hide = (poly)=> poly.setAttribute("style","fill:rgba(0,0,0,0);stroke:rgba(0,0,0,0);stroke-width:0;");
 
     clone.querySelectorAll(".zone").forEach(poly=>{
       const zoneName = poly.dataset.zone;
@@ -1420,7 +1429,7 @@
     return canvas.toDataURL("image/png");
   }
 
-  // Save person (with 3 captures)
+  // Save person (3 captures)
   $("savePersonBtn").addEventListener("click", async ()=>{
     const nom = $("nom").value.trim();
     const prenom = $("prenom").value.trim();
@@ -1455,7 +1464,6 @@
 
     ratings = {};
     saveJson(RATINGS_KEY, ratings);
-
     greenClicked = {};
     saveJson(GREEN_KEY, greenClicked);
 
@@ -1475,14 +1483,13 @@
     }
   });
 
-  // Export CSV (organized + 3 captures)
+  // Export CSV organized + 3 captures
   $("exportBtn").addEventListener("click", ()=>{
     const people = loadPeople();
     const SEP = ";";
     const esc = (v)=>`"${String(v??"").replaceAll('"','""')}"`;
 
     const zoneKeys = buildExportZoneKeys();
-
     const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale"];
 
     const perZoneHeaders = [];
@@ -1537,7 +1544,7 @@
     toast("CSV exporté");
   });
 
-  // SETTINGS open/close
+  // Settings open/close
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     settingsOverlay.classList.add("show");
@@ -1554,7 +1561,7 @@
     }
   });
 
-  // SETTINGS: UI alpha
+  // Settings UI alpha
   const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
   const defaultUiAlpha = { bg: 0.95, panel: 0.12, table: 0.10 };
   let uiAlpha = loadJson(SET_UI_ALPHA_KEY, defaultUiAlpha);
@@ -1567,24 +1574,22 @@
     document.documentElement.style.setProperty("--settings-panel-alpha", String(a.panel));
     document.documentElement.style.setProperty("--settings-table-alpha", String(a.table));
 
-    if(setBgA){
-      setBgA.value = a.bg;
-      setPanelA.value = a.panel;
-      setTableA.value = a.table;
+    setBgA.value = a.bg;
+    setPanelA.value = a.panel;
+    setTableA.value = a.table;
 
-      setBgAVal.textContent = Number(a.bg).toFixed(2);
-      setPanelAVal.textContent = Number(a.panel).toFixed(2);
-      setTableAVal.textContent = Number(a.table).toFixed(2);
-    }
+    setBgAVal.textContent = Number(a.bg).toFixed(2);
+    setPanelAVal.textContent = Number(a.panel).toFixed(2);
+    setTableAVal.textContent = Number(a.table).toFixed(2);
   }
   function onUiAlphaChange(){
     uiAlpha = { bg: Number(setBgA.value), panel: Number(setPanelA.value), table: Number(setTableA.value) };
     saveJson(SET_UI_ALPHA_KEY, uiAlpha);
     applyUiAlpha(uiAlpha);
   }
-  setBgA?.addEventListener("input", onUiAlphaChange);
-  setPanelA?.addEventListener("input", onUiAlphaChange);
-  setTableA?.addEventListener("input", onUiAlphaChange);
+  setBgA.addEventListener("input", onUiAlphaChange);
+  setPanelA.addEventListener("input", onUiAlphaChange);
+  setTableA.addEventListener("input", onUiAlphaChange);
 
   // Zone style sliders
   const fillAlpha = $("fillAlpha");
@@ -1623,120 +1628,14 @@
   strokeAlpha.addEventListener("input", onStyleChange);
   strokeW.addEventListener("input", onStyleChange);
 
-  // Zone transforms
-  const ZTUNE_KEY = "seat_zone_tune_map_v4";
-  const DEFAULT_TUNE = {
-    "z_tete": {dx:0, dy:0, sc:1.000},
-    "z_dossier_bleu": {dx:10, dy:4, sc:1.000},
-    "z_dossier_rouge": {dx:10, dy:5, sc:1.000},
-    "z_central_gris": {dx:11, dy:5, sc:1.000},
-    "z_jaune": {dx:11, dy:5, sc:1.000},
-    "z_magenta": {dx:10, dy:4, sc:1.000},
-    "z_assise_vert": {dx:10, dy:4, sc:1.000},
-    "z_bas_gauche_vert": {dx:11, dy:4, sc:1.000},
-    "z_flanc_gauche_vert": {dx:10, dy:5, sc:1.000},
-    "z_flanc_gauche_noir": {dx:10, dy:5, sc:1.000},
-    "z_flanc_droit_violet": {dx:10, dy:4, sc:1.000},
-    "z_flanc_droit_orange": {dx:10, dy:5, sc:1.000},
-    "z_bas_droit_blanc": {dx:10, dy:4, sc:1.000},
-    "z_bas_droit_cyan": {dx:11, dy:5, sc:1.000},
-    "z_bas_gauche_orange": {dx:11, dy:4, sc:1.000}
-  };
+  // Init
+  applyUiAlpha(uiAlpha);
+  applyZoneStyle(zStyle);
+  applySliderUI(7);
+  updateSummary();
+  renderPeople();
 
-  let zoneTune = loadJson(ZTUNE_KEY, null);
-  if(!zoneTune || typeof zoneTune !== "object"){
-    zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
-    saveJson(ZTUNE_KEY, zoneTune);
-  }else{
-    if(!zoneTune["z_tete"]){
-      zoneTune["z_tete"] = {...DEFAULT_TUNE["z_tete"]};
-      saveJson(ZTUNE_KEY, zoneTune);
-    }
-  }
-
-  const zoneSelect = $("zoneSelect");
-  const zdxEl = $("zdx"), zdyEl = $("zdy"), zscEl = $("zsc");
-  const zdxVal = $("zdxVal"), zdyVal = $("zdyVal"), zscVal = $("zscVal");
-  const zoneOut = $("zoneOut");
-  const polys = Array.from(document.querySelectorAll(".zone"));
-
-  polys.forEach(p=>{
-    const opt = document.createElement("option");
-    opt.value = p.id;
-    opt.textContent = p.dataset.zone;
-    zoneSelect.appendChild(opt);
-  });
-
-  function applyOne(polyId){
-    const p = document.getElementById(polyId);
-    if(!p) return;
-    const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
-    p.setAttribute("transform", `translate(${t.dx} ${t.dy}) scale(${t.sc})`);
-  }
-  function applyAll(){ polys.forEach(p=>applyOne(p.id)); }
-
-  function loadZoneToUI(polyId){
-    const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
-    zdxEl.value = t.dx; zdyEl.value = t.dy; zscEl.value = t.sc;
-    zdxVal.textContent = t.dx;
-    zdyVal.textContent = t.dy;
-    zscVal.textContent = Number(t.sc).toFixed(3);
-    zoneOut.textContent = `${polyId}: translate(${t.dx},${t.dy}) scale(${Number(t.sc).toFixed(3)})`;
-  }
-  function onZoneTuneChange(){
-    const id = zoneSelect.value;
-    zoneTune[id] = { dx:Number(zdxEl.value), dy:Number(zdyEl.value), sc:Number(zscEl.value) };
-    saveJson(ZTUNE_KEY, zoneTune);
-    applyOne(id);
-    loadZoneToUI(id);
-    updateZoneVisuals();
-  }
-
-  zoneSelect.addEventListener("change", ()=> loadZoneToUI(zoneSelect.value));
-  zdxEl.addEventListener("input", onZoneTuneChange);
-  zdyEl.addEventListener("input", onZoneTuneChange);
-  zscEl.addEventListener("input", onZoneTuneChange);
-
-  $("resetZoneBtn").addEventListener("click", ()=>{
-    const id = zoneSelect.value;
-    zoneTune[id] = {...(DEFAULT_TUNE[id] || {dx:0,dy:0,sc:1})};
-    saveJson(ZTUNE_KEY, zoneTune);
-    applyOne(id);
-    loadZoneToUI(id);
-    updateZoneVisuals();
-    toast("Zone reset");
-  });
-
-  $("copyZoneBtn").addEventListener("click", async ()=>{
-    const lines = polys.map(p=>{
-      const t = zoneTune[p.id] || {dx:0, dy:0, sc:1};
-      return `${p.id}: translate(${t.dx},${t.dy}) scale(${Number(t.sc).toFixed(3)})`;
-    }).join("\n");
-    try{ await navigator.clipboard.writeText(lines); toast("✅ Copié"); }
-    catch{ toast("⚠️ Copie impossible"); }
-  });
-
-  $("resetSettingsBtn").addEventListener("click", ()=>{
-    if(!confirm("Réinitialiser Settings ?")) return;
-
-    zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
-    saveJson(ZTUNE_KEY, zoneTune);
-    applyAll();
-    loadZoneToUI(zoneSelect.value);
-
-    zStyle = {...defaultStyle};
-    saveJson(ZSTYLE_KEY, zStyle);
-    applyZoneStyle(zStyle);
-
-    uiAlpha = {...defaultUiAlpha};
-    saveJson(SET_UI_ALPHA_KEY, uiAlpha);
-    applyUiAlpha(uiAlpha);
-
-    updateZoneVisuals();
-    toast("Settings reset");
-  });
-
-  // Modes UI
+  // Modes
   const modeSujetBtn = $("modeSujetBtn");
   const modeStephaneBtn = $("modeStephaneBtn");
   const modePresenceBtn = $("modePresenceBtn");
@@ -1768,16 +1667,6 @@
   modePresenceBtn.addEventListener("click", ()=> setMode("presence"));
   modeDureteBtn.addEventListener("click", ()=> setMode("durete"));
 
-  // Init
-  applyUiAlpha(uiAlpha);
-  applyZoneStyle(zStyle);
-
-  applyAll();
-  loadZoneToUI(zoneSelect.value);
-
-  applySliderUI(Number($("slider").value));
-  updateSummary();
-  renderPeople();
   setMode(mode);
 </script>
 </body>
