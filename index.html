@@ -54,7 +54,7 @@
     .top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
     .title{display:flex;flex-direction:column;gap:2px}
     .title b{font-size:1.05rem;letter-spacing:.2px}
-    .title span{font-size:.85rem;color:var(--muted)}
+    /* ✅ subtitle removed */
 
     .btn{
       border:1px solid rgba(255,255,255,.14);
@@ -352,7 +352,7 @@
     .sheetActions{display:flex;gap:10px;margin-top:14px}
     .sheetActions .btn{flex:1}
 
-    .reasonBox{margin-top:12px;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:10px;background:rgba(0,0,0,.14)}
+    .reasonBox{margin-top:10px;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:10px;background:rgba(0,0,0,.14)}
     .reasonTitle{font-weight:900;margin-bottom:8px}
 
     .criteriaBtn{
@@ -414,17 +414,18 @@
       font-size:.82rem;
       color:var(--muted);
       font-weight:900;
-      margin-top:12px;
+      margin-top:10px;
       display:block;
     }
+    /* ✅ Smaller comment box */
     textarea{
       width:100%;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(0,0,0,.18);
       color:var(--txt);
       border-radius:14px;
-      padding:10px 12px;
-      min-height:90px;
+      padding:9px 10px;
+      min-height:56px; /* was ~90 */
       resize:vertical;
       margin-top:8px;
     }
@@ -532,7 +533,6 @@
   <div class="wrap top">
     <div class="title">
       <b>Seat Comfort</b>
-      <span>Modes: Sujet (noter) • Stéphane (note) • Présence • Dureté</span>
     </div>
     <div class="row" style="gap:8px">
       <button class="btn icon" id="settingsBtn" title="Settings">⚙️ Settings</button>
@@ -560,16 +560,14 @@
       </div>
     </div>
 
+    <!-- ✅ removed extra explanatory text under mode buttons -->
     <div class="p row" style="border-top:1px solid rgba(255,255,255,.06)">
       <div class="row" style="gap:8px">
-        <button class="btn small" id="modeSujetBtn">Sujet (noter)</button>
-        <button class="btn small" id="modeStephaneBtn">Stéphane (note)</button>
+        <button class="btn small" id="modeSujetBtn">Sujet</button>
+        <button class="btn small" id="modeStephaneBtn">Note</button>
         <button class="btn small" id="modePresenceBtn">Présence</button>
         <button class="btn small" id="modeDureteBtn">Dureté</button>
         <span class="pill" id="modePill">Mode —</span>
-      </div>
-      <div class="hint">
-        Sujet: clic zone → note (bolsters groupés). Autres modes: affichage uniquement (Seat_o) basé sur la note / présence / dureté.
       </div>
     </div>
 
@@ -578,7 +576,6 @@
         <image id="seatImg" href="seat.png" x="0" y="0" width="270.933" height="406.4" />
 
         <g id="zonesLayer">
-          <!-- ✅ Coussin de tête (rect plus petit + plus haut) -->
           <rect id="z_tete" class="zone" data-zone="Coussin de tête"
                 x="110" y="8" width="50" height="32" rx="12" ry="12" />
 
@@ -595,7 +592,6 @@
           <path id="z_jaune" class="zone" data-zone="Bande jaune"
             d="m 95.496358,211.31109 12.191022,0.40637 8.04608,0.0813 h 7.9648 l 8.12735,-0.0813 5.77042,-0.0813 4.14495,-0.0813 2.4382,0.16255 1.62547,0.40636 0.81274,0.48764 0.65018,0.48764 0.56892,0.65019 0.89401,1.38165 v 1.30038 l 0.0813,1.05655 -0.16255,4.06368 -0.24382,4.47004 -0.81273,2.11311 -2.19439,1.46292 -2.03183,0.56892 -6.90825,0.97528 -6.50188,0.32509 -6.90825,0.0813 -8.53371,-0.0813 -8.20863,-0.32509 -6.25806,-0.48764 -5.201502,-1.05656 -1.381649,-0.73146 -0.894008,-0.97528 -0.650188,-1.30037 -0.406368,-1.21911 -0.08127,-10.80937 0.48764,-1.30038 0.812734,-0.97528 1.544199,-0.81274 z" />
 
-          <!-- Flancs dossier -->
           <path id="z_flanc_gauche_vert" class="zone" data-zone="Flanc gauche (vert)"
             d="m 57.379089,139.30277 -3.413488,8.2899 -1.950564,7.47716 -1.300376,7.63971 -0.650187,6.98952 -0.162547,3.57603 0.0099,0.19521 0.344813,-0.0575 0.574691,-0.68963 0.94824,-0.71837 1.839008,-0.0862 1.609132,0.40229 4.166508,1.55166 4.827399,2.12635 4.568788,2.15509 4.680799,2.84205 3.657307,2.19439 1.62547,1.2191 0.08128,0.16255 -0.162547,-6.09551 -0.406368,-5.12023 -1.219103,-7.39589 -1.869291,-6.01424 -2.925845,-6.33933 -2.682025,-4.06368 -3.250941,-3.65731 -5.770417,-4.71386 z" />
 
@@ -608,21 +604,18 @@
           <path id="z_flanc_droit_orange" class="zone" data-zone="Flanc droit (orange)"
             d="m 162.38444,183.51555 -0.16254,12.84121 0.32509,10.07792 0.16255,12.84121 0.48764,20.64347 0.16254,0.65019 2.11312,-0.97529 3.57603,-2.60075 4.87641,-3.08839 6.66443,-5.68914 4.71386,-6.01425 3.57603,-6.01423 3.25094,-9.59028 1.95057,-10.56555 0.65018,-9.59027 -0.16254,-5.68915 -2.60075,-1.13782 h -2.43821 l -3.08839,0.32509 -1.95057,0.16255 -6.98952,0.65018 -7.9648,1.30038 z" />
 
-          <!-- Assise -->
           <path id="z_magenta" class="zone" data-zone="Bande magenta"
             d="m 86.637547,262.35084 h 65.994073 l -0.48764,-14.30413 -2.4382,-2.11311 -2.11311,-0.97529 -1.78802,-0.16254 -51.364848,0.16254 -2.925847,0.65019 -1.62547,0.81274 -1.462921,1.13783 z" />
 
           <path id="z_assise_vert" class="zone" data-zone="Assise bas (vert)"
             d="m 81.598589,273.07894 73.633791,0.48766 3.73858,0.65018 1.78801,0.97528 1.30038,1.46291 0.48764,2.11312 1.78802,11.54084 0.48764,6.01424 v 2.92584 l -0.48764,1.46291 -1.13783,1.13784 -1.46293,1.13784 -2.27565,0.16253 h -1.95057 l -78.185098,0.16256 -3.088394,-0.81274 -1.462921,-1.30038 -0.812737,-1.30037 1.300377,-14.95433 1.300374,-5.68915 0.812737,-3.25094 1.462923,-1.95056 z" />
 
-          <!-- Bas droit -->
           <path id="z_bas_droit_blanc" class="zone" data-zone="Bas droit (blanc)"
             d="m 162.54699,243.98303 7.47716,30.23375 2.27566,-1.30037 3.25094,-1.3004 5.5266,-0.97528 6.33933,-1.13782 4.38877,-0.65018 3.90113,0.16253 3.08839,0.65019 2.4382,1.13784 -1.30037,-6.66443 -1.78802,-5.5266 -3.25094,-5.68914 -4.71386,-5.8517 -3.0884,-3.08839 -0.97528,-2.11311 -1.46292,-1.78801 -1.46292,-0.16255 -1.78802,0.65019 -2.60075,0.65018 z" />
 
           <path id="z_bas_droit_cyan" class="zone" data-zone="Bas droit (cyan)"
             d="m 170.02415,274.21678 2.43821,14.79177 1.13782,11.54084 0.16255,3.57602 1.13783,-0.16253 2.7633,0.32509 3.73858,-0.81274 5.36405,-1.46291 4.71387,-2.27568 3.57603,-2.60075 4.71386,-5.52659 2.27566,-5.52659 0.48764,-4.55131 0.48764,-5.68915 -1.95056,-4.87643 -0.48764,-0.48763 -2.27566,-1.13784 -2.92585,-0.65018 h -4.06367 l -15.76706,2.60074 -3.73858,1.46294 z" />
 
-          <!-- Bas gauche -->
           <path id="z_bas_gauche_orange" class="zone" data-zone="Bas gauche (orange)"
             d="m 69.082472,271.94113 6.664425,-24.21952 -6.014238,-2.92584 -5.364051,-1.13783 -4.388768,-0.48764 h -3.901128 l -1.13783,0.65019 -2.600751,2.60075 -2.925847,2.60075 -2.113111,2.60075 -2.11311,2.60075 -1.462921,2.60075 -1.625471,2.92585 -1.300376,3.73858 -1.300377,2.60075 -0.325094,0.97528 1.625471,-0.97528 2.275657,-0.81272 h 3.413487 l 3.413488,0.32509 3.250938,0.32509 4.226224,0.81272 3.250938,1.13785 2.438204,0.65018 2.438207,1.13782 z" />
 
@@ -636,7 +629,6 @@
       <div class="tableTitle">
         <div>
           <b>Historique des personnes</b>
-          <div class="hint">Clique pour afficher/masquer.</div>
         </div>
         <div class="row" style="gap:8px">
           <span class="pill" id="peopleCountPill">0 personne</span>
@@ -690,7 +682,6 @@
   </aside>
 </main>
 
-<!-- rating sheet -->
 <div class="overlay" id="overlay"></div>
 <div class="sheet" id="sheet">
   <div class="sheetCard">
@@ -717,9 +708,7 @@
       <div class="scale"><span>1</span><span>5</span><span>10</span></div>
 
       <div class="reasonBox" id="reasonBox">
-        <div class="reasonTitle" id="criteriaTitle">Critères (même échelle que la note)</div>
-        <div class="hint" id="criteriaHint">Clique un critère → choisis l’évaluation.</div>
-
+        <div class="reasonTitle" id="criteriaTitle">Critères</div>
         <div id="criteriaList"></div>
 
         <div id="criteriaPanel" style="display:none">
@@ -734,7 +723,7 @@
         </div>
 
         <label class="commentLabel" for="reasonText">Commentaire</label>
-        <textarea id="reasonText" placeholder="Ajoute un commentaire (optionnel)"></textarea>
+        <textarea id="reasonText" placeholder="Commentaire (optionnel)"></textarea>
       </div>
 
       <div class="sheetActions">
@@ -745,7 +734,6 @@
   </div>
 </div>
 
-<!-- SETTINGS modal -->
 <div class="modalOverlay" id="settingsOverlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-label="Settings">
     <div class="modalHead">
@@ -758,54 +746,52 @@
 
     <div class="modalBody">
       <div class="section">
-        <h3>Transparence du panneau Settings</h3>
+        <h3>Transparence</h3>
 
         <div class="sl">
-          <label>Fond du modal</label>
+          <label>Fond</label>
           <input id="setBgA" type="range" min="0.55" max="1" step="0.01" value="0.95">
           <div class="mono" id="setBgAVal">0.95</div>
         </div>
 
         <div class="sl">
-          <label>Panneaux (sections)</label>
+          <label>Panneaux</label>
           <input id="setPanelA" type="range" min="0" max="0.30" step="0.01" value="0.12">
           <div class="mono" id="setPanelAVal">0.12</div>
         </div>
 
         <div class="sl">
-          <label>Fond des tableaux</label>
+          <label>Tableaux</label>
           <input id="setTableA" type="range" min="0" max="0.30" step="0.01" value="0.10">
           <div class="mono" id="setTableAVal">0.10</div>
         </div>
-
-        <div class="hint">Astuce : baisse “Panneaux” à ~0.05 pour mieux voir l’arrière-plan.</div>
       </div>
 
       <div class="twoCol">
         <div class="section">
-          <h3>Transparence & style des zones</h3>
+          <h3>Style zones</h3>
 
           <div class="sl">
-            <label>Opacité remplissage</label>
+            <label>Remplissage</label>
             <input id="fillAlpha" type="range" min="0" max="0.60" step="0.01" value="0.12">
             <div class="mono" id="fillAlphaVal">0.12</div>
           </div>
 
           <div class="sl">
-            <label>Opacité contour</label>
+            <label>Contour</label>
             <input id="strokeAlpha" type="range" min="0" max="1" step="0.01" value="0.55">
             <div class="mono" id="strokeAlphaVal">0.55</div>
           </div>
 
           <div class="sl">
-            <label>Épaisseur contour</label>
+            <label>Épaisseur</label>
             <input id="strokeW" type="range" min="1" max="6" step="1" value="2">
             <div class="mono" id="strokeWVal">2</div>
           </div>
         </div>
 
         <div class="section">
-          <h3>Modification des zones (déplacement individuel)</h3>
+          <h3>Déplacement zones</h3>
 
           <div class="field">
             <label>Zone</label>
@@ -839,7 +825,7 @@
         </div>
       </div>
 
-      <div class="hint">Tout est sauvegardé sur ce navigateur (localStorage).</div>
+      <div class="hint">Sauvegarde locale (localStorage).</div>
     </div>
   </div>
 </div>
@@ -864,7 +850,7 @@
     setTimeout(()=>t.classList.remove("show"), 1200);
   }
 
-  // ===== Fullscreen =====
+  // Fullscreen
   const fsBtn = $("fsBtn");
   function isFullscreen(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); }
   async function enterFullscreen(){
@@ -880,7 +866,7 @@
   document.addEventListener("webkitfullscreenchange", updateFsBtn);
   updateFsBtn();
 
-  // ===== Orientation helper =====
+  // Orientation helper
   const rotateOverlay = $("rotateOverlay");
   function checkOrientation(){
     const isMobile = window.matchMedia("(max-width: 980px)").matches;
@@ -891,7 +877,7 @@
   window.addEventListener("orientationchange", checkOrientation);
   checkOrientation();
 
-  // ===== Collapsible table =====
+  // Collapsible table
   const tableCollapse = $("tableCollapse");
   const toggleTableBtn = $("toggleTableBtn");
   let tableShown = false;
@@ -903,21 +889,17 @@
   toggleTableBtn.addEventListener("click", ()=> setTableShown(!tableShown));
   setTableShown(false);
 
-  // ===== Data keys =====
+  // Data keys
   const RATINGS_KEY = "seat_ratings_current_final_v6";
   const PEOPLE_KEY  = "seat_people_passes_final_v6";
 
-  // ===== Images (same folder) =====
+  // Images (same folder)
   const IMG_SUJET = "seat.png";
   const IMG_STEPHANE = "Seat_o.png";
 
-  // ===== Modes =====
-  // sujet = on note (vert)
-  // stephane = affichage note
-  // presence = affichage critère présence
-  // durete = affichage critère dureté
+  // Modes
   const MODE_KEY = "seat_mode_v2";
-  const GREEN_KEY = "seat_green_clicked_v2"; // stockage par clé effective (groupes bolsters)
+  const GREEN_KEY = "seat_green_clicked_v2";
   let mode = loadJson(MODE_KEY, "sujet");
   let greenClicked = loadJson(GREEN_KEY, {});
 
@@ -929,7 +911,7 @@
     img.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
   }
 
-  // ===== Bolsters grouping =====
+  // Bolsters grouping
   const BOLSTER_GROUPS = [
     { key: "Bolsters haut dossier (G+D)", members: ["Flanc gauche (vert)", "Flanc droit (violet)"] },
     { key: "Bolsters bas dossier (G+D)",  members: ["Flanc gauche (noir)", "Flanc droit (orange)"] },
@@ -945,11 +927,9 @@
     const g = BOLSTER_GROUPS.find(x=>x.key===key);
     return g ? g.members : [key];
   }
-  function isBolsterKey(key){
-    return BOLSTER_GROUPS.some(g => g.key === key);
-  }
+  function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
 
-  // ===== Criteria model (✅ même échelle que la note) =====
+  // Criteria model (same scale as note)
   const CRIT_SCALE = [
     "Inacceptable",
     "Très insatisfait",
@@ -959,24 +939,18 @@
     "Très satisfait",
     "Optimum"
   ];
-
   const CRITERIA = [
     { id:"presence",   label:"Présence" },
     { id:"durete",     label:"Dureté" },
-    { id:"symetrie",   label:"Symétrie (bolsters assise/dos)" },
+    { id:"symetrie",   label:"Symétrie" },
     { id:"homogeneite",label:"Homogénéité" }
   ];
-
-  // ✅ mêmes options pour tous (7 niveaux)
   const CRIT_OPTIONS = {
     presence: CRIT_SCALE,
     durete: CRIT_SCALE,
     symetrie: CRIT_SCALE,
     homogeneite: CRIT_SCALE
   };
-
-  // mapping label -> "score" pour utiliser tes couleurs (sliderTheme)
-  // (on réutilise le code couleur 1..10)
   const CRIT_TO_SCORE = {
     "Inacceptable": 1,
     "Très insatisfait": 2,
@@ -986,20 +960,16 @@
     "Très satisfait": 9,
     "Optimum": 10
   };
-  function critLabelToScore(label){
-    return CRIT_TO_SCORE[label] ?? null;
-  }
+  function critLabelToScore(label){ return CRIT_TO_SCORE[label] ?? null; }
 
-  // ===== Ratings =====
+  // Ratings
   let ratings = loadJson(RATINGS_KEY, {});
-  let activeKey = null;          // clé effective (groupe si bolster)
+  let activeKey = null;
   let activeCriteria = {};
   let activeCritId = null;
   let activePolyId = null;
 
-  function getZones(){
-    return Array.from(document.querySelectorAll(".zone")).map(z=>z.dataset.zone);
-  }
+  function getZones(){ return Array.from(document.querySelectorAll(".zone")).map(z=>z.dataset.zone); }
   function getScoreForZoneName(zoneName){
     const key = effectiveKeyForZone(zoneName);
     const v = ratings[key]?.score;
@@ -1026,7 +996,6 @@
     if(score === 10) return { cls:"s10", label:"Optimum" };
     return { cls:"", label:"" };
   }
-
   function sliderTheme(score){
     if(score === 1)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Inacceptable" };
     if(score === 2)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Très insatisfait" };
@@ -1055,22 +1024,16 @@
     document.documentElement.style.setProperty("--scol", s.col);
     document.documentElement.style.setProperty("--scolSoft", s.soft);
     document.documentElement.style.setProperty("--scolBorder", s.border);
-
     const pct = Math.max(0, Math.min(100, (Number(score) - 1) / 9 * 100));
     document.documentElement.style.setProperty("--pct", pct + "%");
-
     $("scoreWord").textContent = s.word;
   }
 
-  // ===== zone style (settings) =====
+  // zone style
   const ZSTYLE_KEY = "seat_zone_style_v1";
   const defaultStyle = { fillA:0.12, strokeA:0.55, strokeW:2 };
   let zStyle = loadJson(ZSTYLE_KEY, defaultStyle);
 
-  // ===== Rendering zones by mode =====
-  // sujet => vert (validation)
-  // stephane => couleur selon NOTE
-  // presence/durete => couleur selon CRITERE
   function updateZoneVisuals(){
     const fillA = Number(zStyle?.fillA ?? 0.12);
     const strokeA = Number(zStyle?.strokeA ?? 0.55);
@@ -1101,7 +1064,7 @@
       }
 
       if(mode === "presence" || mode === "durete"){
-        const critId = mode; // "presence" | "durete"
+        const critId = mode;
         const label = getCritForZoneName(zoneName, critId);
         const s = critLabelToScore(label);
         if(!Number.isFinite(s)){ hideZone(poly); return; }
@@ -1154,7 +1117,7 @@
     updateZoneVisuals();
   }
 
-  // ===== Sheet / criteria rendering =====
+  // Sheet / criteria rendering
   function setCriteriaDefaultsFromExisting(existing){
     activeCriteria = {};
     activeCritId = null;
@@ -1168,18 +1131,13 @@
   function currentOptionsForCrit(_score, critId){ return CRIT_OPTIONS[critId] || []; }
 
   function visibleCriteriaForActiveKey(){
-    // ✅ Symétrie seulement pour les bolsters
     const isBolster = isBolsterKey(activeKey);
     return CRITERIA.filter(c => (c.id !== "symetrie") ? true : isBolster);
   }
 
   function renderCriteria(score){
-    $("criteriaTitle").textContent = "Critères (même échelle que la note)";
-    $("criteriaHint").textContent = "Clique un critère → choisis l’évaluation.";
-
     const listEl = $("criteriaList");
     const panel = $("criteriaPanel");
-
     const criteriaList = visibleCriteriaForActiveKey();
 
     if(!criteriaList.some(c=>c.id === activeCritId)){
@@ -1261,11 +1219,9 @@
     $("sliderVal").textContent = v;
     applySliderUI(v);
 
-    const isGrouped = (activeKey !== zoneName);
-    const groupInfo = isGrouped ? ` (appliqué à: ${membersForKey(activeKey).join(" + ")})` : "";
     $("sheetMeta").textContent = existing?.score
-      ? `Note actuelle : ${existing.score}/10${groupInfo} • Modifie si besoin`
-      : `Aucune note encore • Choisis 1 à 10${groupInfo}`;
+      ? `Note : ${existing.score}/10`
+      : `Choisis 1 à 10`;
 
     $("reasonText").value = existing?.comment || "";
     setCriteriaDefaultsFromExisting(existing);
@@ -1313,7 +1269,6 @@
   $("overlay").addEventListener("click", closeSheet);
   $("closeBtn").addEventListener("click", closeSheet);
 
-  // ✅ Click zones: on note seulement en mode Sujet
   document.querySelectorAll(".zone").forEach(el=>{
     el.addEventListener("click", (e)=>{
       e.stopPropagation();
@@ -1327,7 +1282,7 @@
         return;
       }
 
-      toast("Mode affichage : clic désactivé");
+      toast("Mode affichage");
     });
   });
 
@@ -1349,40 +1304,25 @@
     `).join("");
   }
 
-  // Capture PNG "Stéphane" (note) avec Seat_o
-  async function captureSeatPngDataUrl(forceMode = "stephane"){
+  // Capture PNG (note mode)
+  async function captureSeatPngDataUrl(){
     const svg = document.getElementById("seatSvg");
     const clone = svg.cloneNode(true);
 
     const cloneImg = clone.querySelector("#seatImg");
     if(cloneImg){
-      const href = (forceMode === "sujet") ? IMG_SUJET : IMG_STEPHANE;
-      cloneImg.setAttribute("href", href);
-      cloneImg.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
+      cloneImg.setAttribute("href", IMG_STEPHANE);
+      cloneImg.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", IMG_STEPHANE);
     }
 
     const fillA = Number(zStyle?.fillA ?? 0.12);
     const strokeA = Number(zStyle?.strokeA ?? 0.55);
     const strokeW = Number(zStyle?.strokeW ?? 2);
 
-    const hide = (poly)=>{
-      poly.setAttribute("style", "fill:rgba(0,0,0,0);stroke:rgba(0,0,0,0);stroke-width:0;");
-    };
+    const hide = (poly)=> poly.setAttribute("style", "fill:rgba(0,0,0,0);stroke:rgba(0,0,0,0);stroke-width:0;");
 
     clone.querySelectorAll(".zone").forEach(poly=>{
-      const zoneName = poly.dataset.zone;
-
-      if(forceMode === "sujet"){
-        const gKey = effectiveKeyForZone(zoneName);
-        const on = !!greenClicked[gKey];
-        if(!on){ hide(poly); return; }
-        const green = "rgba(46,204,113,1)";
-        poly.setAttribute("style", `fill:${rgbaWithAlpha(green, fillA)};stroke:${rgbaWithAlpha(green, strokeA)};stroke-width:${strokeW};`);
-        return;
-      }
-
-      // forceMode = "stephane" => note
-      const score = getScoreForZoneName(zoneName);
+      const score = getScoreForZoneName(poly.dataset.zone);
       if(!Number.isFinite(score)){ hide(poly); return; }
       const theme = sliderTheme(Number(score));
       poly.setAttribute("style", `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeW};`);
@@ -1394,18 +1334,12 @@
 
     const img = new Image();
     img.crossOrigin = "anonymous";
-    await new Promise((res, rej)=>{
-      img.onload = res;
-      img.onerror = rej;
-      img.src = url;
-    });
+    await new Promise((res, rej)=>{ img.onload = res; img.onerror = rej; img.src = url; });
 
     const canvas = document.createElement("canvas");
     canvas.width = svg.viewBox.baseVal.width;
     canvas.height = svg.viewBox.baseVal.height;
-
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
+    canvas.getContext("2d").drawImage(img, 0, 0);
 
     URL.revokeObjectURL(url);
     return canvas.toDataURL("image/png");
@@ -1422,13 +1356,8 @@
     const a = avgGlobalComfort();
     if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
-    // ✅ capture stéphane (NOTE) pour le CSV
     let shotPng = "";
-    try{
-      shotPng = await captureSeatPngDataUrl("stephane");
-    }catch(e){
-      shotPng = "";
-    }
+    try{ shotPng = await captureSeatPngDataUrl(); }catch(e){ shotPng = ""; }
 
     const entry = {
       ts: new Date().toLocaleString("fr-FR"),
@@ -1442,7 +1371,7 @@
     people.push(entry);
     savePeople(people);
 
-    toast("✅ Personne enregistrée");
+    toast("✅ Enregistré");
     renderPeople();
 
     ratings = {};
@@ -1455,13 +1384,11 @@
   });
 
   $("resetBtn").addEventListener("click", ()=>{
-    if(confirm("Réinitialiser les notes actuelles (personne en cours) ?")){
+    if(confirm("Réinitialiser les notes actuelles ?")){
       ratings = {};
       saveJson(RATINGS_KEY, ratings);
-
       greenClicked = {};
       saveJson(GREEN_KEY, greenClicked);
-
       updateSummary();
       toast("Réinitialisé");
       closeSheet();
@@ -1509,7 +1436,7 @@
     toast("CSV exporté");
   });
 
-  // SETTINGS open/close
+  // Settings open/close
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     settingsOverlay.classList.add("show");
@@ -1526,7 +1453,7 @@
     }
   });
 
-  // SETTINGS: UI alpha
+  // Settings UI alpha
   const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
   const defaultUiAlpha = { bg: 0.95, panel: 0.12, table: 0.10 };
   let uiAlpha = loadJson(SET_UI_ALPHA_KEY, defaultUiAlpha);
@@ -1558,7 +1485,7 @@
   setPanelA?.addEventListener("input", onUiAlphaChange);
   setTableA?.addEventListener("input", onUiAlphaChange);
 
-  // SETTINGS: zone transparency
+  // Zone style controls
   const fillAlpha = $("fillAlpha");
   const strokeAlpha = $("strokeAlpha");
   const strokeW = $("strokeW");
@@ -1595,8 +1522,7 @@
   strokeAlpha.addEventListener("input", onStyleChange);
   strokeW.addEventListener("input", onStyleChange);
 
-  // SETTINGS per-zone transforms
-  // ✅ v4 pour inclure z_tete dans defaults
+  // Zone transforms
   const ZTUNE_KEY = "seat_zone_tune_map_v4";
   const DEFAULT_TUNE = {
     "z_tete": {dx:-2, dy:30, sc:1.000},
@@ -1621,7 +1547,6 @@
     zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
     saveJson(ZTUNE_KEY, zoneTune);
   }else{
-    // ✅ si tu avais déjà des réglages, on ajoute z_tete si absent
     if(!zoneTune["z_tete"]){
       zoneTune["z_tete"] = {...DEFAULT_TUNE["z_tete"]};
       saveJson(ZTUNE_KEY, zoneTune);
@@ -1655,7 +1580,7 @@
     zdxVal.textContent = t.dx;
     zdyVal.textContent = t.dy;
     zscVal.textContent = Number(t.sc).toFixed(3);
-    zoneOut.textContent = `${polyId}: transform="translate(${t.dx} ${t.dy}) scale(${Number(t.sc).toFixed(3)})"`;
+    zoneOut.textContent = `${polyId}: translate(${t.dx},${t.dy}) scale(${Number(t.sc).toFixed(3)})`;
   }
   function onZoneTuneChange(){
     const id = zoneSelect.value;
@@ -1686,12 +1611,12 @@
       const t = zoneTune[p.id] || {dx:0, dy:0, sc:1};
       return `${p.id}: translate(${t.dx},${t.dy}) scale(${Number(t.sc).toFixed(3)})`;
     }).join("\n");
-    try{ await navigator.clipboard.writeText(lines); toast("✅ Config copiée"); }
+    try{ await navigator.clipboard.writeText(lines); toast("✅ Copié"); }
     catch{ toast("⚠️ Copie impossible"); }
   });
 
   $("resetSettingsBtn").addEventListener("click", ()=>{
-    if(!confirm("Réinitialiser les Settings (zones + transparence) ?")) return;
+    if(!confirm("Réinitialiser Settings ?")) return;
 
     zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
     saveJson(ZTUNE_KEY, zoneTune);
@@ -1710,7 +1635,7 @@
     toast("Settings reset");
   });
 
-  // Mode UI
+  // Modes UI
   const modeSujetBtn = $("modeSujetBtn");
   const modeStephaneBtn = $("modeStephaneBtn");
   const modePresenceBtn = $("modePresenceBtn");
@@ -1726,13 +1651,11 @@
     modePresenceBtn.classList.toggle("modeOn", mode === "presence");
     modeDureteBtn.classList.toggle("modeOn", mode === "durete");
 
-    const label =
-      mode === "sujet" ? "Mode: Sujet (noter)" :
-      mode === "stephane" ? "Mode: Stéphane (note)" :
-      mode === "presence" ? "Mode: Présence" :
-      "Mode: Dureté";
-
-    modePill.textContent = label;
+    modePill.textContent =
+      mode === "sujet" ? "Sujet" :
+      mode === "stephane" ? "Note" :
+      mode === "presence" ? "Présence" :
+      "Dureté";
 
     setSeatBackground(mode);
     closeSheet();
@@ -1747,14 +1670,12 @@
   // init
   applyUiAlpha(uiAlpha);
   applyZoneStyle(zStyle);
-
   applyAll();
   loadZoneToUI(zoneSelect.value);
 
   applySliderUI(Number($("slider").value));
   updateSummary();
   renderPeople();
-
   setMode(mode);
 </script>
 </body>
