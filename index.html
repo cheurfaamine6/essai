@@ -1628,7 +1628,112 @@
   fillAlpha.addEventListener("input", onStyleChange);
   strokeAlpha.addEventListener("input", onStyleChange);
   strokeW.addEventListener("input", onStyleChange);
+// ===== SETTINGS: per-zone transforms (A AJOUTER) =====
+const ZTUNE_KEY = "seat_zone_tune_map_v4"; // nouvelle version si tu veux forcer des nouveaux defaults
 
+const DEFAULT_TUNE = {
+  "z_tete": {dx:0, dy:0, sc:1.000},
+  "z_dossier_bleu": {dx:10, dy:-3, sc:1.000},
+  "z_dossier_rouge": {dx:10, dy:5, sc:1.000},
+  "z_central_gris": {dx:11, dy:5, sc:1.000},
+  "z_jaune": {dx:11, dy:5, sc:1.000},
+  "z_magenta": {dx:10, dy:0, sc:1.000},
+  "z_assise_vert": {dx:10, dy:4, sc:1.000},
+  "z_bas_gauche_vert": {dx:11, dy:4, sc:1.000},
+  "z_flanc_gauche_vert": {dx:10, dy:5, sc:1.000},
+  "z_flanc_gauche_noir": {dx:10, dy:5, sc:1.000},
+  "z_flanc_droit_violet": {dx:10, dy:4, sc:1.000},
+  "z_flanc_droit_orange": {dx:10, dy:5, sc:1.000},
+  "z_bas_droit_blanc": {dx:10, dy:4, sc:1.000},
+  "z_bas_droit_cyan": {dx:11, dy:5, sc:1.000},
+  "z_bas_gauche_orange": {dx:1, dy:4, sc:1.000}
+};
+
+// charge ou initialise
+let zoneTune = loadJson(ZTUNE_KEY, null);
+if(!zoneTune || typeof zoneTune !== "object"){
+  zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
+  saveJson(ZTUNE_KEY, zoneTune);
+} else {
+  // si une nouvelle zone est ajoutée plus tard
+  Object.keys(DEFAULT_TUNE).forEach(k=>{
+    if(!zoneTune[k]) zoneTune[k] = {...DEFAULT_TUNE[k]};
+  });
+  saveJson(ZTUNE_KEY, zoneTune);
+}
+
+// UI refs
+const zoneSelect = $("zoneSelect");
+const zdxEl = $("zdx"), zdyEl = $("zdy"), zscEl = $("zsc");
+const zdxVal = $("zdxVal"), zdyVal = $("zdyVal"), zscVal = $("zscVal");
+const zoneOut = $("zoneOut");
+const polys = Array.from(document.querySelectorAll(".zone"));
+
+// remplit le select
+zoneSelect.innerHTML = "";
+polys.forEach(p=>{
+  const opt = document.createElement("option");
+  opt.value = p.id;
+  opt.textContent = p.dataset.zone;
+  zoneSelect.appendChild(opt);
+});
+
+function applyOne(polyId){
+  const p = document.getElementById(polyId);
+  if(!p) return;
+  const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
+  p.setAttribute("transform", `translate(${t.dx} ${t.dy}) scale(${t.sc})`);
+}
+function applyAll(){ polys.forEach(p=>applyOne(p.id)); }
+
+function loadZoneToUI(polyId){
+  const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
+  zdxEl.value = t.dx; zdyEl.value = t.dy; zscEl.value = t.sc;
+
+  zdxVal.textContent = t.dx;
+  zdyVal.textContent = t.dy;
+  zscVal.textContent = Number(t.sc).toFixed(3);
+
+  zoneOut.textContent = `${polyId}: transform="translate(${t.dx} ${t.dy}) scale(${Number(t.sc).toFixed(3)})"`;
+}
+
+function onZoneTuneChange(){
+  const id = zoneSelect.value;
+  zoneTune[id] = { dx:Number(zdxEl.value), dy:Number(zdyEl.value), sc:Number(zscEl.value) };
+  saveJson(ZTUNE_KEY, zoneTune);
+
+  applyOne(id);
+  loadZoneToUI(id);
+  updateZoneVisuals();
+}
+
+zoneSelect.addEventListener("change", ()=> loadZoneToUI(zoneSelect.value));
+zdxEl.addEventListener("input", onZoneTuneChange);
+zdyEl.addEventListener("input", onZoneTuneChange);
+zscEl.addEventListener("input", onZoneTuneChange);
+
+$("resetZoneBtn").addEventListener("click", ()=>{
+  const id = zoneSelect.value;
+  zoneTune[id] = {...(DEFAULT_TUNE[id] || {dx:0,dy:0,sc:1})};
+  saveJson(ZTUNE_KEY, zoneTune);
+  applyOne(id);
+  loadZoneToUI(id);
+  updateZoneVisuals();
+  toast("Zone reset");
+});
+
+$("copyZoneBtn").addEventListener("click", async ()=>{
+  const lines = polys.map(p=>{
+    const t = zoneTune[p.id] || {dx:0, dy:0, sc:1};
+    return `${p.id}: translate(${t.dx},${t.dy}) scale(${Number(t.sc).toFixed(3)})`;
+  }).join("\n");
+  try{ await navigator.clipboard.writeText(lines); toast("✅ Config copiée"); }
+  catch{ toast("⚠️ Copie impossible"); }
+});
+
+// init transforms + UI
+applyAll();
+loadZoneToUI(zoneSelect.value);
   // Init
   applyUiAlpha(uiAlpha);
   applyZoneStyle(zStyle);
