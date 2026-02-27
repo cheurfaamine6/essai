@@ -244,7 +244,7 @@
       transition:.22s cubic-bezier(.2,.8,.2,1); z-index:30; padding: 12px 12px calc(14px + env(safe-area-inset-bottom));}
     .sheet.show{transform: translateY(0)}
     .sheetCard{max-width:760px; margin:0 auto; background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.14);
-      border-radius:22px; box-shadow: 0 18px 55px rgba(0,0,0,.45); overflow:hidden}
+      border-radius:22px; box-shadow: var(--shadow); overflow:hidden}
     .grab{height:18px; display:grid; place-items:center; background: rgba(255,255,255,.03); border-bottom:1px solid rgba(255,255,255,.08)}
     .grab::before{content:""; width:56px; height:5px; border-radius:999px; background: rgba(255,255,255,.22)}
     .sheetBody{padding:14px}
@@ -259,7 +259,6 @@
       margin-top:10px;
       flex-wrap: wrap;
     }
-
     .scoreChip{
       display:inline-flex;
       align-items:center;
@@ -298,7 +297,6 @@
       accent-color: var(--scol);
       background: transparent;
     }
-
     .ratingSlider::-webkit-slider-runnable-track{
       height:10px;
       border-radius:999px;
@@ -319,7 +317,6 @@
       box-shadow: 0 10px 22px rgba(0,0,0,.35);
       margin-top:-6px;
     }
-
     .ratingSlider::-moz-range-track{
       height:10px;
       border-radius:999px;
@@ -446,7 +443,7 @@
 
     .toast{position:fixed; left:50%; bottom:18px; transform: translateX(-50%) translateY(20px); opacity:0; pointer-events:none;
       background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:10px 12px; z-index:60;
-      transition:.2s; box-shadow: 0 18px 55px rgba(0,0,0,.45); max-width:92vw;}
+      transition:.2s; box-shadow: var(--shadow); max-width:92vw;}
     .toast.show{opacity:1; transform: translateX(-50%) translateY(0)}
 
     .rotateOverlay{
@@ -463,7 +460,7 @@
       background: rgba(17,25,50,.92);
       border-radius:22px;
       padding:16px;
-      box-shadow: 0 18px 55px rgba(0,0,0,.45);
+      box-shadow: var(--shadow);
     }
     .rotateOverlay .box b{font-size:1.1rem}
     .rotateOverlay .box p{color:var(--muted);margin:8px 0 0}
@@ -484,7 +481,7 @@
       background: rgba(17,25,50,var(--settings-bg-alpha));
       border:1px solid rgba(255,255,255,.14);
       border-radius: 22px;
-      box-shadow: 0 18px 55px rgba(0,0,0,.45);
+      box-shadow: var(--shadow);
     }
     .modalHead{
       position:sticky; top:0;
@@ -687,7 +684,7 @@
 
       <div class="sheetScoreHeader">
         <div class="hint">Glisser</div>
-        <div class="scoreChip" id="scoreChip">
+        <div class="scoreChip">
           <span class="dot"></span>
           <span class="label" id="scoreWord">Satisfait</span>
         </div>
@@ -702,7 +699,7 @@
       </div>
       <div class="scale"><span>1</span><span>5</span><span>10</span></div>
 
-      <div class="reasonBox" id="reasonBox">
+      <div class="reasonBox">
         <div class="reasonTitle">Critères</div>
         <div id="criteriaList"></div>
 
@@ -873,6 +870,12 @@
   window.addEventListener("orientationchange", checkOrientation);
   checkOrientation();
 
+  // ===== Password for table (NEW) =====
+  const TABLE_PASSWORD = "1234"; // 🔒 change ici
+  const TABLE_UNLOCK_KEY = "seat_table_unlocked_session_v1";
+  function isTableUnlocked(){ return sessionStorage.getItem(TABLE_UNLOCK_KEY) === "1"; }
+  function unlockTable(){ sessionStorage.setItem(TABLE_UNLOCK_KEY, "1"); }
+
   // Collapsible table
   const tableCollapse = $("tableCollapse");
   const toggleTableBtn = $("toggleTableBtn");
@@ -882,7 +885,18 @@
     tableCollapse.classList.toggle("show", tableShown);
     toggleTableBtn.textContent = tableShown ? "Masquer tableau" : "Afficher tableau";
   }
-  toggleTableBtn.addEventListener("click", ()=> setTableShown(!tableShown));
+  toggleTableBtn.addEventListener("click", ()=>{
+    if(!isTableUnlocked()){
+      const pw = prompt("Mot de passe ?");
+      if(pw !== TABLE_PASSWORD){
+        toast("❌ Mot de passe incorrect");
+        return;
+      }
+      unlockTable();
+      toast("✅ Tableau déverrouillé");
+    }
+    setTableShown(!tableShown);
+  });
   setTableShown(false);
 
   // Keys
@@ -963,7 +977,6 @@
   let activeKey = null;
   let activeCriteria = {};
   let activeCritId = null;
-  let activePolyId = null;
 
   function getZones(){ return Array.from(document.querySelectorAll(".zone")).map(z=>z.dataset.zone); }
   function getScoreForZoneName(zoneName){
@@ -1200,9 +1213,7 @@
   }
 
   function openSheet(zoneName, el){
-    activePolyId = el?.id || null;
     activeKey = effectiveKeyForZone(zoneName);
-
     $("sheetZone").textContent = effectiveDisplayName(zoneName);
 
     document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
@@ -1319,22 +1330,55 @@
     return entryRatings?.[key] || null;
   }
 
-  // ===== Capture renderer for modes (Seat_o) =====
+  // ===== Embed background image in captures (NEW) =====
+  const _imgDataUrlCache = new Map();
+
+  async function loadImageAsDataURL(url){
+    if(_imgDataUrlCache.has(url)) return _imgDataUrlCache.get(url);
+    // NOTE: pour que fetch marche, ouvre via un serveur (Live Server), pas file://
+    const res = await fetch(url, { cache: "force-cache" });
+    const blob = await res.blob();
+    const dataUrl = await new Promise((resolve, reject)=>{
+      const r = new FileReader();
+      r.onload = ()=> resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(blob);
+    });
+    _imgDataUrlCache.set(url, dataUrl);
+    return dataUrl;
+  }
+
+  function setSvgImageHref(imgEl, href){
+    imgEl.setAttribute("href", href);
+    imgEl.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
+  }
+
+  // ===== Capture renderer for modes (Seat_o + zones) =====
   async function captureSeatPngDataUrlForMode(modeToRender){
     const svg = document.getElementById("seatSvg");
     const clone = svg.cloneNode(true);
 
+    // ✅ Embarquer Seat_o.png en dataURL => la capture contient le siège + zones
+    let bgDataUrl = "";
+    try{
+      bgDataUrl = await loadImageAsDataURL(IMG_STEPHANE);
+    }catch(e){
+      bgDataUrl = IMG_STEPHANE; // fallback
+    }
+
     const cloneImg = clone.querySelector("#seatImg");
     if(cloneImg){
-      cloneImg.setAttribute("href", IMG_STEPHANE);
-      cloneImg.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", IMG_STEPHANE);
+      setSvgImageHref(cloneImg, bgDataUrl);
     }
 
     const fillA = Number(zStyle?.fillA ?? 0.12);
     const strokeA = Number(zStyle?.strokeA ?? 0.55);
     const strokeW = Number(zStyle?.strokeW ?? 2);
 
-    const hide = (poly)=> poly.setAttribute("style", "fill:rgba(0,0,0,0);stroke:rgba(0,0,0,0);stroke-width:0;");
+    const hide = (poly)=> poly.setAttribute(
+      "style",
+      "fill:rgba(0,0,0,0);stroke:rgba(0,0,0,0);stroke-width:0;"
+    );
 
     clone.querySelectorAll(".zone").forEach(poly=>{
       const zoneName = poly.dataset.zone;
@@ -1384,7 +1428,6 @@
     const poids = $("poids").value.trim();
 
     if(!nom || !prenom){ toast("⚠️ Nom + prénom requis"); return; }
-
     const a = avgGlobalComfort();
     if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
@@ -1725,9 +1768,10 @@
   modePresenceBtn.addEventListener("click", ()=> setMode("presence"));
   modeDureteBtn.addEventListener("click", ()=> setMode("durete"));
 
-  // init
+  // Init
   applyUiAlpha(uiAlpha);
   applyZoneStyle(zStyle);
+
   applyAll();
   loadZoneToUI(zoneSelect.value);
 
