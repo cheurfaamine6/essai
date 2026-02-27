@@ -31,9 +31,9 @@
       --pct: 66%;
 
       /* ✅ Settings transparency */
-      --settings-bg-alpha: .95;     /* fond modal */
-      --settings-panel-alpha: .12;  /* sections/panels */
-      --settings-table-alpha: .10;  /* tableWrap */
+      --settings-bg-alpha: .95;
+      --settings-panel-alpha: .12;
+      --settings-table-alpha: .10;
     }
 
     *{box-sizing:border-box}
@@ -74,6 +74,13 @@
     .btn.ghost{background:transparent;border-color:rgba(255,255,255,.14)}
     .btn.small{padding:8px 10px;border-radius:12px}
     .btn.icon{display:inline-flex;gap:8px;align-items:center}
+
+    /* ✅ mode active */
+    .btn.modeOn{
+      border-color: rgba(46,204,113,.55);
+      background: rgba(46,204,113,.16);
+      color:#d1fae5;
+    }
 
     .grid{
       display:grid;
@@ -158,10 +165,8 @@
       stroke-width: var(--zone-stroke-width);
       cursor:pointer;
       transition:.12s;
-      pointer-events: all; /* ✅ clickable même transparent */
+      pointer-events: all; /* clickable même transparent */
     }
-    /* ✅ hover uniquement si noté (sinon on ne veut pas voir les zones au début) */
-    .zone.rated:hover{fill: var(--zone-fill-hover); stroke: var(--zone-stroke-hover)}
     .zone.active{
       fill: var(--zone-fill-active);
       stroke: var(--zone-stroke-active);
@@ -298,6 +303,10 @@
     @media (max-width:720px){
       .sheetScoreHeader .hint{ display:none; }
       .scoreChip{ justify-content:center; }
+    }
+    @media (max-width:420px){
+      .scoreChip{ padding:7px 10px; }
+      .scoreChip .label{ font-size:.78rem; }
     }
 
     .ratingSlider{
@@ -546,7 +555,7 @@
       <button class="btn" id="fsBtn">Plein écran</button>
       <button class="btn ghost" id="resetBtn">Réinitialiser notes</button>
       <button class="btn" id="exportBtn">Exporter CSV</button>
-      <button class="btn primary" id="savePersonBtn">Sauver personne</button>
+      <button class="btn primary" id="savePersonBtn">Enregistrer</button>
     </div>
   </div>
 </header>
@@ -565,6 +574,16 @@
         <div class="pill" id="countPill">0 zone notée</div>
         <div class="pill good" id="globalPill">Confort global —</div>
       </div>
+    </div>
+
+    <!-- ✅ Mode buttons -->
+    <div class="p row" style="border-top:1px solid rgba(255,255,255,.06)">
+      <div class="row" style="gap:8px">
+        <button class="btn small" id="modeSujetBtn">Sujet</button>
+        <button class="btn small" id="modeStephaneBtn">Pour Stéphane</button>
+        <span class="pill" id="modePill">Mode —</span>
+      </div>
+      <div class="hint">Sujet = clic → vert • Stéphane = clic → note → couleur</div>
     </div>
 
     <div class="seatFrame">
@@ -897,6 +916,12 @@
   const RATINGS_KEY = "seat_ratings_current_final_v6";
   const PEOPLE_KEY  = "seat_people_passes_final_v6";
 
+  // ===== Modes =====
+  const MODE_KEY = "seat_mode_v1";           // "sujet" | "stephane"
+  const GREEN_KEY = "seat_green_clicked_v1"; // map zoneId -> true
+  let mode = loadJson(MODE_KEY, "stephane");
+  let greenClicked = loadJson(GREEN_KEY, {});
+
   // ===== Bolsters grouping =====
   const BOLSTER_GROUPS = [
     { key: "Bolsters haut dossier (G+D)", members: ["Flanc gauche (vert)", "Flanc droit (violet)"] },
@@ -970,6 +995,18 @@
     return { col:"rgba(124,58,237,1)", soft:"rgba(124,58,237,.14)", border:"rgba(124,58,237,.55)", word:"—" };
   }
 
+  function rgbaWithAlpha(rgbaStr, alpha){
+    const m = String(rgbaStr).match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i);
+    if(!m) return `rgba(124,58,237,${alpha})`;
+    const r = Number(m[1]), g = Number(m[2]), b = Number(m[3]);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+  function hideZone(poly){
+    poly.style.fill = "rgba(0,0,0,0)";
+    poly.style.stroke = "rgba(0,0,0,0)";
+    poly.style.strokeWidth = "0";
+  }
+
   function applySliderUI(score){
     const s = sliderTheme(Number(score));
     document.documentElement.style.setProperty("--scol", s.col);
@@ -982,35 +1019,34 @@
     $("scoreWord").textContent = s.word;
   }
 
-  // ✅ Zones: plus d'emojis. Une zone notée devient colorée selon la note.
+  // ✅ Mode-based visuals on the SAME image
   function updateZoneVisuals(){
-    function rgbaWithAlpha(rgbaStr, alpha){
-      const m = String(rgbaStr).match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i);
-      if(!m) return `rgba(124,58,237,${alpha})`;
-      const r = Number(m[1]), g = Number(m[2]), b = Number(m[3]);
-      return `rgba(${r},${g},${b},${alpha})`;
-    }
+    const fillA = Number(zStyle?.fillA ?? 0.12);
+    const strokeA = Number(zStyle?.strokeA ?? 0.55);
+    const strokeW = Number(zStyle?.strokeW ?? 2);
 
     document.querySelectorAll(".zone").forEach(poly=>{
-      const score = getScoreForZoneName(poly.dataset.zone);
+      poly.classList.remove("rated");
 
-      // non noté => invisible
-      if(!Number.isFinite(score)){
-        poly.classList.remove("rated");
-        poly.style.fill = "rgba(0,0,0,0)";
-        poly.style.stroke = "rgba(0,0,0,0)";
-        poly.style.strokeWidth = "0";
+      if(mode === "sujet"){
+        const on = !!greenClicked[poly.id];
+        if(!on){ hideZone(poly); return; }
+
+        const green = "rgba(46,204,113,1)";
+        poly.style.fill = rgbaWithAlpha(green, fillA);
+        poly.style.stroke = rgbaWithAlpha(green, strokeA);
+        poly.style.strokeWidth = String(strokeW);
         return;
       }
 
-      // noté => visible + couleur
+      const score = getScoreForZoneName(poly.dataset.zone);
+      if(!Number.isFinite(score)){
+        hideZone(poly);
+        return;
+      }
+
       poly.classList.add("rated");
-
       const theme = sliderTheme(Number(score));
-      const fillA = Number(zStyle?.fillA ?? 0.12);
-      const strokeA = Number(zStyle?.strokeA ?? 0.55);
-      const strokeW = Number(zStyle?.strokeW ?? 2);
-
       poly.style.fill = rgbaWithAlpha(theme.col, fillA);
       poly.style.stroke = rgbaWithAlpha(theme.col, strokeA);
       poly.style.strokeWidth = String(strokeW);
@@ -1198,14 +1234,23 @@
   $("overlay").addEventListener("click", closeSheet);
   $("closeBtn").addEventListener("click", closeSheet);
 
+  // ✅ Click logic depends on mode
   document.querySelectorAll(".zone").forEach(el=>{
     el.addEventListener("click", (e)=>{
       e.stopPropagation();
+
+      if(mode === "sujet"){
+        greenClicked[el.id] = !greenClicked[el.id];
+        saveJson(GREEN_KEY, greenClicked);
+        updateZoneVisuals();
+        return;
+      }
+
       openSheet(el.dataset.zone, el);
     });
   });
 
-  // People table
+  // ===== People table =====
   function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
   function savePeople(arr){ saveJson(PEOPLE_KEY, arr); }
   function renderPeople(){
@@ -1223,7 +1268,34 @@
     `).join("");
   }
 
-  $("savePersonBtn").addEventListener("click", ()=>{
+  // ✅ SVG screenshot (dataURL PNG)
+  async function captureSeatPngDataUrl(){
+    const svg = document.getElementById("seatSvg");
+    const xml = new XMLSerializer().serializeToString(svg);
+
+    const svgBlob = new Blob([xml], {type:"image/svg+xml;charset=utf-8"});
+    const url = URL.createObjectURL(svgBlob);
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    await new Promise((res, rej)=>{
+      img.onload = res;
+      img.onerror = rej;
+      img.src = url;
+    });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = svg.viewBox.baseVal.width;
+    canvas.height = svg.viewBox.baseVal.height;
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+
+    URL.revokeObjectURL(url);
+    return canvas.toDataURL("image/png");
+  }
+
+  $("savePersonBtn").addEventListener("click", async ()=>{
     const nom = $("nom").value.trim();
     const prenom = $("prenom").value.trim();
     const taille = $("taille").value.trim();
@@ -1234,11 +1306,20 @@
     const a = avgGlobalComfort();
     if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
+    let shotPng = "";
+    try{
+      // capture seulement en mode Stéphane (notes)
+      if(mode === "stephane") shotPng = await captureSeatPngDataUrl();
+    }catch(e){
+      shotPng = "";
+    }
+
     const entry = {
       ts: new Date().toLocaleString("fr-FR"),
       nom, prenom, taille, poids,
       globalAvg: a.toFixed(1),
-      ratings
+      ratings,
+      shotPng
     };
 
     const people = loadPeople();
@@ -1276,7 +1357,7 @@
       `${z} comment`
     ]);
 
-    const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale", ...zoneCols];
+    const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale", ...zoneCols, "Capture PNG (dataURL)"];
     const lines = [headers.map(esc).join(SEP)];
 
     people.forEach(p=>{
@@ -1290,6 +1371,7 @@
         row.push(rz?.comment ?? "");
       });
 
+      row.push(p.shotPng ?? "");
       lines.push(row.map(esc).join(SEP));
     });
 
@@ -1303,7 +1385,7 @@
     toast("CSV exporté");
   });
 
-  // SETTINGS open/close
+  // ===== SETTINGS open/close =====
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     settingsOverlay.classList.add("show");
@@ -1354,7 +1436,7 @@
   setPanelA?.addEventListener("input", onUiAlphaChange);
   setTableA?.addEventListener("input", onUiAlphaChange);
 
-  // SETTINGS: zone transparency
+  // ===== SETTINGS: zone transparency =====
   const ZSTYLE_KEY = "seat_zone_style_v1";
   const defaultStyle = { fillA:0.12, strokeA:0.55, strokeW:2 };
   let zStyle = loadJson(ZSTYLE_KEY, defaultStyle);
@@ -1367,7 +1449,6 @@
   const strokeWVal = $("strokeWVal");
 
   function applyZoneStyle(style){
-    // (variables gardées, mais la couleur finale des zones notées vient du JS)
     document.documentElement.style.setProperty("--zone-fill", `rgba(79,140,255,${style.fillA})`);
     document.documentElement.style.setProperty("--zone-stroke", `rgba(79,140,255,${style.strokeA})`);
     document.documentElement.style.setProperty("--zone-stroke-width", `${style.strokeW}px`);
@@ -1391,15 +1472,14 @@
     zStyle = { fillA: Number(fillAlpha.value), strokeA: Number(strokeAlpha.value), strokeW: Number(strokeW.value) };
     saveJson(ZSTYLE_KEY, zStyle);
     applyZoneStyle(zStyle);
-    updateZoneVisuals(); // ✅ applique alpha/épaisseur sur les zones déjà notées
+    updateZoneVisuals(); // ✅ refresh colors with new alpha/width
   }
   fillAlpha.addEventListener("input", onStyleChange);
   strokeAlpha.addEventListener("input", onStyleChange);
   strokeW.addEventListener("input", onStyleChange);
 
-  // SETTINGS per-zone transforms
+  // ===== SETTINGS per-zone transforms =====
   const ZTUNE_KEY = "seat_zone_tune_map_v3";
-
   const DEFAULT_TUNE = {
     "z_dossier_bleu": {dx:10, dy:4, sc:1.000},
     "z_dossier_rouge": {dx:10, dy:5, sc:1.000},
@@ -1505,15 +1585,38 @@
     toast("Settings reset");
   });
 
-  // init
+  // ===== Mode UI =====
+  const modeSujetBtn = $("modeSujetBtn");
+  const modeStephaneBtn = $("modeStephaneBtn");
+  const modePill = $("modePill");
+
+  function setMode(m){
+    mode = m;
+    saveJson(MODE_KEY, mode);
+
+    modeSujetBtn.classList.toggle("modeOn", mode === "sujet");
+    modeStephaneBtn.classList.toggle("modeOn", mode === "stephane");
+    modePill.textContent = mode === "sujet" ? "Mode: Sujet (vert)" : "Mode: Pour Stéphane (notes)";
+
+    closeSheet();
+    updateZoneVisuals();
+  }
+
+  modeSujetBtn.addEventListener("click", ()=> setMode("sujet"));
+  modeStephaneBtn.addEventListener("click", ()=> setMode("stephane"));
+
+  // ===== init =====
   applyUiAlpha(uiAlpha);
   applyZoneStyle(zStyle);
+
   applyAll();
   loadZoneToUI(zoneSelect.value);
 
   applySliderUI(Number($("slider").value));
   updateSummary();
   renderPeople();
+
+  setMode(mode); // init mode + visuals
 </script>
 </body>
 </html>
