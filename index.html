@@ -1230,11 +1230,10 @@
 
     saveJson(RATINGS_KEY, ratings);
 
-    // ✅ en mode Sujet, on garde la zone validée (verte) même après la note
-    if(mode === "sujet" && activePolyId){
-      greenClicked[activePolyId] = true;
-      saveJson(GREEN_KEY, greenClicked);
-    }
+    if(mode === "sujet" && activeKey){
+  greenClicked[activeKey] = true; // ✅ activeKey est déjà la clé groupe si bolster
+  saveJson(GREEN_KEY, greenClicked);
+}
 
     updateSummary();
     toast("Note enregistrée");
