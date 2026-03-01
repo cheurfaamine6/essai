@@ -7,23 +7,32 @@
   <meta name="theme-color" content="#070a14" />
   <title>seat comf</title>
 
+  <!-- ✅ Police moderne -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
     :root{
       --bg0:#070a14; --bg1:#0b1020;
-      --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.12);
+      --cardTop:rgba(255,255,255,.085);
+      --cardBot:rgba(0,0,0,.14);
+      --line:rgba(255,255,255,.11);
+
       --txt:#eef2ff; --muted:#a7b0d8;
+
+      /* ✅ Accent (modifiable) */
       --a1:#4f8cff; --a2:#7c3aed;
-      --shadow: 0 18px 55px rgba(0,0,0,.45);
+
+      --shadow: 0 18px 55px rgba(0,0,0,.40);
+      --shadow2: 0 26px 80px rgba(0,0,0,.42);
       --r:18px;
 
       --zone-fill: rgba(79,140,255,.12);
       --zone-stroke: rgba(79,140,255,.55);
       --zone-stroke-width: 2px;
-      --zone-fill-hover: rgba(124,58,237,.18);
-      --zone-stroke-hover: rgba(124,58,237,.80);
       --zone-fill-active: rgba(124,58,237,.28);
       --zone-stroke-active: rgba(124,58,237,.98);
-      --zone-stroke-width-active: 3px;
 
       --scol: rgba(124,58,237,1);
       --scolSoft: rgba(124,58,237,.14);
@@ -37,34 +46,34 @@
 
     *{box-sizing:border-box}
     body{
-      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--txt);
       background:
-        radial-gradient(1000px 650px at 15% -15%, rgba(124,58,237,.28), transparent 58%),
-        radial-gradient(1000px 650px at 85% -15%, rgba(79,140,255,.22), transparent 58%),
+        radial-gradient(1100px 650px at 15% -15%, rgba(124,58,237,.28), transparent 58%),
+        radial-gradient(1100px 650px at 85% -15%, rgba(79,140,255,.22), transparent 58%),
         linear-gradient(180deg,var(--bg0),var(--bg1));
       min-height:100vh;
     }
 
     header{
       position:sticky; top:0; z-index:10;
-      background: rgba(7,10,20,.72);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: rgba(7,10,20,.56);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
+
     .wrap{max-width:1200px;margin:0 auto;padding:12px}
     .top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-    .title{display:flex;flex-direction:column;gap:2px}
-    .title b{font-size:1.05rem;letter-spacing:.2px}
 
     .brand{ display:flex; align-items:center; gap:10px; min-width: 180px; }
     .logo{
-      height:48px; width:auto; max-width:220px;
+      height:44px; width:auto; max-width:220px;
       object-fit:contain; display:block;
-      filter: drop-shadow(0 8px 18px rgba(0,0,0,.35));
+      filter: drop-shadow(0 10px 22px rgba(0,0,0,.40));
     }
     @media (max-width:520px){
-      .logo{ height:36px; max-width:160px; }
+      .logo{ height:34px; max-width:160px; }
     }
 
     .btn{
@@ -73,22 +82,54 @@
       color:var(--txt);
       padding:10px 12px;
       border-radius:14px;
-      font-weight:800;
+      font-weight:900;
       cursor:pointer;
-      transition:.15s;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease, opacity .12s ease;
       user-select:none;
+      letter-spacing:.15px;
     }
-    .btn:hover{transform: translateY(-1px); border-color:rgba(255,255,255,.24)}
+    .btn:hover{transform: translateY(-1px); border-color:rgba(255,255,255,.22)}
+    .btn:active{transform: translateY(0px) scale(.985)}
     .btn.primary{border:none;background: linear-gradient(90deg,var(--a1),var(--a2))}
     .btn.ghost{background:transparent;border-color:rgba(255,255,255,.14)}
     .btn.small{padding:8px 10px;border-radius:12px}
     .btn.icon{display:inline-flex;gap:8px;align-items:center}
     .btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
-    .btn.modeOn{
-      border-color: rgba(46,204,113,.55);
-      background: rgba(46,204,113,.16);
-      color:#d1fae5;
+
+    /* ✅ Menu ⋯ */
+    .menuWrap{ position:relative; }
+    .menu{
+      position:absolute;
+      right:0; top: calc(100% + 10px);
+      width: 240px;
+      background: rgba(17,25,50,.92);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:16px;
+      box-shadow: var(--shadow);
+      padding:8px;
+      display:none;
     }
+    .menu.show{display:block;}
+    .menu .mi{
+      width:100%;
+      text-align:left;
+      padding:10px 10px;
+      border-radius:12px;
+      border:1px solid transparent;
+      background: transparent;
+      color: var(--txt);
+      cursor:pointer;
+      font-weight:850;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .menu .mi:hover{
+      background: rgba(124,58,237,.14);
+      border-color: rgba(124,58,237,.22);
+    }
+    .menu .mi small{color:rgba(167,176,216,.85); font-weight:800}
 
     .grid{
       display:grid;
@@ -104,12 +145,15 @@
     }
 
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(0,0,0,.08));
+      background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
       border: 1px solid var(--line);
       border-radius: var(--r);
       overflow:hidden;
-      box-shadow: 0 12px 45px rgba(0,0,0,.28);
+      box-shadow: var(--shadow);
+      transition: transform .18s ease, box-shadow .18s ease;
     }
+    .card:hover{ transform: translateY(-1px); box-shadow: var(--shadow2); }
+
     .p{padding:12px}
     .hint{color:var(--muted);font-size:.88rem;line-height:1.35}
     .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -121,6 +165,7 @@
       border:1px solid rgba(255,255,255,.14);
       color:var(--muted);
       background: rgba(0,0,0,.10);
+      font-weight:850;
     }
     .pill.good{
       color:#d1fae5;
@@ -128,7 +173,24 @@
       background: rgba(46, 204, 113, .10);
     }
 
-    /* Bannière testeur */
+    /* ✅ champs global (fix inputs blancs) */
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field label{font-size:.82rem;color:var(--muted);font-weight:900}
+    .field input, .field select{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color:var(--txt);
+      padding:10px 12px;
+      border-radius:14px;
+      outline:none;
+    }
+    .field input::placeholder{ color: rgba(167,176,216,.75); }
+    .field input:focus, .field select:focus{
+      border-color: rgba(124,58,237,.55);
+      box-shadow: 0 0 0 4px rgba(124,58,237,.18);
+    }
+
+    /* ✅ Bannière testeur */
     .profileBar{
       display:flex; gap:10px; align-items:center; justify-content:space-between;
       padding:10px 12px;
@@ -179,7 +241,7 @@
     .zone.active{
       fill: var(--zone-fill-active);
       stroke: var(--zone-stroke-active);
-      stroke-width: var(--zone-stroke-width-active);
+      stroke-width: 3px;
     }
 
     .list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
@@ -188,7 +250,7 @@
       border:1px solid rgba(255,255,255,.12);
       border-radius:18px;
       padding:12px 12px;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.12));
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.14));
       box-shadow: 0 10px 30px rgba(0,0,0,.18);
       display:flex;
       align-items:center;
@@ -197,6 +259,7 @@
     }
     .item b{font-size:.95rem; letter-spacing:.2px}
     .item .sub{color:rgba(167,176,216,.9); font-size:.82rem; margin-top:3px}
+
     .val{
       font-weight:950;
       padding:8px 12px;
@@ -212,7 +275,7 @@
       gap:2px;
     }
     .val small{
-      font-weight:800;
+      font-weight:850;
       font-size:.70rem;
       color:rgba(255,255,255,.70);
       letter-spacing:.4px;
@@ -232,9 +295,9 @@
       width:0%;
       border-radius:999px;
       background: linear-gradient(90deg, var(--a1), var(--a2));
-      box-shadow: 0 8px 18px rgba(124,58,237,.25);
+      box-shadow: 0 10px 24px rgba(124,58,237,.18);
     }
-    .scoreLabel{ margin-top:6px; font-size:.78rem; color: rgba(255,255,255,.75); font-weight:800; letter-spacing:.25px; }
+    .scoreLabel{ margin-top:6px; font-size:.78rem; color: rgba(255,255,255,.75); font-weight:850; letter-spacing:.25px; }
 
     .val.s1, .val.s2 { border-color: rgba(231,76,60,.55); background: rgba(231,76,60,.14); }
     .val.s34        { border-color: rgba(243,156,18,.55); background: rgba(243,156,18,.14); }
@@ -242,58 +305,29 @@
     .val.s78, .val.s9 { border-color: rgba(46,204,113,.55); background: rgba(46,204,113,.14); }
     .val.s10        { border-color: rgba(0,229,255,.55); background: rgba(0,229,255,.14); }
 
-    .bar > i.s1, .bar > i.s2  { background: rgba(231,76,60,1); }
-    .bar > i.s34              { background: rgba(243,156,18,1); }
-    .bar > i.s56              { background: rgba(241,196,15,1); }
-    .bar > i.s78, .bar > i.s9 { background: rgba(46,204,113,1); }
-    .bar > i.s10              { background: rgba(0,229,255,1); }
+    /* ✅ Tableau plus moderne */
+    .tableTitle{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+      margin-top:6px;
+    }
+    .tableWrap{
+      overflow:auto;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      margin-top:10px;
+      background: rgba(0,0,0,var(--settings-table-alpha));
+    }
+    table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:980px}
+    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap;text-align:left}
+    th{position:sticky;top:0;background:rgba(17,25,50,.92);z-index:2}
+    tbody tr{transition:.12s}
+    tbody tr:hover{background: rgba(124,58,237,.10)}
+    tbody tr.selected{outline:2px solid rgba(124,58,237,.28); outline-offset:-2px; background: rgba(124,58,237,.08)}
 
-    .overlay{position:fixed; inset:0; background: rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:.18s; z-index:20}
-    .overlay.show{opacity:1; pointer-events:auto}
-    .sheet{position:fixed; left:0; right:0; bottom:0; transform: translateY(105%);
-      transition:.22s cubic-bezier(.2,.8,.2,1); z-index:30; padding: 12px 12px calc(14px + env(safe-area-inset-bottom));}
-    .sheet.show{transform: translateY(0)}
-    .sheetCard{max-width:760px; margin:0 auto; background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.14);
-      border-radius:22px; box-shadow: var(--shadow); overflow:hidden}
-    .grab{height:18px; display:grid; place-items:center; background: rgba(255,255,255,.03); border-bottom:1px solid rgba(255,255,255,.08)}
-    .grab::before{content:""; width:56px; height:5px; border-radius:999px; background: rgba(255,255,255,.22)}
-    .sheetBody{padding:14px}
-    .zoneTitle{font-weight:950;font-size:1.08rem}
-    .zoneMeta{color:var(--muted);font-size:.85rem;margin-top:2px}
+    .collapse{display:none}
+    .collapse.show{display:block}
 
-    .sheetScoreHeader{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px; margin-top:10px; flex-wrap: wrap;
-    }
-    .scoreChip{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:8px 12px; border-radius:999px;
-      border:1px solid var(--scolBorder);
-      background: var(--scolSoft);
-      font-weight:950; letter-spacing:.2px;
-      max-width:100%;
-      flex: 1 1 auto;
-      justify-content:flex-start;
-    }
-    .scoreChip .dot{
-      width:10px; height:10px; border-radius:999px;
-      background: var(--scol);
-      box-shadow: 0 0 0 5px rgba(255,255,255,.06);
-      flex: 0 0 auto;
-    }
-    .scoreChip .label{
-      color: rgba(255,255,255,.92);
-      line-height: 1.15;
-      white-space: normal;
-      overflow-wrap: anywhere;
-      font-size: clamp(.80rem, 2.4vw, .90rem);
-    }
-    @media (max-width:720px){
-      .sheetScoreHeader .hint{ display:none; }
-      .scoreChip{ justify-content:center; }
-    }
-
-    /* Slider */
+    /* ✅ Slider (inchangé globalement) */
     .ratingSlider{
       width:100%;
       margin-top:10px;
@@ -344,6 +378,42 @@
       box-shadow: 0 10px 22px rgba(0,0,0,.35);
     }
 
+    /* ✅ Modales / overlays */
+    .overlay{position:fixed; inset:0; background: rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:.18s; z-index:20}
+    .overlay.show{opacity:1; pointer-events:auto}
+
+    .sheet{position:fixed; left:0; right:0; bottom:0; transform: translateY(105%);
+      transition:.22s cubic-bezier(.2,.8,.2,1); z-index:30; padding: 12px 12px calc(14px + env(safe-area-inset-bottom));}
+    .sheet.show{transform: translateY(0)}
+    .sheetCard{max-width:760px; margin:0 auto; background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.14);
+      border-radius:22px; box-shadow: var(--shadow); overflow:hidden}
+    .grab{height:18px; display:grid; place-items:center; background: rgba(255,255,255,.03); border-bottom:1px solid rgba(255,255,255,.08)}
+    .grab::before{content:""; width:56px; height:5px; border-radius:999px; background: rgba(255,255,255,.22)}
+    .sheetBody{padding:14px}
+    .zoneTitle{font-weight:950;font-size:1.08rem}
+    .zoneMeta{color:var(--muted);font-size:.85rem;margin-top:2px}
+
+    .sheetScoreHeader{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; margin-top:10px; flex-wrap: wrap;
+    }
+    .scoreChip{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:8px 12px; border-radius:999px;
+      border:1px solid var(--scolBorder);
+      background: var(--scolSoft);
+      font-weight:950; letter-spacing:.2px;
+      max-width:100%;
+      flex: 1 1 auto;
+      justify-content:flex-start;
+    }
+    .scoreChip .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: var(--scol);
+      box-shadow: 0 0 0 5px rgba(255,255,255,.06);
+      flex: 0 0 auto;
+    }
+
     .scoreRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
     .scoreBig{
       font-weight:950;font-size:1.4rem;
@@ -360,24 +430,18 @@
 
     .criteriaBtn{
       width:100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:10px 12px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; padding:10px 12px;
       border-radius:14px;
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.10);
       cursor:pointer;
       transition:.12s;
       margin-top:8px;
+      font-weight:900;
     }
     .criteriaBtn:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.20)}
-    .criteriaBtn b{font-size:.92rem}
-    .criteriaBtn.on{
-      border-color: rgba(124,58,237,.55);
-      background: rgba(124,58,237,.14);
-    }
+    .criteriaBtn.on{ border-color: rgba(124,58,237,.55); background: rgba(124,58,237,.14); }
 
     #criteriaPanel{
       border:1px solid rgba(255,255,255,.12);
@@ -386,12 +450,7 @@
       padding:10px;
       margin-top:10px;
     }
-    .critHead{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
-      margin-bottom:8px;
-    }
-    .critHead b{font-size:.92rem}
-
+    .critHead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px}
     .chips{display:flex;flex-wrap:wrap;gap:8px}
     .chip{
       border:1px solid rgba(255,255,255,.14);
@@ -399,10 +458,12 @@
       color: var(--txt);
       border-radius:999px;
       padding:8px 10px;
-      font-weight:800;
+      font-weight:900;
       cursor:pointer;
       user-select:none;
+      transition:.12s;
     }
+    .chip:hover{transform: translateY(-1px)}
     .chip.on{background: rgba(124,58,237,.25); border-color: rgba(124,58,237,.65)}
     .badgeMini{
       font-size:.78rem;
@@ -411,15 +472,10 @@
       border:1px solid rgba(255,255,255,.14);
       color:var(--muted);
       background: rgba(255,255,255,.06);
+      font-weight:850;
     }
 
-    .commentLabel{
-      font-size:.82rem;
-      color:var(--muted);
-      font-weight:900;
-      margin-top:10px;
-      display:block;
-    }
+    .commentLabel{font-size:.82rem;color:var(--muted);font-weight:900;margin-top:10px;display:block;}
     textarea{
       width:100%;
       border:1px solid rgba(255,255,255,.14);
@@ -430,30 +486,16 @@
       min-height:56px;
       resize:vertical;
       margin-top:8px;
+      outline:none;
     }
-
-    .tableTitle{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
-      margin-top:6px;
-    }
-    .tableWrap{
-      overflow:auto;
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:16px;
-      margin-top:10px;
-      background: rgba(0,0,0,var(--settings-table-alpha));
-    }
-    table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:980px}
-    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap;text-align:left}
-    th{position:sticky;top:0;background:rgba(17,25,50,.92);z-index:2}
-    .collapse{display:none}
-    .collapse.show{display:block}
+    textarea:focus{border-color: rgba(124,58,237,.55); box-shadow: 0 0 0 4px rgba(124,58,237,.18);}
 
     .toast{position:fixed; left:50%; bottom:18px; transform: translateX(-50%) translateY(20px); opacity:0; pointer-events:none;
       background: rgba(17,25,50,.92); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:10px 12px; z-index:60;
-      transition:.2s; box-shadow: var(--shadow); max-width:92vw;}
+      transition:.2s; box-shadow: var(--shadow); max-width:92vw; font-weight:900;}
     .toast.show{opacity:1; transform: translateX(-50%) translateY(0)}
 
+    /* ✅ Rotate overlay */
     .rotateOverlay{
       position:fixed; inset:0; z-index:50;
       display:none;
@@ -470,10 +512,8 @@
       padding:16px;
       box-shadow: var(--shadow);
     }
-    .rotateOverlay .box b{font-size:1.1rem}
-    .rotateOverlay .box p{color:var(--muted);margin:8px 0 0}
 
-    /* Gate profil */
+    /* ✅ Gate profil */
     .profileOverlay{
       position:fixed; inset:0; z-index:70;
       display:none;
@@ -485,49 +525,20 @@
     }
     .profileOverlay.show{display:flex;}
     .profileOverlay .box{
-      width:min(680px, 100%);
+      width:min(720px, 100%);
       border:1px solid rgba(255,255,255,.14);
       background: rgba(17,25,50,.92);
       border-radius:22px;
       padding:16px;
       box-shadow: var(--shadow);
     }
-    .profileOverlay .box b{font-size:1.12rem}
-    .profileOverlay .box p{color:var(--muted);margin:8px 0 0; line-height:1.35}
-    .profileGrid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:12px;
-    }
+    .profileGrid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;}
     @media (max-width:520px){ .profileGrid{grid-template-columns:1fr;} }
     .profileActions{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;}
     .profileActions .btn{flex:1}
     .devNote{font-size:.78rem; color:rgba(167,176,216,.85); margin-top:10px}
 
-    /* ✅ FIX: inputs gate modernes (plus "ancien") */
-    .profileOverlay .field label{
-      font-size:.82rem;
-      color: rgba(238,242,255,.85);
-      font-weight:900;
-    }
-    .profileOverlay .field input{
-      width:100%;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.22);
-      color: var(--txt);
-      padding:12px 12px;
-      border-radius:14px;
-      outline:none;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.25);
-    }
-    .profileOverlay .field input::placeholder{ color: rgba(167,176,216,.75); }
-    .profileOverlay .field input:focus{
-      border-color: rgba(124,58,237,.55);
-      box-shadow: 0 0 0 4px rgba(124,58,237,.18), inset 0 0 0 1px rgba(0,0,0,.25);
-    }
-
-    /* KIVIAT (RADAR) */
+    /* ✅ KIVIAT */
     .kiviatWrap{ padding:12px; border-top: 1px solid rgba(255,255,255,.06); }
     .kiviatCard{
       border:1px solid rgba(255,255,255,.12);
@@ -535,12 +546,9 @@
       border-radius:18px;
       padding:12px;
     }
-    .kiviatHead{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px; flex-wrap:wrap; margin-bottom:10px;
-    }
+    .kiviatHead{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:10px;}
     .kiviatHead b{font-size:.96rem}
-    .kiviatMeta{color:var(--muted);font-size:.82rem}
+    .kiviatMeta{color:var(--muted);font-size:.82rem;font-weight:850}
     .kiviatCanvas{
       width:100%;
       aspect-ratio: 1 / 1;
@@ -558,7 +566,7 @@
       border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
-      font-weight:800;
+      font-weight:900;
       font-size:.78rem;
       color: rgba(255,255,255,.90);
     }
@@ -568,9 +576,7 @@
       box-shadow: 0 0 0 5px rgba(255,255,255,.06);
     }
 
-    .hiddenInputs{display:none;}
-
-    /* Modal captures (re-générées) */
+    /* ✅ Captures modal */
     .capOverlay{
       position:fixed; inset:0; z-index:90;
       background: rgba(0,0,0,.62);
@@ -597,13 +603,8 @@
       padding:12px;
       display:flex; align-items:center; justify-content:space-between; gap:10px;
     }
-    .capHead b{font-size:1.02rem}
     .capBody{padding:12px}
-    .capGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:12px;
-    }
+    .capGrid{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px;}
     @media (max-width:900px){ .capGrid{grid-template-columns:1fr;} }
     .capCard{
       border:1px solid rgba(255,255,255,.12);
@@ -611,7 +612,7 @@
       border-radius:18px;
       padding:10px;
     }
-    .capCard b{font-size:.9rem}
+    .capCardTop{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .capImg{
       width:100%;
       border-radius:14px;
@@ -621,7 +622,7 @@
       background: rgba(0,0,0,.20);
     }
 
-    /* Settings modal */
+    /* ✅ Settings modal */
     .modalOverlay{
       position:fixed; inset:0; z-index:80;
       background: rgba(0,0,0,.60);
@@ -648,7 +649,6 @@
       padding:12px;
       display:flex; align-items:center; justify-content:space-between; gap:10px;
     }
-    .modalHead b{font-size:1.02rem}
     .modalBody{padding:12px}
     .section{
       border:1px solid rgba(255,255,255,.10);
@@ -667,15 +667,14 @@
     }
     .sl label{font-size:.82rem;color:var(--muted);font-weight:900}
     .mono{font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color:#c7d2fe; font-size:.82rem; word-break:break-word}
-    .twoCol{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
+    .twoCol{display:grid; grid-template-columns: 1fr 1fr; gap:12px;}
     @media (max-width:900px){
       .twoCol{grid-template-columns:1fr;}
       .sl{grid-template-columns: 120px 1fr 64px;}
     }
+
+    /* hidden inputs */
+    .hiddenInputs{display:none;}
   </style>
 </head>
 <!-- PARTIE 2/4 -->
@@ -684,20 +683,27 @@
   <div class="wrap top">
     <div class="brand">
       <img class="logo" id="logoImg" src="Forvia.png" alt="Forvia" loading="eager">
-      <div class="title"><b></b></div>
     </div>
 
+    <!-- ✅ Header clean + menu ⋯ -->
     <div class="row" style="gap:8px">
-      <button class="btn icon" id="settingsBtn" title="Settings">⚙️ Settings</button>
-      <button class="btn" id="fsBtn">Plein écran</button>
-      <button class="btn ghost" id="resetBtn">Réinitialiser</button>
-
       <button class="btn" id="importBtn">Importer CSV</button>
       <input id="importFile" type="file" accept=".csv" style="display:none">
 
       <button class="btn" id="exportBtn">Exporter CSV</button>
+
       <button class="btn primary" id="savePersonBtn">Enregistrer</button>
       <button class="btn" id="newPersonBtn" disabled>Nouvelle personne</button>
+
+      <div class="menuWrap">
+        <button class="btn icon" id="moreBtn" title="Menu">⋯</button>
+        <div class="menu" id="moreMenu">
+          <button class="mi" id="settingsBtn"><span>⚙️ Settings</span><small>style</small></button>
+          <button class="mi" id="fsBtn"><span>⛶ Plein écran</span><small>toggle</small></button>
+          <button class="mi" id="resetBtn"><span>↺ Réinitialiser</span><small>tout</small></button>
+          <button class="mi" id="resetPeopleBtn"><span>🧹 Vider tableau</span><small>historique</small></button>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -705,11 +711,11 @@
 <div class="rotateOverlay" id="rotateOverlay">
   <div class="box">
     <b>Tourne ton téléphone</b>
-    <p>Pour une meilleure utilisation, mets ton téléphone en <b>mode paysage</b>.</p>
+    <p class="hint">Pour une meilleure utilisation, mets ton téléphone en <b>mode paysage</b>.</p>
   </div>
 </div>
 
-<!-- GATE PROFIL + ACCÈS DEV -->
+<!-- ✅ GATE PROFIL -->
 <div class="profileOverlay" id="profileOverlay">
   <div class="box">
     <b>Profil requis</b>
@@ -771,51 +777,35 @@
     <div class="seatFrame">
       <svg id="seatSvg" viewBox="0 0 270.933 406.4" preserveAspectRatio="xMidYMid meet">
         <image id="seatImg" href="seat.png" x="0" y="0" width="270.933" height="406.4" />
-
         <g id="zonesLayer">
-          <rect id="z_tete" class="zone" data-zone="Coussin de tête"
-                x="110" y="8" width="50" height="32" rx="12" ry="12" />
-
-          <!-- Dossier -->
+          <rect id="z_tete" class="zone" data-zone="Coussin de tête" x="110" y="8" width="50" height="32" rx="12" ry="12" />
+          <!-- ✅ ZONES SVG (identiques) -->
           <path id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)"
             d="m 82.248776,115.24582 4.226224,-1.30038 3.576032,-0.97528 3.413487,-0.65019 3.576034,-0.65019 5.282777,-0.73146 3.90113,-0.48764 3.08839,-0.65019 1.46293,-0.16254 h 1.2191 l 2.11311,-0.0813 0.81273,-0.16255 1.70675,-0.16254 2.03183,-0.24382 1.62547,-0.0813 1.86929,0.0813 1.78802,-0.0813 1.86929,-0.0813 h 2.27566 2.27566 l 2.85054,-0.0363 h 1.72408 l 1.6666,-0.0575 1.60913,-0.11494 3.39067,0.0575 6.55147,-0.0575 4.59753,0.45976 2.87345,0.22987 2.36951,0.41311 1.78802,1.13783 0.97528,1.13783 0.81274,0.81273 0.97528,1.78802 0.32509,0.65019 0.24383,0.97528 0.32509,1.2191 0.0813,0.97528 0.16255,0.97528 -0.16255,0.89401 v 0.73146 l -0.24382,0.73147 -0.32509,1.05655 -5.44533,12.02848 -17.55507,-0.89401 -7.31462,-0.0813 -6.7457,0.0813 -9.67154,0.16255 -18.53036,-0.16255 -4.388768,0.0813 -2.438204,0.3251 -2.113111,0.48764 -2.194385,0.65019 -1.056555,0.81273 -3.169666,-6.98952 -2.275658,-6.25806 -0.894008,-2.84457 0.08127,-1.05656 0.325096,-0.73146 0.325094,-0.65019 0.48764,-0.48764 0.812734,-0.81273 z" />
-
           <path id="z_dossier_rouge" class="zone" data-zone="Dossier milieu (rouge)"
             d="m 95.049352,167.8704 6.785788,0.51389 h 12.988 15.28677 l 13.09399,-0.47325 3.73858,-0.65019 0.48764,-0.16254 0.81273,-4.71387 0.97529,-6.01423 3.73858,-11.37829 4.22622,-9.75282 0.24382,-0.44701 -8.00544,-0.36573 -7.88353,-0.40637 -12.23245,-0.23207 -10.22949,0.22988 -12.47078,0.0575 -7.585915,-0.11494 -5.574496,0.0575 -1.953947,0.28735 -4.8274,1.14938 -1.149382,0.86203 4.537102,9.81318 2.27566,6.66443 1.625467,7.80226 z" />
-
           <path id="z_central_gris" class="zone" data-zone="Zone centrale (gris clair)"
             d="m 97.731378,203.46819 44.102212,0.0872 h 1.72407 l 1.26432,-0.57469 1.49419,-1.26432 0.5747,-1.37926 0.57469,-1.14938 v -0.80456 l -0.11494,-11.37888 -0.80457,-1.14938 -1.03444,-0.9195 -1.37926,-0.91951 -1.03444,-0.11493 -48.848684,-0.22988 -1.494195,0.80457 -0.919507,1.03444 -0.57469,0.80457 -0.114938,0.68962 -0.114938,11.83863 0.229876,1.49419 0.919506,1.14938 0.689629,0.68963 0.919503,0.80457 1.26432,0.22988 z" />
-
           <path id="z_jaune" class="zone" data-zone="Bande jaune"
             d="m 95.496358,211.31109 12.191022,0.40637 8.04608,0.0813 h 7.9648 l 8.12735,-0.0813 5.77042,-0.0813 4.14495,-0.0813 2.4382,0.16255 1.62547,0.40636 0.81274,0.48764 0.65018,0.48764 0.56892,0.65019 0.89401,1.38165 v 1.30038 l 0.0813,1.05655 -0.16255,4.06368 -0.24382,4.47004 -0.81273,2.11311 -2.19439,1.46292 -2.03183,0.56892 -6.90825,0.97528 -6.50188,0.32509 -6.90825,0.0813 -8.53371,-0.0813 -8.20863,-0.32509 -6.25806,-0.48764 -5.201502,-1.05656 -1.381649,-0.73146 -0.894008,-0.97528 -0.650188,-1.30037 -0.406368,-1.21911 -0.08127,-10.80937 0.48764,-1.30038 0.812734,-0.97528 1.544199,-0.81274 z" />
-
           <path id="z_flanc_gauche_vert" class="zone" data-zone="Flanc gauche (vert)"
             d="m 57.379089,139.30277 -3.413488,8.2899 -1.950564,7.47716 -1.300376,7.63971 -0.650187,6.98952 -0.162547,3.57603 0.0099,0.19521 0.344813,-0.0575 0.574691,-0.68963 0.94824,-0.71837 1.839008,-0.0862 1.609132,0.40229 4.166508,1.55166 4.827399,2.12635 4.568788,2.15509 4.680799,2.84205 3.657307,2.19439 1.62547,1.2191 0.08128,0.16255 -0.162547,-6.09551 -0.406368,-5.12023 -1.219103,-7.39589 -1.869291,-6.01424 -2.925845,-6.33933 -2.682025,-4.06368 -3.250941,-3.65731 -5.770417,-4.71386 z" />
-
           <path id="z_flanc_gauche_noir" class="zone" data-zone="Flanc gauche (noir)"
             d="m 78.835291,184.8972 0.162547,30.31502 -0.894008,24.05695 -0.162547,0.0813 -2.194386,-0.73146 -3.657306,-2.51948 -4.388771,-3.6573 -4.876408,-4.55132 -4.470043,-6.17679 -3.738581,-6.58315 -2.11311,-6.7457 -1.056556,-4.95768 -0.812733,-6.58316 -0.487643,-4.79513 -0.243819,-8.20862 0.08127,-10.40301 0.273476,-0.0536 0.603424,-0.71836 0.862037,-0.68963 1.896478,-0.0862 1.810276,0.45975 13.419018,5.80437 z" />
-
           <path id="z_flanc_droit_violet" class="zone" data-zone="Flanc droit (violet)"
             d="m 162.54699,183.19046 6.66443,-0.97528 4.71386,-0.81274 4.22622,-0.65019 4.06368,-0.32509 4.06367,-0.32509 3.90113,-0.16255 1.95056,0.16255 2.27566,0.65018 0.16255,0.16255 v -9.75282 l -1.13783,-9.26518 -1.95056,-11.21574 -1.62547,-6.98952 -1.30038,-3.57603 -1.30038,-0.65019 -0.48764,0.48764 -12.19102,11.70338 -4.38877,5.36405 -3.41349,6.17679 -1.95056,6.82697 -1.30038,6.66443 z" />
-
           <path id="z_flanc_droit_orange" class="zone" data-zone="Flanc droit (orange)"
             d="m 162.38444,183.51555 -0.16254,12.84121 0.32509,10.07792 0.16255,12.84121 0.48764,20.64347 0.16254,0.65019 2.11312,-0.97529 3.57603,-2.60075 4.87641,-3.08839 6.66443,-5.68914 4.71386,-6.01425 3.57603,-6.01423 3.25094,-9.59028 1.95057,-10.56555 0.65018,-9.59027 -0.16254,-5.68915 -2.60075,-1.13782 h -2.43821 l -3.08839,0.32509 -1.95057,0.16255 -6.98952,0.65018 -7.9648,1.30038 z" />
-
           <path id="z_magenta" class="zone" data-zone="Bande magenta"
             d="m 86.637547,262.35084 h 65.994073 l -0.48764,-14.30413 -2.4382,-2.11311 -2.11311,-0.97529 -1.78802,-0.16254 -51.364848,0.16254 -2.925847,0.65019 -1.62547,0.81274 -1.462921,1.13783 z" />
-
           <path id="z_assise_vert" class="zone" data-zone="Assise bas (vert)"
             d="m 81.598589,273.07894 73.633791,0.48766 3.73858,0.65018 1.78801,0.97528 1.30038,1.46291 0.48764,2.11312 1.78802,11.54084 0.48764,6.01424 v 2.92584 l -0.48764,1.46291 -1.13783,1.13784 -1.46293,1.13784 -2.27565,0.16253 h -1.95057 l -78.185098,0.16256 -3.088394,-0.81274 -1.462921,-1.30038 -0.812737,-1.30037 1.300377,-14.95433 1.300374,-5.68915 0.812737,-3.25094 1.462923,-1.95056 z" />
-
           <path id="z_bas_droit_blanc" class="zone" data-zone="Bas droit (blanc)"
             d="m 162.54699,243.98303 7.47716,30.23375 2.27566,-1.30037 3.25094,-1.3004 5.5266,-0.97528 6.33933,-1.13782 4.38877,-0.65018 3.90113,0.16253 3.08839,0.65019 2.4382,1.13784 -1.30037,-6.66443 -1.78802,-5.5266 -3.25094,-5.68914 -4.71386,-5.8517 -3.0884,-3.08839 -0.97528,-2.11311 -1.46292,-1.78801 -1.46292,-0.16255 -1.78802,0.65019 -2.60075,0.65018 z" />
-
           <path id="z_bas_droit_cyan" class="zone" data-zone="Bas droit (cyan)"
             d="m 170.02415,274.21678 2.43821,14.79177 1.13782,11.54084 0.16255,3.57602 1.13783,-0.16253 2.7633,0.32509 3.73858,-0.81274 5.36405,-1.46291 4.71387,-2.27568 3.57603,-2.60075 4.71386,-5.52659 2.27566,-5.52659 0.48764,-4.55131 0.48764,-5.68915 -1.95056,-4.87643 -0.48764,-0.48763 -2.27566,-1.13784 -2.92585,-0.65018 h -4.06367 l -15.76706,2.60074 -3.73858,1.46294 z" />
-
           <path id="z_bas_gauche_orange" class="zone" data-zone="Bas gauche (orange)"
             d="m 69.082472,271.94113 6.664425,-24.21952 -6.014238,-2.92584 -5.364051,-1.13783 -4.388768,-0.48764 h -3.901128 l -1.13783,0.65019 -2.600751,2.60075 -2.925847,2.60075 -2.113111,2.60075 -2.11311,2.60075 -1.462921,2.60075 -1.625471,2.92585 -1.300376,3.73858 -1.300377,2.60075 -0.325094,0.97528 1.625471,-0.97528 2.275657,-0.81272 h 3.413487 l 3.413488,0.32509 3.250938,0.32509 4.226224,0.81272 3.250938,1.13785 2.438204,0.65018 2.438207,1.13782 z" />
-
           <path id="z_bas_gauche_vert" class="zone" data-zone="Bas gauche (vert)"
             d="m 68.919925,272.75385 -1.13783,6.17678 -1.462923,7.47717 -0.812734,6.50187 -1.300377,9.75284 -0.325094,0.16253 -3.25094,-0.16253 -3.250938,-0.65019 -3.901128,-1.46293 -3.250941,-1.62547 -3.576034,-2.27566 -3.088394,-3.0884 -2.763297,-3.57603 -1.788018,-3.41349 -1.62547,-5.52659 -0.325093,-2.60075 0.48764,-3.73859 0.812736,-3.73859 0.975281,-3.08837 0.162547,-1.13785 1.62547,-0.97528 1.462924,-0.48762 2.275657,-0.16256 2.113111,0.16256 2.275657,0.16253 2.113111,0.16256 1.950564,0.65019 h 0.975283 l 2.438204,0.48762 2.600754,0.65019 2.438204,0.81275 2.438204,0.97528 2.438204,1.46291 z" />
         </g>
@@ -828,7 +818,6 @@
         <div class="row" style="gap:8px">
           <span class="pill" id="peopleCountPill">0 personne</span>
           <button class="btn small" id="toggleTableBtn">Afficher tableau</button>
-          <button class="btn small ghost" id="resetPeopleBtn">Vider tableau</button>
         </div>
       </div>
 
@@ -847,6 +836,7 @@
     </div>
   </section>
 
+  <!-- Colonne droite -->
   <aside class="card">
     <div class="p">
       <div class="row">
@@ -867,11 +857,9 @@
         </div>
       </div>
 
+      <!-- Inputs cachés -->
       <div class="hiddenInputs">
-        <input id="nom">
-        <input id="prenom">
-        <input id="taille">
-        <input id="poids">
+        <input id="nom"><input id="prenom"><input id="taille"><input id="poids">
       </div>
 
       <div class="list" id="list"></div>
@@ -879,7 +867,7 @@
   </aside>
 </main>
 
-<!-- rating sheet -->
+<!-- Rating sheet -->
 <div class="overlay" id="overlay"></div>
 <div class="sheet" id="sheet">
   <div class="sheetCard">
@@ -932,7 +920,7 @@
   </div>
 </div>
 
-<!-- Captures modal (re-générées) -->
+<!-- Captures modal -->
 <div class="capOverlay" id="capOverlay" aria-hidden="true">
   <div class="capModal" role="dialog" aria-modal="true" aria-label="Captures">
     <div class="capHead">
@@ -941,9 +929,27 @@
     </div>
     <div class="capBody">
       <div class="capGrid">
-        <div class="capCard"><b>Note</b><img class="capImg" id="capNote" alt="Capture Note"></div>
-        <div class="capCard"><b>Présence</b><img class="capImg" id="capPresence" alt="Capture Présence"></div>
-        <div class="capCard"><b>Dureté</b><img class="capImg" id="capDurete" alt="Capture Dureté"></div>
+        <div class="capCard">
+          <div class="capCardTop">
+            <b>Note</b>
+            <button class="btn small ghost" id="dlNoteBtn" type="button">Télécharger</button>
+          </div>
+          <img class="capImg" id="capNote" alt="Capture Note">
+        </div>
+        <div class="capCard">
+          <div class="capCardTop">
+            <b>Présence</b>
+            <button class="btn small ghost" id="dlPresenceBtn" type="button">Télécharger</button>
+          </div>
+          <img class="capImg" id="capPresence" alt="Capture Présence">
+        </div>
+        <div class="capCard">
+          <div class="capCardTop">
+            <b>Dureté</b>
+            <button class="btn small ghost" id="dlDureteBtn" type="button">Télécharger</button>
+          </div>
+          <img class="capImg" id="capDurete" alt="Capture Dureté">
+        </div>
       </div>
       <div class="hint" style="margin-top:10px">
         Captures <b>re-générées</b> depuis les données (pas stockées dans le CSV).
@@ -965,20 +971,31 @@
 
     <div class="modalBody">
       <div class="section">
-        <h3>Transparence</h3>
+        <h3>Thème</h3>
+        <div class="field">
+          <label>Accent</label>
+          <select id="accentSelect">
+            <option value="forvia">Forvia (bleu/violet)</option>
+            <option value="cyan">Cyan (turquoise)</option>
+            <option value="pink">Rose (magenta)</option>
+            <option value="lime">Lime (vert)</option>
+          </select>
+        </div>
+        <div class="hint" style="margin-top:8px">Change l’accent pour un rendu plus “produit fini”.</div>
+      </div>
 
+      <div class="section">
+        <h3>Transparence</h3>
         <div class="sl">
           <label>Fond</label>
           <input id="setBgA" type="range" min="0.55" max="1" step="0.01" value="0.95">
           <div class="mono" id="setBgAVal">0.95</div>
         </div>
-
         <div class="sl">
           <label>Panneaux</label>
           <input id="setPanelA" type="range" min="0" max="0.30" step="0.01" value="0.12">
           <div class="mono" id="setPanelAVal">0.12</div>
         </div>
-
         <div class="sl">
           <label>Tableaux</label>
           <input id="setTableA" type="range" min="0" max="0.30" step="0.01" value="0.10">
@@ -989,19 +1006,16 @@
       <div class="twoCol">
         <div class="section">
           <h3>Style zones</h3>
-
           <div class="sl">
             <label>Remplissage</label>
             <input id="fillAlpha" type="range" min="0" max="0.60" step="0.01" value="0.12">
             <div class="mono" id="fillAlphaVal">0.12</div>
           </div>
-
           <div class="sl">
             <label>Contour</label>
             <input id="strokeAlpha" type="range" min="0" max="1" step="0.01" value="0.55">
             <div class="mono" id="strokeAlphaVal">0.55</div>
           </div>
-
           <div class="sl">
             <label>Épaisseur</label>
             <input id="strokeW" type="range" min="1" max="6" step="1" value="2">
@@ -1011,35 +1025,29 @@
 
         <div class="section">
           <h3>Déplacement zones</h3>
-
           <div class="field">
             <label>Zone</label>
             <select id="zoneSelect"></select>
           </div>
-
           <div class="sl">
             <label>DX</label>
             <input id="zdx" type="range" min="-220" max="220" step="1" value="0">
             <div class="mono" id="zdxVal">0</div>
           </div>
-
           <div class="sl">
             <label>DY</label>
             <input id="zdy" type="range" min="-220" max="220" step="1" value="0">
             <div class="mono" id="zdyVal">0</div>
           </div>
-
           <div class="sl">
             <label>Scale</label>
             <input id="zsc" type="range" min="0.85" max="1.15" step="0.001" value="1.000">
             <div class="mono" id="zscVal">1.000</div>
           </div>
-
           <div class="row" style="margin-top:10px">
             <button class="btn small ghost" id="resetZoneBtn">Reset zone</button>
             <button class="btn small" id="copyZoneBtn">Copier config</button>
           </div>
-
           <div class="mono" id="zoneOut" style="margin-top:8px"></div>
         </div>
       </div>
@@ -1069,7 +1077,51 @@
     setTimeout(()=>t.classList.remove("show"), 1200);
   }
 
-  // Fullscreen
+  // ===== Keys =====
+  const TABLE_PASSWORD = "1234"; // change ici
+  const RATINGS_KEY = "seat_ratings_current_final_v6";
+  const PEOPLE_KEY  = "seat_people_passes_final_v6";
+  const MODE_KEY = "seat_mode_v2";
+  const GREEN_KEY = "seat_green_clicked_v2";
+  const ZSTYLE_KEY = "seat_zone_style_v1";
+  const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
+  const ACCENT_KEY = "seat_accent_v1";
+
+  // ✅ reset notes à chaque refresh
+  localStorage.removeItem(RATINGS_KEY);
+  localStorage.removeItem(GREEN_KEY);
+
+  // Images
+  const IMG_SUJET = "seat.png";
+  const IMG_STEPHANE = "Seat_o.png";
+
+  // ===== Accent theme =====
+  const ACCENTS = {
+    forvia: { a1:"#4f8cff", a2:"#7c3aed" },
+    cyan:   { a1:"#22d3ee", a2:"#3b82f6" },
+    pink:   { a1:"#fb7185", a2:"#a855f7" },
+    lime:   { a1:"#34d399", a2:"#a3e635" }
+  };
+  let accent = loadJson(ACCENT_KEY, "forvia");
+  function applyAccent(name){
+    const a = ACCENTS[name] || ACCENTS.forvia;
+    document.documentElement.style.setProperty("--a1", a.a1);
+    document.documentElement.style.setProperty("--a2", a.a2);
+    accent = name;
+    saveJson(ACCENT_KEY, accent);
+  }
+
+  // ===== Menu ⋯ =====
+  const moreBtn = $("moreBtn");
+  const moreMenu = $("moreMenu");
+  function closeMenu(){ moreMenu.classList.remove("show"); }
+  moreBtn.addEventListener("click", (e)=>{
+    e.stopPropagation();
+    moreMenu.classList.toggle("show");
+  });
+  document.addEventListener("click", closeMenu);
+
+  // ===== Fullscreen =====
   const fsBtn = $("fsBtn");
   function isFullscreen(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); }
   async function enterFullscreen(){
@@ -1079,13 +1131,12 @@
   async function exitFullscreen(){
     try{ if(document.exitFullscreen) await document.exitFullscreen(); else if(document.webkitExitFullscreen) document.webkitExitFullscreen(); }catch(e){}
   }
-  function updateFsBtn(){ fsBtn.textContent = isFullscreen() ? "Quitter plein écran" : "Plein écran"; }
-  fsBtn.addEventListener("click", async ()=>{ if(isFullscreen()) await exitFullscreen(); else await enterFullscreen(); updateFsBtn(); });
-  document.addEventListener("fullscreenchange", updateFsBtn);
-  document.addEventListener("webkitfullscreenchange", updateFsBtn);
-  updateFsBtn();
+  async function toggleFullscreen(){
+    if(isFullscreen()) await exitFullscreen(); else await enterFullscreen();
+  }
+  fsBtn.addEventListener("click", async ()=>{ await toggleFullscreen(); closeMenu(); });
 
-  // Orientation helper
+  // ===== Orientation helper =====
   const rotateOverlay = $("rotateOverlay");
   function checkOrientation(){
     const isMobile = window.matchMedia("(max-width: 980px)").matches;
@@ -1095,34 +1146,6 @@
   window.addEventListener("resize", checkOrientation);
   window.addEventListener("orientationchange", checkOrientation);
   checkOrientation();
-
-  // ===== Password (même pour tableau + accès dev) =====
-  const TABLE_PASSWORD = "1234"; // 🔒 change ici
-
-  // ===== Keys =====
-  const RATINGS_KEY = "seat_ratings_current_final_v6";
-  const PEOPLE_KEY  = "seat_people_passes_final_v6";
-  const MODE_KEY = "seat_mode_v2";
-  const GREEN_KEY = "seat_green_clicked_v2";
-  const ZSTYLE_KEY = "seat_zone_style_v1";
-  const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
-
-  // ✅ Notes réinitialisées à chaque refresh
-  localStorage.removeItem(RATINGS_KEY);
-  localStorage.removeItem(GREEN_KEY);
-
-  // Images
-  const IMG_SUJET = "seat.png";
-  const IMG_STEPHANE = "Seat_o.png";
-
-  // ===== Bouton Nouvelle personne : verrouillage =====
-  const newPersonBtn = $("newPersonBtn");
-  let canStartNewPerson = false;
-  function setNewPersonEnabled(on){
-    canStartNewPerson = !!on;
-    if(newPersonBtn) newPersonBtn.disabled = !canStartNewPerson;
-  }
-  setNewPersonEnabled(false);
 
   // ===== Gate profil =====
   const profileOverlay = $("profileOverlay");
@@ -1177,9 +1200,7 @@
     profileOverlay.classList.add("show");
     setTimeout(()=> gateNom.focus(), 50);
   }
-  function closeProfileGate(){
-    profileOverlay.classList.remove("show");
-  }
+  function closeProfileGate(){ profileOverlay.classList.remove("show"); }
 
   function validateAndApplyProfile(){
     const nom = gateNom.value.trim();
@@ -1208,43 +1229,32 @@
   gateContinueBtn.addEventListener("click", validateAndApplyProfile);
   gateDevBtn.addEventListener("click", ()=>{
     const pw = prompt("Mot de passe dev ?");
-    if(pw !== TABLE_PASSWORD){
-      toast("❌ Mot de passe incorrect");
-      return;
-    }
+    if(pw !== TABLE_PASSWORD){ toast("❌ Mot de passe incorrect"); return; }
     closeProfileGate();
     toast("✅ Accès dev");
   });
   [gateNom, gatePrenom, gateTaille, gatePoids].forEach(inp=>{
     inp.addEventListener("keydown", (e)=>{
-      if(e.key === "Enter"){
-        e.preventDefault();
-        validateAndApplyProfile();
-      }
+      if(e.key === "Enter"){ e.preventDefault(); validateAndApplyProfile(); }
     });
   });
 
-  // Ouvre au chargement
+  // show gate at start
   openProfileGate();
 
-  // ===== Tableau : mot de passe à chaque ouverture =====
+  // ===== Collapsible table (mdp à chaque ouverture) =====
   const tableCollapse = $("tableCollapse");
   const toggleTableBtn = $("toggleTableBtn");
   let tableShown = false;
-
   function setTableShown(v){
     tableShown = v;
     tableCollapse.classList.toggle("show", tableShown);
     toggleTableBtn.textContent = tableShown ? "Masquer tableau" : "Afficher tableau";
   }
-
   toggleTableBtn.addEventListener("click", ()=>{
     if(!tableShown){
       const pw = prompt("Mot de passe ?");
-      if(pw !== TABLE_PASSWORD){
-        toast("❌ Mot de passe incorrect");
-        return;
-      }
+      if(pw !== TABLE_PASSWORD){ toast("❌ Mot de passe incorrect"); return; }
       toast("✅ Tableau déverrouillé");
     }
     setTableShown(!tableShown);
@@ -1259,9 +1269,17 @@
   let activeCriteria = {};
   let activeCritId = null;
 
+  // ===== Nouvelle personne enable logic =====
+  const newPersonBtn = $("newPersonBtn");
+  let canStartNewPerson = false;
+  function setNewPersonEnabled(on){
+    canStartNewPerson = !!on;
+    newPersonBtn.disabled = !canStartNewPerson;
+  }
+  setNewPersonEnabled(false);
+
   function setSeatBackground(m){
     const img = $("seatImg");
-    if(!img) return;
     const href = (m === "sujet") ? IMG_SUJET : IMG_STEPHANE;
     img.setAttribute("href", href);
     img.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
@@ -1276,7 +1294,6 @@
   ];
   const MEMBER_TO_GROUP = new Map();
   BOLSTER_GROUPS.forEach(g => g.members.forEach(m => MEMBER_TO_GROUP.set(m, g.key)));
-
   function effectiveKeyForZone(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
   function effectiveDisplayName(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
   function membersForKey(key){
@@ -1285,36 +1302,18 @@
   }
   function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
 
-  // Criteria scale
-  const CRIT_SCALE = [
-    "Inacceptable",
-    "Très insatisfait",
-    "Insatisfait",
-    "Acceptable",
-    "Satisfait",
-    "Très satisfait",
-    "Optimum"
-  ];
+  // Criteria
+  const CRIT_SCALE = ["Inacceptable","Très insatisfait","Insatisfait","Acceptable","Satisfait","Très satisfait","Optimum"];
   const CRITERIA = [
     { id:"presence",   label:"Présence" },
     { id:"durete",     label:"Dureté" },
     { id:"symetrie",   label:"Symétrie" },
     { id:"homogeneite",label:"Homogénéité" }
   ];
-  const CRIT_OPTIONS = {
-    presence: CRIT_SCALE,
-    durete: CRIT_SCALE,
-    symetrie: CRIT_SCALE,
-    homogeneite: CRIT_SCALE
-  };
+  const CRIT_OPTIONS = { presence:CRIT_SCALE, durete:CRIT_SCALE, symetrie:CRIT_SCALE, homogeneite:CRIT_SCALE };
   const CRIT_TO_SCORE = {
-    "Inacceptable": 1,
-    "Très insatisfait": 2,
-    "Insatisfait": 4,
-    "Acceptable": 6,
-    "Satisfait": 8,
-    "Très satisfait": 9,
-    "Optimum": 10
+    "Inacceptable": 1, "Très insatisfait": 2, "Insatisfait": 4,
+    "Acceptable": 6, "Satisfait": 8, "Très satisfait": 9, "Optimum": 10
   };
   function critLabelToScore(label){ return CRIT_TO_SCORE[label] ?? null; }
 
@@ -1329,8 +1328,7 @@
     return ratings[key]?.criteria?.[critId] ?? "";
   }
   function avgGlobalComfort(){
-    const zones = getZones();
-    const vals = zones.map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n));
+    const vals = getZones().map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n));
     if(!vals.length) return null;
     return vals.reduce((a,b)=>a+b,0)/vals.length;
   }
@@ -1378,22 +1376,16 @@
     $("scoreWord").textContent = s.word;
   }
 
-  // UI alpha
+  // Settings alpha
   const defaultUiAlpha = { bg: 0.95, panel: 0.12, table: 0.10 };
   let uiAlpha = loadJson(SET_UI_ALPHA_KEY, defaultUiAlpha);
-
   const setBgA = $("setBgA"), setPanelA = $("setPanelA"), setTableA = $("setTableA");
   const setBgAVal = $("setBgAVal"), setPanelAVal = $("setPanelAVal"), setTableAVal = $("setTableAVal");
-
   function applyUiAlpha(a){
     document.documentElement.style.setProperty("--settings-bg-alpha", String(a.bg));
     document.documentElement.style.setProperty("--settings-panel-alpha", String(a.panel));
     document.documentElement.style.setProperty("--settings-table-alpha", String(a.table));
-
-    setBgA.value = a.bg;
-    setPanelA.value = a.panel;
-    setTableA.value = a.table;
-
+    setBgA.value = a.bg; setPanelA.value = a.panel; setTableA.value = a.table;
     setBgAVal.textContent = Number(a.bg).toFixed(2);
     setPanelAVal.textContent = Number(a.panel).toFixed(2);
     setTableAVal.textContent = Number(a.table).toFixed(2);
@@ -1410,29 +1402,13 @@
   // Zone style
   const defaultStyle = { fillA:0.12, strokeA:0.55, strokeW:2 };
   let zStyle = loadJson(ZSTYLE_KEY, defaultStyle);
-
-  const fillAlpha = $("fillAlpha");
-  const strokeAlpha = $("strokeAlpha");
-  const strokeW = $("strokeW");
-  const fillAlphaVal = $("fillAlphaVal");
-  const strokeAlphaVal = $("strokeAlphaVal");
-  const strokeWVal = $("strokeWVal");
-
+  const fillAlpha = $("fillAlpha"), strokeAlpha = $("strokeAlpha"), strokeW = $("strokeW");
+  const fillAlphaVal = $("fillAlphaVal"), strokeAlphaVal = $("strokeAlphaVal"), strokeWVal = $("strokeWVal");
   function applyZoneStyle(style){
     document.documentElement.style.setProperty("--zone-fill", `rgba(79,140,255,${style.fillA})`);
     document.documentElement.style.setProperty("--zone-stroke", `rgba(79,140,255,${style.strokeA})`);
     document.documentElement.style.setProperty("--zone-stroke-width", `${style.strokeW}px`);
-
-    document.documentElement.style.setProperty("--zone-fill-hover", `rgba(124,58,237,${Math.min(style.fillA + 0.06, 0.45)})`);
-    document.documentElement.style.setProperty("--zone-stroke-hover", `rgba(124,58,237,${Math.min(style.strokeA + 0.20, 1)})`);
-    document.documentElement.style.setProperty("--zone-fill-active", `rgba(124,58,237,${Math.min(style.fillA + 0.16, 0.55)})`);
-    document.documentElement.style.setProperty("--zone-stroke-active", `rgba(124,58,237,${Math.min(style.strokeA + 0.35, 1)})`);
-    document.documentElement.style.setProperty("--zone-stroke-width-active", `${Math.max(style.strokeW + 1, 3)}px`);
-
-    fillAlpha.value = style.fillA;
-    strokeAlpha.value = style.strokeA;
-    strokeW.value = style.strokeW;
-
+    fillAlpha.value = style.fillA; strokeAlpha.value = style.strokeA; strokeW.value = style.strokeW;
     fillAlphaVal.textContent = Number(style.fillA).toFixed(2);
     strokeAlphaVal.textContent = Number(style.strokeA).toFixed(2);
     strokeWVal.textContent = style.strokeW;
@@ -1442,7 +1418,7 @@
     saveJson(ZSTYLE_KEY, zStyle);
     applyZoneStyle(zStyle);
     updateZoneVisuals();
-    drawRadar();
+    requestRadarRedraw(true);
   }
   fillAlpha.addEventListener("input", onStyleChange);
   strokeAlpha.addEventListener("input", onStyleChange);
@@ -1456,7 +1432,7 @@
     document.querySelectorAll(".zone").forEach(poly=>{
       const zoneName = poly.dataset.zone;
 
-      // Mode Sujet : gris
+      // Sujet : gris
       if(mode === "sujet"){
         const gKey = effectiveKeyForZone(zoneName);
         const on = !!greenClicked[gKey];
@@ -1493,50 +1469,87 @@
     });
   }
   <!-- PARTIE 4/4 -->
-  // KIVIAT
+  // ===== KIVIAT (avec animation + valeurs) =====
   const kiviatCanvas = $("kiviat");
   const kiviatMetaEl = $("kiviatMeta");
-  function getDpr(){ return Math.max(1, Math.min(3, window.devicePixelRatio || 1)); }
+  let radarAnimReq = null;
+  let radarPrev = null;
+  let radarTarget = null;
+  let radarT0 = 0;
 
-  function computeKiviatValues(){
+  function getDpr(){ return Math.max(1, Math.min(3, window.devicePixelRatio || 1)); }
+  function avg(arr){ return arr.length ? (arr.reduce((a,b)=>a+b,0)/arr.length) : null; }
+
+  function computeRadarValues(){
     const zones = getZones();
-    const scores = [], pres = [], dur = [], homo = [], sym = [];
+    const scores=[], pres=[], dur=[], homo=[], sym=[];
 
     zones.forEach(z=>{
       const s = getScoreForZoneName(z);
       if(Number.isFinite(s)) scores.push(s);
 
-      const p = critLabelToScore(getCritForZoneName(z, "presence"));
+      const p = critLabelToScore(getCritForZoneName(z,"presence"));
       if(Number.isFinite(p)) pres.push(p);
 
-      const d = critLabelToScore(getCritForZoneName(z, "durete"));
+      const d = critLabelToScore(getCritForZoneName(z,"durete"));
       if(Number.isFinite(d)) dur.push(d);
 
-      const h = critLabelToScore(getCritForZoneName(z, "homogeneite"));
+      const h = critLabelToScore(getCritForZoneName(z,"homogeneite"));
       if(Number.isFinite(h)) homo.push(h);
 
       const key = effectiveKeyForZone(z);
       if(isBolsterKey(key)){
-        const ss = critLabelToScore(getCritForZoneName(z, "symetrie"));
+        const ss = critLabelToScore(getCritForZoneName(z,"symetrie"));
         if(Number.isFinite(ss)) sym.push(ss);
       }
     });
 
-    const avg = (arr)=> arr.length ? (arr.reduce((a,b)=>a+b,0)/arr.length) : null;
-
     return [
-      { label:"Confort", value: avg(scores) },
-      { label:"Présence", value: avg(pres) },
-      { label:"Dureté", value: avg(dur) },
-      { label:"Homog.", value: avg(homo) },
-      { label:"Symétrie", value: avg(sym) }
+      { label:"Confort",   value: avg(scores) },
+      { label:"Présence",  value: avg(pres) },
+      { label:"Dureté",    value: avg(dur) },
+      { label:"Homog.",    value: avg(homo) },
+      { label:"Symétrie",  value: avg(sym) }
     ];
   }
 
-  function drawRadar(){
-    if(!kiviatCanvas) return;
-    const dpr = getDpr();
+  function requestRadarRedraw(animate=false){
+    const target = computeRadarValues();
+    radarTarget = target.map(x=>({label:x.label, value:x.value}));
+    if(!radarPrev) radarPrev = radarTarget.map(x=>({label:x.label, value:x.value}));
 
+    if(!animate){
+      radarPrev = radarTarget.map(x=>({label:x.label, value:x.value}));
+      drawRadar(radarPrev);
+      return;
+    }
+
+    radarT0 = performance.now();
+    if(radarAnimReq) cancelAnimationFrame(radarAnimReq);
+    const tick = (t)=>{
+      const k = Math.min(1, (t - radarT0) / 240);
+      const mix = radarTarget.map((x,i)=>{
+        const a = radarPrev[i]?.value;
+        const b = x.value;
+        const va = (a==null?0:a);
+        const vb = (b==null?0:b);
+        return { label:x.label, value: (1-k)*va + k*vb };
+      });
+      drawRadar(mix);
+      if(k < 1){
+        radarAnimReq = requestAnimationFrame(tick);
+      }else{
+        radarPrev = radarTarget.map(x=>({label:x.label, value:x.value}));
+        radarAnimReq = null;
+      }
+    };
+    radarAnimReq = requestAnimationFrame(tick);
+  }
+
+  function drawRadar(items){
+    if(!kiviatCanvas) return;
+
+    const dpr = getDpr();
     const rect = kiviatCanvas.getBoundingClientRect();
     const w = Math.max(260, Math.floor(rect.width));
     const h = Math.max(260, Math.floor(rect.height));
@@ -1548,7 +1561,6 @@
     ctx.setTransform(dpr,0,0,dpr,0,0);
     ctx.clearRect(0,0,w,h);
 
-    const items = computeKiviatValues();
     const scoredCount = getZones().map(z=>getScoreForZoneName(z)).filter(v=>Number.isFinite(v)).length;
     kiviatMetaEl.textContent = `${scoredCount} zone(s) notée(s)`;
 
@@ -1559,10 +1571,12 @@
 
     const gridCol = "rgba(255,255,255,.12)";
     const axisCol = "rgba(255,255,255,.14)";
-    const textCol = "rgba(238,242,255,.88)";
-    const polyFill = "rgba(124,58,237,.18)";
-    const polyStroke = "rgba(124,58,237,.88)";
+    const textCol = "rgba(238,242,255,.90)";
+    const softCol = "rgba(124,58,237,.18)";
+    const strokeCol = "rgba(124,58,237,.88)";
+    const dotCol = "rgba(255,255,255,.92)";
 
+    // rings
     ctx.lineWidth = 1;
     for(let r=1; r<=rings; r++){
       const rr = (R * r / rings);
@@ -1578,21 +1592,28 @@
       ctx.stroke();
     }
 
-    ctx.font = "800 12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    // axes + labels + value label
+    ctx.font = "900 12px Inter, system-ui";
     ctx.fillStyle = textCol;
     for(let i=0; i<N; i++){
       const a = (-Math.PI/2) + (i * 2*Math.PI/N);
       const x2 = cx + R * Math.cos(a);
       const y2 = cy + R * Math.sin(a);
+
       ctx.beginPath();
       ctx.moveTo(cx,cy);
       ctx.lineTo(x2,y2);
       ctx.strokeStyle = axisCol;
       ctx.stroke();
 
+      const label = items[i].label;
+      const val = items[i].value;
+      const valTxt = (val==null ? "—" : val.toFixed(1));
+
       const lx = cx + (R + 16) * Math.cos(a);
       const ly = cy + (R + 16) * Math.sin(a);
-      const text = items[i].label;
+
+      const text = `${label} ${valTxt}`;
       const tw = ctx.measureText(text).width;
 
       const alignLeft = Math.cos(a) > 0.15;
@@ -1605,6 +1626,7 @@
       ctx.fillText(text, tx, ly + 4);
     }
 
+    // polygon
     const clamp01 = (v)=> Math.max(0, Math.min(1, v));
     const norm = (v)=> (v==null ? 0 : clamp01(v/10));
 
@@ -1617,12 +1639,13 @@
       if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
     }
     ctx.closePath();
-    ctx.fillStyle = polyFill;
+    ctx.fillStyle = softCol;
     ctx.fill();
     ctx.lineWidth = 2;
-    ctx.strokeStyle = polyStroke;
+    ctx.strokeStyle = strokeCol;
     ctx.stroke();
 
+    // points
     for(let i=0; i<N; i++){
       const a = (-Math.PI/2) + (i * 2*Math.PI/N);
       const rr = R * norm(items[i].value);
@@ -1630,23 +1653,26 @@
       const y = cy + rr * Math.sin(a);
       ctx.beginPath();
       ctx.arc(x,y,4,0,Math.PI*2);
-      ctx.fillStyle = "rgba(255,255,255,.92)";
+      ctx.fillStyle = dotCol;
       ctx.fill();
     }
 
+    // center label
     const g = avgGlobalComfort();
-    ctx.font = "900 13px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.font = "950 14px Inter, system-ui";
     ctx.fillStyle = "rgba(238,242,255,.92)";
-    const label = g ? `${g.toFixed(1)}/10` : "—";
-    const lw = ctx.measureText(label).width;
-    ctx.fillText(label, cx - lw/2, cy + 5);
+    const center = g ? `Global ${g.toFixed(1)}/10` : "Global —";
+    const cw = ctx.measureText(center).width;
+    ctx.fillText(center, cx - cw/2, cy + 5);
   }
-  window.addEventListener("resize", ()=> drawRadar());
 
+  window.addEventListener("resize", ()=> requestRadarRedraw(false));
+
+  // ===== Summary list =====
   function updateSummary(){
     const zones = getZones();
     const scoredCount = zones.map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n)).length;
-    $("countPill").textContent = `${scoredCount} zone notée(s)`;
+    $("countPill").textContent = `${scoredCount} zone(s) notée(s)`;
 
     const a = avgGlobalComfort();
     $("globalPill").textContent = a ? `Confort global ${a.toFixed(1)}/10` : "Confort global —";
@@ -1659,7 +1685,6 @@
 
       const score = Number.isFinite(v) ? Number(v) : null;
       const pct = score !== null ? Math.max(0, Math.min(100, (score/10)*100)) : 0;
-
       const meta = score !== null ? scoreMeta(score) : {cls:"", label:""};
       const scoreText = score !== null ? `${score}/10` : "—";
 
@@ -1680,10 +1705,10 @@
 
     updateZoneVisuals();
     setProfileUI();
-    drawRadar();
+    requestRadarRedraw(true);
   }
 
-  // ===== Sheet logic =====
+  // ===== Criteria rendering =====
   function setCriteriaDefaultsFromExisting(existing){
     activeCriteria = {};
     activeCritId = null;
@@ -1694,7 +1719,6 @@
       });
     }
   }
-  function currentOptionsForCrit(_score, critId){ return CRIT_OPTIONS[critId] || []; }
   function visibleCriteriaForActiveKey(){
     const isBolster = isBolsterKey(activeKey);
     return CRITERIA.filter(c => (c.id !== "symetrie") ? true : isBolster);
@@ -1705,16 +1729,14 @@
     const panel = $("criteriaPanel");
     const criteriaList = visibleCriteriaForActiveKey();
 
-    if(!criteriaList.some(c=>c.id === activeCritId)){
-      activeCritId = null;
-    }
+    if(!criteriaList.some(c=>c.id === activeCritId)) activeCritId = null;
 
     if(!activeCritId){
       listEl.innerHTML = criteriaList.map(c=>{
         const sel = activeCriteria[c.id] || "—";
         return `
           <div class="criteriaBtn" data-crit="${escapeHtml(c.id)}">
-            <b>${escapeHtml(c.label)}</b>
+            <span>${escapeHtml(c.label)}</span>
             <span class="badgeMini">${escapeHtml(sel)}</span>
           </div>
         `;
@@ -1733,8 +1755,8 @@
 
     const crit = criteriaList.find(x=>x.id === activeCritId) || criteriaList[0];
     listEl.innerHTML = `
-      <div class="criteriaBtn on" data-crit="${escapeHtml(activeCritId)}">
-        <b>${escapeHtml(crit ? crit.label : "Critère")}</b>
+      <div class="criteriaBtn on">
+        <span>${escapeHtml(crit ? crit.label : "Critère")}</span>
         <span class="badgeMini">${escapeHtml(activeCriteria[activeCritId] || "—")}</span>
       </div>
     `;
@@ -1747,7 +1769,7 @@
     $("critTitle").textContent = crit ? crit.label : "Critère";
     $("critSelected").textContent = activeCriteria[activeCritId] || "—";
 
-    const options = currentOptionsForCrit(score, activeCritId);
+    const options = (CRIT_OPTIONS[activeCritId] || []);
     $("critOptions").innerHTML = options.map(opt=>{
       const on = activeCriteria[activeCritId] === opt;
       return `<div class="chip ${on?"on":""}" data-opt="${escapeHtml(opt)}">${escapeHtml(opt)}</div>`;
@@ -1768,6 +1790,7 @@
     });
   }
 
+  // ===== Sheet open/close =====
   function openSheet(zoneName, el){
     activeKey = effectiveKeyForZone(zoneName);
     $("sheetZone").textContent = effectiveDisplayName(zoneName);
@@ -1844,7 +1867,6 @@
   // ===== People store =====
   function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
   function savePeople(arr){ saveJson(PEOPLE_KEY, arr); }
-
   function rebuildGreenFromRatings(r){
     const g = {};
     if(!r || typeof r !== "object") return g;
@@ -1852,13 +1874,30 @@
     return g;
   }
 
-  // ===== Captures re-générées modal =====
+  // ===== Captures modal helpers + download =====
   const capOverlay = $("capOverlay");
   const capCloseBtn = $("capCloseBtn");
   const capNote = $("capNote");
   const capPresence = $("capPresence");
   const capDurete = $("capDurete");
   const capTitle = $("capTitle");
+
+  const dlNoteBtn = $("dlNoteBtn");
+  const dlPresenceBtn = $("dlPresenceBtn");
+  const dlDureteBtn = $("dlDureteBtn");
+
+  function downloadDataUrl(dataUrl, filename){
+    if(!dataUrl) return;
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+  dlNoteBtn.onclick = ()=> downloadDataUrl(capNote.src, "capture_note.png");
+  dlPresenceBtn.onclick = ()=> downloadDataUrl(capPresence.src, "capture_presence.png");
+  dlDureteBtn.onclick = ()=> downloadDataUrl(capDurete.src, "capture_durete.png");
 
   function openCapModal(title){
     capTitle.textContent = title || "📷 Captures";
@@ -1890,7 +1929,6 @@
     imgEl.setAttribute("href", href);
     imgEl.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
   }
-
   async function captureSeatPngDataUrlForMode(modeToRender){
     const svg = document.getElementById("seatSvg");
     const clone = svg.cloneNode(true);
@@ -1907,7 +1945,6 @@
     const strokeWn = Number(zStyle?.strokeW ?? 2);
 
     const hide = (poly)=> poly.setAttribute("style","fill:rgba(0,0,0,0);stroke:rgba(0,0,0,0);stroke-width:0;");
-
     clone.querySelectorAll(".zone").forEach(poly=>{
       const zoneName = poly.dataset.zone;
 
@@ -1918,7 +1955,6 @@
         poly.setAttribute("style", `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeWn};`);
         return;
       }
-
       if(modeToRender === "presence" || modeToRender === "durete"){
         const label = getCritForZoneName(zoneName, modeToRender);
         const s = critLabelToScore(label);
@@ -1927,7 +1963,6 @@
         poly.setAttribute("style", `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeWn};`);
         return;
       }
-
       hide(poly);
     });
 
@@ -1958,15 +1993,12 @@
     ratings = entry.ratings || {};
     greenClicked = rebuildGreenFromRatings(ratings);
 
-    capNote.src = "";
-    capPresence.src = "";
-    capDurete.src = "";
-
+    capNote.src = ""; capPresence.src = ""; capDurete.src = "";
     openCapModal(`📷 Captures — ${entry.prenom || ""} ${entry.nom || ""}`.trim());
 
-    try{ capNote.src = await captureSeatPngDataUrlForMode("stephane"); }catch(e){ capNote.src=""; }
-    try{ capPresence.src = await captureSeatPngDataUrlForMode("presence"); }catch(e){ capPresence.src=""; }
-    try{ capDurete.src = await captureSeatPngDataUrlForMode("durete"); }catch(e){ capDurete.src=""; }
+    try{ capNote.src = await captureSeatPngDataUrlForMode("stephane"); }catch(e){}
+    try{ capPresence.src = await captureSeatPngDataUrlForMode("presence"); }catch(e){}
+    try{ capDurete.src = await captureSeatPngDataUrlForMode("durete"); }catch(e){}
 
     ratings = prevRatings;
     greenClicked = prevGreen;
@@ -1976,6 +2008,8 @@
     updateSummary();
   }
 
+  // ===== Render table + selection =====
+  let selectedRowId = null;
   function renderPeople(){
     const people = loadPeople();
     const view = people.map((p, idx)=>({p, idx})).reverse();
@@ -1983,7 +2017,7 @@
     $("peopleCountPill").textContent = `${people.length} personne(s)`;
 
     $("peopleBody").innerHTML = view.map(({p, idx})=>`
-      <tr data-idx="${idx}">
+      <tr data-idx="${idx}" data-row="${idx}">
         <td>${escapeHtml(p.ts)}</td>
         <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.nom)}</td>
         <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.prenom)}</td>
@@ -1997,6 +2031,12 @@
       </tr>
     `).join("");
 
+    // restore selected highlight
+    if(selectedRowId !== null){
+      const tr = document.querySelector(`tr[data-row="${selectedRowId}"]`);
+      if(tr) tr.classList.add("selected");
+    }
+
     $("peopleBody").querySelectorAll(".delRowBtn").forEach(btn=>{
       btn.addEventListener("click", (e)=>{
         e.stopPropagation();
@@ -2007,6 +2047,7 @@
           arr.splice(idx, 1);
           savePeople(arr);
           toast("Ligne supprimée");
+          if(selectedRowId === idx) selectedRowId = null;
           renderPeople();
         }
       });
@@ -2025,6 +2066,11 @@
 
     $("peopleBody").querySelectorAll("tr").forEach(tr=>{
       tr.addEventListener("click", ()=>{
+        // highlight selection
+        $("peopleBody").querySelectorAll("tr").forEach(x=>x.classList.remove("selected"));
+        tr.classList.add("selected");
+        selectedRowId = Number(tr.dataset.row);
+
         const idx = Number(tr.dataset.idx);
         const arr = loadPeople();
         const entry = arr[idx];
@@ -2041,30 +2087,24 @@
         setProfileUI();
         closeProfileGate();
         updateSummary();
-
         setMode("stephane");
         toast("✅ Enregistrement chargé");
       });
     });
   }
 
-  // ===== Export CSV (SANS IMAGES) =====
+  // ===== CSV export/import (léger) =====
   function buildExportZoneKeys(){
     const zoneNames = Array.from(document.querySelectorAll(".zone")).map(z => z.dataset.zone);
     const keys = [];
     const seen = new Set();
     for(const z of zoneNames){
       const k = effectiveKeyForZone(z);
-      if(!seen.has(k)){
-        seen.add(k);
-        keys.push(k);
-      }
+      if(!seen.has(k)){ seen.add(k); keys.push(k); }
     }
     return keys;
   }
-  function getRatingByKey(entryRatings, key){
-    return entryRatings?.[key] || null;
-  }
+  function getRatingByKey(entryRatings, key){ return entryRatings?.[key] || null; }
 
   $("exportBtn").addEventListener("click", ()=>{
     const people = loadPeople();
@@ -2073,7 +2113,6 @@
 
     const zoneKeys = buildExportZoneKeys();
     const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale"];
-
     const perZoneHeaders = [];
     for(const key of zoneKeys){
       perZoneHeaders.push(
@@ -2091,20 +2130,16 @@
 
     for(const p of people){
       const row = [p.ts, p.nom, p.prenom, p.taille, p.poids, p.globalAvg];
-
       for(const key of zoneKeys){
         const rz = getRatingByKey(p.ratings, key);
-
         const score = rz?.score ?? "";
         const pres  = rz?.criteria?.presence ?? "";
         const dur   = rz?.criteria?.durete ?? "";
         const sym   = (isBolsterKey(key) ? (rz?.criteria?.symetrie ?? "") : "");
         const homo  = rz?.criteria?.homogeneite ?? "";
         const comm  = rz?.comment ?? "";
-
         row.push(score, pres, dur, sym, homo, comm);
       }
-
       lines.push(row.map(esc).join(SEP));
     }
 
@@ -2115,10 +2150,9 @@
     a.download = "seat_people_passes_light.csv";
     a.click();
     URL.revokeObjectURL(a.href);
-    toast("CSV exporté (sans images)");
+    toast("CSV exporté");
   });
 
-  // ===== Import CSV =====
   const importBtn = $("importBtn");
   const importFile = $("importFile");
 
@@ -2126,22 +2160,14 @@
     const out = [];
     let cur = "";
     let inQ = false;
-
     for(let i=0;i<line.length;i++){
       const ch = line[i];
-
       if(ch === '"'){
         if(inQ && line[i+1] === '"'){ cur += '"'; i++; }
         else inQ = !inQ;
         continue;
       }
-
-      if(!inQ && ch === sep){
-        out.push(cur);
-        cur = "";
-        continue;
-      }
-
+      if(!inQ && ch === sep){ out.push(cur); cur=""; continue; }
       cur += ch;
     }
     out.push(cur);
@@ -2149,16 +2175,12 @@
   }
   function normalizeHeader(h){ return String(h||"").trim().toLowerCase().replaceAll("\ufeff",""); }
   function buildZoneKeysFromHeaders(headers){
-    const keys = [];
-    const seen = new Set();
+    const keys = []; const seen = new Set();
     headers.forEach(h=>{
       const m = String(h).match(/^(.*)\s-\sScore$/i);
       if(m){
         const key = m[1].trim();
-        if(key && !seen.has(key)){
-          seen.add(key);
-          keys.push(key);
-        }
+        if(key && !seen.has(key)){ seen.add(key); keys.push(key); }
       }
     });
     return keys;
@@ -2167,7 +2189,6 @@
   function importCsvToPeople(csvText){
     const text = String(csvText || "").replace(/\r\n/g,"\n").replace(/\r/g,"\n").trim();
     if(!text) throw new Error("CSV vide");
-
     const lines = text.split("\n").filter(l=>l.trim().length>0);
     if(lines.length < 2) throw new Error("CSV sans données");
 
@@ -2182,7 +2203,7 @@
     const idxGlobal = H.indexOf("moyenne globale");
 
     if(idxNom < 0 || idxPrenom < 0 || idxGlobal < 0){
-      throw new Error("Header CSV non reconnu (Nom/Prénom/Moyenne globale manquants)");
+      throw new Error("Header CSV non reconnu");
     }
 
     const zoneKeys = buildZoneKeysFromHeaders(headers);
@@ -2190,7 +2211,6 @@
 
     for(let li=1; li<lines.length; li++){
       const cols = parseCsvLine(lines[li], ";");
-
       const ts = (idxDate>=0 ? cols[idxDate] : "") || "";
       const nom = cols[idxNom] || "";
       const prenom = cols[idxPrenom] || "";
@@ -2199,7 +2219,6 @@
       const globalAvg = cols[idxGlobal] || "";
 
       const ratingsObj = {};
-
       zoneKeys.forEach(key=>{
         const idxScore = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Score`));
         const idxPres  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Présence`));
@@ -2229,7 +2248,6 @@
 
       people.push({ ts, nom, prenom, taille, poids, globalAvg, ratings: ratingsObj });
     }
-
     return people;
   }
 
@@ -2242,15 +2260,12 @@
     try{
       const text = await file.text();
       const imported = importCsvToPeople(text);
-
-      if(!imported.length){
-        toast("⚠️ Aucune ligne importée");
-        return;
-      }
-
+      if(!imported.length){ toast("⚠️ Aucune ligne importée"); return; }
       savePeople(imported);
+      selectedRowId = null;
       renderPeople();
-      toast(`✅ Import OK (${imported.length} lignes)`);
+      toast(`✅ Import OK (${imported.length})`);
+      closeMenu();
     }catch(e){
       console.error(e);
       toast("❌ Import impossible");
@@ -2258,7 +2273,7 @@
     }
   });
 
-  // ===== Enregistrer : enregistre + reset NOTES seulement (PAS retour gate) =====
+  // ===== Save + new person =====
   $("savePersonBtn").addEventListener("click", ()=>{
     const nom = $("nom").value.trim();
     const prenom = $("prenom").value.trim();
@@ -2288,76 +2303,58 @@
     toast("✅ Enregistré");
     renderPeople();
 
-    // reset notes seulement
+    // reset notes only
     ratings = {};
     saveJson(RATINGS_KEY, ratings);
     greenClicked = {};
     saveJson(GREEN_KEY, greenClicked);
     updateSummary();
 
-    // ✅ autorise "Nouvelle personne"
     setNewPersonEnabled(true);
   });
 
-  // ===== Nouvelle personne : autorisé seulement après Enregistrer ou Réinitialiser =====
   $("newPersonBtn").addEventListener("click", ()=>{
-    if(!canStartNewPerson){
-      toast("⚠️ Enregistre ou réinitialise d'abord");
-      return;
-    }
+    if(!canStartNewPerson){ toast("⚠️ Enregistre ou réinitialise d'abord"); return; }
 
-    // reset notes
-    ratings = {};
-    saveJson(RATINGS_KEY, ratings);
-    greenClicked = {};
-    saveJson(GREEN_KEY, greenClicked);
+    ratings = {}; saveJson(RATINGS_KEY, ratings);
+    greenClicked = {}; saveJson(GREEN_KEY, greenClicked);
     closeSheet();
     updateSummary();
 
-    // reset profil + ouvre gate
     clearProfileAll();
     openProfileGate();
-
-    // re-bloque
     setNewPersonEnabled(false);
   });
 
-  // ===== Reset total =====
+  // ===== Reset (menu item) =====
   function resetAll(){
-    ratings = {};
-    saveJson(RATINGS_KEY, ratings);
-    greenClicked = {};
-    saveJson(GREEN_KEY, greenClicked);
+    ratings = {}; saveJson(RATINGS_KEY, ratings);
+    greenClicked = {}; saveJson(GREEN_KEY, greenClicked);
     closeSheet();
-
     clearProfileAll();
     updateSummary();
     setTableShown(false);
-
-    // ✅ reset compte comme action -> permet ensuite "Nouvelle personne"
     setNewPersonEnabled(true);
-
     openProfileGate();
     toast("Tout réinitialisé");
   }
+  $("resetBtn").addEventListener("click", ()=>{ closeMenu(); if(confirm("Réinitialiser TOUT (notes + profil) ?")) resetAll(); });
 
-  $("resetBtn").addEventListener("click", ()=>{
-    if(confirm("Réinitialiser TOUT (notes + profil) ?")){
-      resetAll();
-    }
-  });
-
+  // ===== Reset people (menu item) =====
   $("resetPeopleBtn").addEventListener("click", ()=>{
+    closeMenu();
     if(confirm("Supprimer TOUT l'historique des personnes ?")){
       savePeople([]);
+      selectedRowId = null;
       renderPeople();
-      toast("Tableau réinitialisé");
+      toast("Historique supprimé");
     }
   });
 
   // ===== Settings open/close =====
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
+    closeMenu();
     settingsOverlay.classList.add("show");
     settingsOverlay.setAttribute("aria-hidden","false");
   });
@@ -2372,9 +2369,11 @@
     }
   });
 
-  // ===== Settings reset button =====
+  // Reset settings
   $("resetSettingsBtn").addEventListener("click", ()=>{
-    if(confirm("Reset settings (transparence + style zones) ?")){
+    if(confirm("Reset settings (accent + transparence + style zones) ?")){
+      applyAccent("forvia");
+      $("accentSelect").value = "forvia";
       uiAlpha = { bg: 0.95, panel: 0.12, table: 0.10 };
       saveJson(SET_UI_ALPHA_KEY, uiAlpha);
       applyUiAlpha(uiAlpha);
@@ -2382,10 +2381,18 @@
       zStyle = { fillA:0.12, strokeA:0.55, strokeW:2 };
       saveJson(ZSTYLE_KEY, zStyle);
       applyZoneStyle(zStyle);
+
       updateZoneVisuals();
-      drawRadar();
+      requestRadarRedraw(true);
       toast("Settings reset");
     }
+  });
+
+  // Accent select
+  const accentSelect = $("accentSelect");
+  accentSelect.addEventListener("change", ()=>{
+    applyAccent(accentSelect.value);
+    requestRadarRedraw(true);
   });
 
   // ===== Per-zone transforms =====
@@ -2412,10 +2419,8 @@
   if(!zoneTune || typeof zoneTune !== "object"){
     zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
     saveJson(ZTUNE_KEY, zoneTune);
-  } else {
-    Object.keys(DEFAULT_TUNE).forEach(k=>{
-      if(!zoneTune[k]) zoneTune[k] = {...DEFAULT_TUNE[k]};
-    });
+  }else{
+    Object.keys(DEFAULT_TUNE).forEach(k=>{ if(!zoneTune[k]) zoneTune[k] = {...DEFAULT_TUNE[k]}; });
     saveJson(ZTUNE_KEY, zoneTune);
   }
 
@@ -2444,25 +2449,20 @@
   function loadZoneToUI(polyId){
     const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
     zdxEl.value = t.dx; zdyEl.value = t.dy; zscEl.value = t.sc;
-
     zdxVal.textContent = t.dx;
     zdyVal.textContent = t.dy;
     zscVal.textContent = Number(t.sc).toFixed(3);
-
     zoneOut.textContent = `${polyId}: transform="translate(${t.dx} ${t.dy}) scale(${Number(t.sc).toFixed(3)})"`;
   }
-
   function onZoneTuneChange(){
     const id = zoneSelect.value;
     zoneTune[id] = { dx:Number(zdxEl.value), dy:Number(zdyEl.value), sc:Number(zscEl.value) };
     saveJson(ZTUNE_KEY, zoneTune);
-
     applyOne(id);
     loadZoneToUI(id);
     updateZoneVisuals();
-    drawRadar();
+    requestRadarRedraw(true);
   }
-
   zoneSelect.addEventListener("change", ()=> loadZoneToUI(zoneSelect.value));
   zdxEl.addEventListener("input", onZoneTuneChange);
   zdyEl.addEventListener("input", onZoneTuneChange);
@@ -2475,7 +2475,7 @@
     applyOne(id);
     loadZoneToUI(id);
     updateZoneVisuals();
-    drawRadar();
+    requestRadarRedraw(true);
     toast("Zone reset");
   });
 
@@ -2507,13 +2507,12 @@
     modePill.textContent =
       mode === "sujet" ? "Sujet" :
       mode === "stephane" ? "Note" :
-      mode === "presence" ? "Présence" :
-      "Dureté";
+      mode === "presence" ? "Présence" : "Dureté";
 
     setSeatBackground(mode);
     closeSheet();
     updateZoneVisuals();
-    drawRadar();
+    requestRadarRedraw(true);
   }
 
   modeSujetBtn.addEventListener("click", ()=> setMode("sujet"));
@@ -2521,7 +2520,10 @@
   modePresenceBtn.addEventListener("click", ()=> setMode("presence"));
   modeDureteBtn.addEventListener("click", ()=> setMode("durete"));
 
-  // ===== Full init =====
+  // ===== Init =====
+  applyAccent(accent);
+  $("accentSelect").value = accent;
+
   applyUiAlpha(uiAlpha);
   applyZoneStyle(zStyle);
   applySliderUI(7);
@@ -2533,9 +2535,9 @@
   setProfileUI();
   updateSummary();
   renderPeople();
-  drawRadar();
+  requestRadarRedraw(false);
 
-  // Logo fallback
+  // logo fallback
   (function(){
     const img = document.getElementById("logoImg");
     if(!img) return;
@@ -2543,12 +2545,8 @@
     let i = 0;
     img.onerror = ()=>{
       i++;
-      if(i < candidates.length){
-        img.src = candidates[i] + "?v=" + Date.now();
-      }else{
-        img.style.display = "none";
-        console.warn("Logo introuvable. Mets le fichier Forvia.(png/jpg/webp/svg) dans le même dossier que le HTML.");
-      }
+      if(i < candidates.length) img.src = candidates[i] + "?v=" + Date.now();
+      else img.style.display = "none";
     };
     img.src = candidates[0] + "?v=" + Date.now();
   })();
