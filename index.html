@@ -341,7 +341,7 @@
       background: rgba(255,255,255,.95);
       border: 2px solid rgba(0,0,0,.35);
       box-shadow: 0 10px 22px rgba(0,0,0,.35);
-      margin-top:-6px; /* track=10px, thumb=22px => -6px */
+      margin-top:-6px;
     }
     .ratingSlider::-moz-range-track{
       height:10px;
@@ -491,6 +491,39 @@
     .rotateOverlay .box b{font-size:1.1rem}
     .rotateOverlay .box p{color:var(--muted);margin:8px 0 0}
 
+    /* ✅ GATE profil (bloque accès tant que non rempli) */
+    .profileOverlay{
+      position:fixed; inset:0; z-index:70;
+      display:none;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(10px);
+      align-items:center; justify-content:center;
+      padding:24px;
+      text-align:left;
+    }
+    .profileOverlay.show{display:flex;}
+    .profileOverlay .box{
+      width:min(560px, 100%);
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(17,25,50,.92);
+      border-radius:22px;
+      padding:16px;
+      box-shadow: var(--shadow);
+    }
+    .profileOverlay .box b{font-size:1.12rem}
+    .profileOverlay .box p{color:var(--muted);margin:8px 0 0; line-height:1.35}
+    .profileGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    @media (max-width:520px){ .profileGrid{grid-template-columns:1fr;} }
+    .profileActions{
+      display:flex; gap:10px; margin-top:14px;
+    }
+    .profileActions .btn{flex:1}
+
     .modalOverlay{
       position:fixed; inset:0; z-index:80;
       background: rgba(0,0,0,.60);
@@ -572,6 +605,39 @@
   <div class="box">
     <b>Tourne ton téléphone</b>
     <p>Pour une meilleure utilisation, mets ton téléphone en <b>mode paysage</b>.</p>
+  </div>
+</div>
+
+<!-- ✅ GATE PROFIL -->
+<div class="profileOverlay" id="profileOverlay">
+  <div class="box">
+    <b>Profil requis</b>
+    <p>Renseigne <b>Nom</b>, <b>Prénom</b>, <b>Taille</b> et <b>Poids</b> pour accéder au test.</p>
+
+    <div class="profileGrid">
+      <div class="field">
+        <label>Nom</label>
+        <input id="gateNom" placeholder="Ex: Dupont" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Prénom</label>
+        <input id="gatePrenom" placeholder="Ex: Amine" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Taille (cm)</label>
+        <input id="gateTaille" inputmode="numeric" placeholder="178" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Poids (kg)</label>
+        <input id="gatePoids" inputmode="numeric" placeholder="75" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="profileActions">
+      <button class="btn primary" id="gateContinueBtn" type="button">Continuer</button>
+    </div>
+
+    <div class="hint" id="gateHint" style="margin-top:10px; display:none">⚠️ Merci de remplir tous les champs correctement.</div>
   </div>
 </div>
 
@@ -901,6 +967,70 @@
   window.addEventListener("orientationchange", checkOrientation);
   checkOrientation();
 
+  // ===== GATE PROFIL (bloque accès au site) =====
+  const profileOverlay = $("profileOverlay");
+  const gateNom = $("gateNom"), gatePrenom = $("gatePrenom"), gateTaille = $("gateTaille"), gatePoids = $("gatePoids");
+  const gateContinueBtn = $("gateContinueBtn");
+  const gateHint = $("gateHint");
+
+  function isValidNumberStr(s){
+    const v = Number(String(s).trim().replace(",", "."));
+    return Number.isFinite(v) && v > 0;
+  }
+
+  function openProfileGate(){
+    gateHint.style.display = "none";
+    // pré-remplir avec les champs de droite si jamais
+    gateNom.value = $("nom")?.value?.trim() || "";
+    gatePrenom.value = $("prenom")?.value?.trim() || "";
+    gateTaille.value = $("taille")?.value?.trim() || "";
+    gatePoids.value = $("poids")?.value?.trim() || "";
+
+    profileOverlay.classList.add("show");
+    // focus
+    setTimeout(()=> gateNom.focus(), 50);
+  }
+
+  function closeProfileGate(){
+    profileOverlay.classList.remove("show");
+  }
+
+  function validateAndApplyProfile(){
+    const nom = gateNom.value.trim();
+    const prenom = gatePrenom.value.trim();
+    const taille = gateTaille.value.trim();
+    const poids = gatePoids.value.trim();
+
+    const ok = !!nom && !!prenom && isValidNumberStr(taille) && isValidNumberStr(poids);
+    if(!ok){
+      gateHint.style.display = "block";
+      toast("⚠️ Profil incomplet");
+      return false;
+    }
+
+    $("nom").value = nom;
+    $("prenom").value = prenom;
+    $("taille").value = String(Number(taille.replace(",", ".")));
+    $("poids").value = String(Number(poids.replace(",", ".")));
+
+    closeProfileGate();
+    toast("✅ Profil validé");
+    return true;
+  }
+
+  gateContinueBtn.addEventListener("click", validateAndApplyProfile);
+  [gateNom, gatePrenom, gateTaille, gatePoids].forEach(inp=>{
+    inp.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){
+        e.preventDefault();
+        validateAndApplyProfile();
+      }
+    });
+  });
+
+  // Ouvre le gate au chargement (toujours)
+  openProfileGate();
+
   // ===== Password: demandé à CHAQUE ouverture =====
   const TABLE_PASSWORD = "1234"; // 🔒 change ici
 
@@ -1160,7 +1290,7 @@
 
     updateZoneVisuals();
   }
-
+  <!-- PARTIE 4/4 -->
   // Criteria rendering
   function setCriteriaDefaultsFromExisting(existing){
     activeCriteria = {};
@@ -1328,7 +1458,6 @@
   function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
   function savePeople(arr){ saveJson(PEOPLE_KEY, arr); }
 
-  // ✅ reconstruire vert depuis ratings (pour re-visualiser une personne)
   function rebuildGreenFromRatings(r){
     const g = {};
     if(!r || typeof r !== "object") return g;
@@ -1337,8 +1466,8 @@
   }
 
   function renderPeople(){
-    const people = loadPeople(); // ordre réel
-    const view = people.map((p, idx)=>({p, idx})).reverse(); // affichage inversé
+    const people = loadPeople();
+    const view = people.map((p, idx)=>({p, idx})).reverse();
 
     $("peopleCountPill").textContent = `${people.length} personne(s)`;
 
@@ -1356,7 +1485,6 @@
       </tr>
     `).join("");
 
-    // supprimer ligne
     $("peopleBody").querySelectorAll(".delRowBtn").forEach(btn=>{
       btn.addEventListener("click", (e)=>{
         e.stopPropagation();
@@ -1372,7 +1500,6 @@
       });
     });
 
-    // cliquer sur une personne => recharger notes + map
     $("peopleBody").querySelectorAll("tr").forEach(tr=>{
       tr.addEventListener("click", ()=>{
         const idx = Number(tr.dataset.idx);
@@ -1496,7 +1623,7 @@
     URL.revokeObjectURL(url);
     return canvas.toDataURL("image/png");
   }
-  <!-- PARTIE 4/4 -->
+
   // Save person (3 captures)
   $("savePersonBtn").addEventListener("click", async ()=>{
     const nom = $("nom").value.trim();
