@@ -127,18 +127,7 @@
       background: rgba(46, 204, 113, .10);
     }
 
-    .field{display:flex;flex-direction:column;gap:6px}
-    .field label{font-size:.82rem;color:var(--muted);font-weight:700}
-    .field input, .field select{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      color:var(--txt);
-      padding:10px 12px;
-      border-radius:14px;
-      outline:none;
-    }
-
-    /* ✅ Bannière testeur */
+    /* Bannière testeur */
     .profileBar{
       display:flex;
       gap:10px;
@@ -277,23 +266,15 @@
     .zoneMeta{color:var(--muted);font-size:.85rem;margin-top:2px}
 
     .sheetScoreHeader{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-top:10px;
-      flex-wrap: wrap;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; margin-top:10px; flex-wrap: wrap;
     }
     .scoreChip{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:8px 12px;
-      border-radius:999px;
+      display:inline-flex; align-items:center; gap:10px;
+      padding:8px 12px; border-radius:999px;
       border:1px solid var(--scolBorder);
       background: var(--scolSoft);
-      font-weight:950;
-      letter-spacing:.2px;
+      font-weight:950; letter-spacing:.2px;
       max-width:100%;
       flex: 1 1 auto;
       justify-content:flex-start;
@@ -316,7 +297,7 @@
       .scoreChip{ justify-content:center; }
     }
 
-    /* ✅ Slider */
+    /* Slider */
     .ratingSlider{
       width:100%;
       margin-top:10px;
@@ -466,7 +447,7 @@
       margin-top:10px;
       background: rgba(0,0,0,var(--settings-table-alpha));
     }
-    table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:900px}
+    table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:980px}
     th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap;text-align:left}
     th{position:sticky;top:0;background:rgba(17,25,50,.92);z-index:2}
     .collapse{display:none}
@@ -496,7 +477,7 @@
     .rotateOverlay .box b{font-size:1.1rem}
     .rotateOverlay .box p{color:var(--muted);margin:8px 0 0}
 
-    /* ✅ Gate profil */
+    /* Gate profil */
     .profileOverlay{
       position:fixed; inset:0; z-index:70;
       display:none;
@@ -530,11 +511,8 @@
     .profileActions .btn{flex:1}
     .devNote{font-size:.78rem; color:rgba(167,176,216,.85); margin-top:10px}
 
-    /* ✅ KIVIAT (RADAR) */
-    .kiviatWrap{
-      padding:12px;
-      border-top: 1px solid rgba(255,255,255,.06);
-    }
+    /* KIVIAT (RADAR) */
+    .kiviatWrap{ padding:12px; border-top: 1px solid rgba(255,255,255,.06); }
     .kiviatCard{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.12);
@@ -542,8 +520,8 @@
       padding:12px;
     }
     .kiviatHead{
-      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
-      margin-bottom:10px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; flex-wrap:wrap; margin-bottom:10px;
     }
     .kiviatHead b{font-size:.96rem}
     .kiviatMeta{color:var(--muted);font-size:.82rem}
@@ -557,9 +535,7 @@
                   rgba(0,0,0,.08);
       border:1px solid rgba(255,255,255,.10);
     }
-    .kiviatLegend{
-      display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;
-    }
+    .kiviatLegend{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .kBadge{
       display:inline-flex; align-items:center; gap:8px;
       padding:7px 10px;
@@ -576,9 +552,61 @@
       box-shadow: 0 0 0 5px rgba(255,255,255,.06);
     }
 
-    /* ✅ inputs invisibles (on garde pour JS) */
+    /* Inputs invisibles (gardés pour JS/export) */
     .hiddenInputs{display:none;}
 
+    /* Modal captures (re-générées) */
+    .capOverlay{
+      position:fixed; inset:0; z-index:90;
+      background: rgba(0,0,0,.62);
+      opacity:0; pointer-events:none;
+      transition:.18s;
+      display:flex; align-items:flex-end; justify-content:center;
+      padding: 12px 12px calc(14px + env(safe-area-inset-bottom));
+    }
+    .capOverlay.show{opacity:1; pointer-events:auto}
+    .capModal{
+      width:min(980px, 100%);
+      max-height: 86vh;
+      overflow:auto;
+      background: rgba(17,25,50,.95);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+    .capHead{
+      position:sticky; top:0;
+      background: rgba(17,25,50,.95);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(255,255,255,.10);
+      padding:12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .capHead b{font-size:1.02rem}
+    .capBody{padding:12px}
+    .capGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width:900px){ .capGrid{grid-template-columns:1fr;} }
+    .capCard{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.12);
+      border-radius:18px;
+      padding:10px;
+    }
+    .capCard b{font-size:.9rem}
+    .capImg{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      margin-top:8px;
+      display:block;
+      background: rgba(0,0,0,.20);
+    }
+
+    /* Settings modal */
     .modalOverlay{
       position:fixed; inset:0; z-index:80;
       background: rgba(0,0,0,.60);
@@ -648,6 +676,10 @@
       <button class="btn icon" id="settingsBtn" title="Settings">⚙️ Settings</button>
       <button class="btn" id="fsBtn">Plein écran</button>
       <button class="btn ghost" id="resetBtn">Réinitialiser</button>
+
+      <button class="btn" id="importBtn">Importer CSV</button>
+      <input id="importFile" type="file" accept=".csv" style="display:none">
+
       <button class="btn" id="exportBtn">Exporter CSV</button>
       <button class="btn primary" id="savePersonBtn">Enregistrer</button>
     </div>
@@ -661,7 +693,7 @@
   </div>
 </div>
 
-<!-- ✅ GATE PROFIL + ACCÈS DEV -->
+<!-- GATE PROFIL + ACCÈS DEV -->
 <div class="profileOverlay" id="profileOverlay">
   <div class="box">
     <b>Profil requis</b>
@@ -723,36 +755,51 @@
     <div class="seatFrame">
       <svg id="seatSvg" viewBox="0 0 270.933 406.4" preserveAspectRatio="xMidYMid meet">
         <image id="seatImg" href="seat.png" x="0" y="0" width="270.933" height="406.4" />
+
         <g id="zonesLayer">
-          <rect id="z_tete" class="zone" data-zone="Coussin de tête" x="110" y="8" width="50" height="32" rx="12" ry="12" />
-          <!-- (zones SVG inchangées) -->
-          <!-- ... -->
+          <rect id="z_tete" class="zone" data-zone="Coussin de tête"
+                x="110" y="8" width="50" height="32" rx="12" ry="12" />
+
+          <!-- Dossier -->
           <path id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)"
             d="m 82.248776,115.24582 4.226224,-1.30038 3.576032,-0.97528 3.413487,-0.65019 3.576034,-0.65019 5.282777,-0.73146 3.90113,-0.48764 3.08839,-0.65019 1.46293,-0.16254 h 1.2191 l 2.11311,-0.0813 0.81273,-0.16255 1.70675,-0.16254 2.03183,-0.24382 1.62547,-0.0813 1.86929,0.0813 1.78802,-0.0813 1.86929,-0.0813 h 2.27566 2.27566 l 2.85054,-0.0363 h 1.72408 l 1.6666,-0.0575 1.60913,-0.11494 3.39067,0.0575 6.55147,-0.0575 4.59753,0.45976 2.87345,0.22987 2.36951,0.41311 1.78802,1.13783 0.97528,1.13783 0.81274,0.81273 0.97528,1.78802 0.32509,0.65019 0.24383,0.97528 0.32509,1.2191 0.0813,0.97528 0.16255,0.97528 -0.16255,0.89401 v 0.73146 l -0.24382,0.73147 -0.32509,1.05655 -5.44533,12.02848 -17.55507,-0.89401 -7.31462,-0.0813 -6.7457,0.0813 -9.67154,0.16255 -18.53036,-0.16255 -4.388768,0.0813 -2.438204,0.3251 -2.113111,0.48764 -2.194385,0.65019 -1.056555,0.81273 -3.169666,-6.98952 -2.275658,-6.25806 -0.894008,-2.84457 0.08127,-1.05656 0.325096,-0.73146 0.325094,-0.65019 0.48764,-0.48764 0.812734,-0.81273 z" />
+
           <path id="z_dossier_rouge" class="zone" data-zone="Dossier milieu (rouge)"
             d="m 95.049352,167.8704 6.785788,0.51389 h 12.988 15.28677 l 13.09399,-0.47325 3.73858,-0.65019 0.48764,-0.16254 0.81273,-4.71387 0.97529,-6.01423 3.73858,-11.37829 4.22622,-9.75282 0.24382,-0.44701 -8.00544,-0.36573 -7.88353,-0.40637 -12.23245,-0.23207 -10.22949,0.22988 -12.47078,0.0575 -7.585915,-0.11494 -5.574496,0.0575 -1.953947,0.28735 -4.8274,1.14938 -1.149382,0.86203 4.537102,9.81318 2.27566,6.66443 1.625467,7.80226 z" />
+
           <path id="z_central_gris" class="zone" data-zone="Zone centrale (gris clair)"
             d="m 97.731378,203.46819 44.102212,0.0872 h 1.72407 l 1.26432,-0.57469 1.49419,-1.26432 0.5747,-1.37926 0.57469,-1.14938 v -0.80456 l -0.11494,-11.37888 -0.80457,-1.14938 -1.03444,-0.9195 -1.37926,-0.91951 -1.03444,-0.11493 -48.848684,-0.22988 -1.494195,0.80457 -0.919507,1.03444 -0.57469,0.80457 -0.114938,0.68962 -0.114938,11.83863 0.229876,1.49419 0.919506,1.14938 0.689629,0.68963 0.919503,0.80457 1.26432,0.22988 z" />
+
           <path id="z_jaune" class="zone" data-zone="Bande jaune"
             d="m 95.496358,211.31109 12.191022,0.40637 8.04608,0.0813 h 7.9648 l 8.12735,-0.0813 5.77042,-0.0813 4.14495,-0.0813 2.4382,0.16255 1.62547,0.40636 0.81274,0.48764 0.65018,0.48764 0.56892,0.65019 0.89401,1.38165 v 1.30038 l 0.0813,1.05655 -0.16255,4.06368 -0.24382,4.47004 -0.81273,2.11311 -2.19439,1.46292 -2.03183,0.56892 -6.90825,0.97528 -6.50188,0.32509 -6.90825,0.0813 -8.53371,-0.0813 -8.20863,-0.32509 -6.25806,-0.48764 -5.201502,-1.05656 -1.381649,-0.73146 -0.894008,-0.97528 -0.650188,-1.30037 -0.406368,-1.21911 -0.08127,-10.80937 0.48764,-1.30038 0.812734,-0.97528 1.544199,-0.81274 z" />
+
           <path id="z_flanc_gauche_vert" class="zone" data-zone="Flanc gauche (vert)"
             d="m 57.379089,139.30277 -3.413488,8.2899 -1.950564,7.47716 -1.300376,7.63971 -0.650187,6.98952 -0.162547,3.57603 0.0099,0.19521 0.344813,-0.0575 0.574691,-0.68963 0.94824,-0.71837 1.839008,-0.0862 1.609132,0.40229 4.166508,1.55166 4.827399,2.12635 4.568788,2.15509 4.680799,2.84205 3.657307,2.19439 1.62547,1.2191 0.08128,0.16255 -0.162547,-6.09551 -0.406368,-5.12023 -1.219103,-7.39589 -1.869291,-6.01424 -2.925845,-6.33933 -2.682025,-4.06368 -3.250941,-3.65731 -5.770417,-4.71386 z" />
+
           <path id="z_flanc_gauche_noir" class="zone" data-zone="Flanc gauche (noir)"
             d="m 78.835291,184.8972 0.162547,30.31502 -0.894008,24.05695 -0.162547,0.0813 -2.194386,-0.73146 -3.657306,-2.51948 -4.388771,-3.6573 -4.876408,-4.55132 -4.470043,-6.17679 -3.738581,-6.58315 -2.11311,-6.7457 -1.056556,-4.95768 -0.812733,-6.58316 -0.487643,-4.79513 -0.243819,-8.20862 0.08127,-10.40301 0.273476,-0.0536 0.603424,-0.71836 0.862037,-0.68963 1.896478,-0.0862 1.810276,0.45975 13.419018,5.80437 z" />
+
           <path id="z_flanc_droit_violet" class="zone" data-zone="Flanc droit (violet)"
             d="m 162.54699,183.19046 6.66443,-0.97528 4.71386,-0.81274 4.22622,-0.65019 4.06368,-0.32509 4.06367,-0.32509 3.90113,-0.16255 1.95056,0.16255 2.27566,0.65018 0.16255,0.16255 v -9.75282 l -1.13783,-9.26518 -1.95056,-11.21574 -1.62547,-6.98952 -1.30038,-3.57603 -1.30038,-0.65019 -0.48764,0.48764 -12.19102,11.70338 -4.38877,5.36405 -3.41349,6.17679 -1.95056,6.82697 -1.30038,6.66443 z" />
+
           <path id="z_flanc_droit_orange" class="zone" data-zone="Flanc droit (orange)"
             d="m 162.38444,183.51555 -0.16254,12.84121 0.32509,10.07792 0.16255,12.84121 0.48764,20.64347 0.16254,0.65019 2.11312,-0.97529 3.57603,-2.60075 4.87641,-3.08839 6.66443,-5.68914 4.71386,-6.01425 3.57603,-6.01423 3.25094,-9.59028 1.95057,-10.56555 0.65018,-9.59027 -0.16254,-5.68915 -2.60075,-1.13782 h -2.43821 l -3.08839,0.32509 -1.95057,0.16255 -6.98952,0.65018 -7.9648,1.30038 z" />
+
           <path id="z_magenta" class="zone" data-zone="Bande magenta"
             d="m 86.637547,262.35084 h 65.994073 l -0.48764,-14.30413 -2.4382,-2.11311 -2.11311,-0.97529 -1.78802,-0.16254 -51.364848,0.16254 -2.925847,0.65019 -1.62547,0.81274 -1.462921,1.13783 z" />
+
           <path id="z_assise_vert" class="zone" data-zone="Assise bas (vert)"
             d="m 81.598589,273.07894 73.633791,0.48766 3.73858,0.65018 1.78801,0.97528 1.30038,1.46291 0.48764,2.11312 1.78802,11.54084 0.48764,6.01424 v 2.92584 l -0.48764,1.46291 -1.13783,1.13784 -1.46293,1.13784 -2.27565,0.16253 h -1.95057 l -78.185098,0.16256 -3.088394,-0.81274 -1.462921,-1.30038 -0.812737,-1.30037 1.300377,-14.95433 1.300374,-5.68915 0.812737,-3.25094 1.462923,-1.95056 z" />
+
           <path id="z_bas_droit_blanc" class="zone" data-zone="Bas droit (blanc)"
             d="m 162.54699,243.98303 7.47716,30.23375 2.27566,-1.30037 3.25094,-1.3004 5.5266,-0.97528 6.33933,-1.13782 4.38877,-0.65018 3.90113,0.16253 3.08839,0.65019 2.4382,1.13784 -1.30037,-6.66443 -1.78802,-5.5266 -3.25094,-5.68914 -4.71386,-5.8517 -3.0884,-3.08839 -0.97528,-2.11311 -1.46292,-1.78801 -1.46292,-0.16255 -1.78802,0.65019 -2.60075,0.65018 z" />
+
           <path id="z_bas_droit_cyan" class="zone" data-zone="Bas droit (cyan)"
             d="m 170.02415,274.21678 2.43821,14.79177 1.13782,11.54084 0.16255,3.57602 1.13783,-0.16253 2.7633,0.32509 3.73858,-0.81274 5.36405,-1.46291 4.71387,-2.27568 3.57603,-2.60075 4.71386,-5.52659 2.27566,-5.52659 0.48764,-4.55131 0.48764,-5.68915 -1.95056,-4.87643 -0.48764,-0.48763 -2.27566,-1.13784 -2.92585,-0.65018 h -4.06367 l -15.76706,2.60074 -3.73858,1.46294 z" />
+
           <path id="z_bas_gauche_orange" class="zone" data-zone="Bas gauche (orange)"
             d="m 69.082472,271.94113 6.664425,-24.21952 -6.014238,-2.92584 -5.364051,-1.13783 -4.388768,-0.48764 h -3.901128 l -1.13783,0.65019 -2.600751,2.60075 -2.925847,2.60075 -2.113111,2.60075 -2.11311,2.60075 -1.462921,2.60075 -1.625471,2.92585 -1.300376,3.73858 -1.300377,2.60075 -0.325094,0.97528 1.625471,-0.97528 2.275657,-0.81272 h 3.413487 l 3.413488,0.32509 3.250938,0.32509 4.226224,0.81272 3.250938,1.13785 2.438204,0.65018 2.438207,1.13782 z" />
+
           <path id="z_bas_gauche_vert" class="zone" data-zone="Bas gauche (vert)"
             d="m 68.919925,272.75385 -1.13783,6.17678 -1.462923,7.47717 -0.812734,6.50187 -1.300377,9.75284 -0.325094,0.16253 -3.25094,-0.16253 -3.250938,-0.65019 -3.901128,-1.46293 -3.250941,-1.62547 -3.576034,-2.27566 -3.088394,-3.0884 -2.763297,-3.57603 -1.788018,-3.41349 -1.62547,-5.52659 -0.325093,-2.60075 0.48764,-3.73859 0.812736,-3.73859 0.975281,-3.08837 0.162547,-1.13785 1.62547,-0.97528 1.462924,-0.48762 2.275657,-0.16256 2.113111,0.16256 2.275657,0.16253 2.113111,0.16256 1.950564,0.65019 h 0.975283 l 2.438204,0.48762 2.600754,0.65019 2.438204,0.81275 2.438204,0.97528 2.438204,1.46291 z" />
         </g>
@@ -784,7 +831,7 @@
     </div>
   </section>
 
-  <!-- ✅ Colonne droite : KIVIAT -->
+  <!-- Colonne droite : KIVIAT + liste zones -->
   <aside class="card">
     <div class="p">
       <div class="row">
@@ -807,7 +854,7 @@
         </div>
       </div>
 
-      <!-- ✅ Inputs cachés : on les garde pour JS / export -->
+      <!-- Inputs cachés (gardés pour JS/export) -->
       <div class="hiddenInputs">
         <input id="nom">
         <input id="prenom">
@@ -868,6 +915,35 @@
       <div class="sheetActions">
         <button class="btn ghost" id="closeBtn">Fermer</button>
         <button class="btn primary" id="saveBtn">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal CAPTURES (re-générées) -->
+<div class="capOverlay" id="capOverlay" aria-hidden="true">
+  <div class="capModal" role="dialog" aria-modal="true" aria-label="Captures">
+    <div class="capHead">
+      <b id="capTitle">📷 Captures</b>
+      <button class="btn small" id="capCloseBtn" type="button">Fermer</button>
+    </div>
+    <div class="capBody">
+      <div class="capGrid">
+        <div class="capCard">
+          <b>Note</b>
+          <img class="capImg" id="capNote" alt="Capture Note">
+        </div>
+        <div class="capCard">
+          <b>Présence</b>
+          <img class="capImg" id="capPresence" alt="Capture Présence">
+        </div>
+        <div class="capCard">
+          <b>Dureté</b>
+          <img class="capImg" id="capDurete" alt="Capture Dureté">
+        </div>
+      </div>
+      <div class="hint" style="margin-top:10px">
+        Captures <b>re-générées</b> depuis le CSV (pas stockées dedans).
       </div>
     </div>
   </div>
@@ -1020,7 +1096,7 @@
   // ===== Password (même pour tableau + accès dev) =====
   const TABLE_PASSWORD = "1234"; // 🔒 change ici
 
-  // ===== GATE PROFIL =====
+  // ===== Gate profil =====
   const profileOverlay = $("profileOverlay");
   const gateNom = $("gateNom"), gatePrenom = $("gatePrenom"), gateTaille = $("gateTaille"), gatePoids = $("gatePoids");
   const gateContinueBtn = $("gateContinueBtn");
@@ -1111,7 +1187,6 @@
     closeProfileGate();
     toast("✅ Accès dev");
   });
-
   [gateNom, gatePrenom, gateTaille, gatePoids].forEach(inp=>{
     inp.addEventListener("keydown", (e)=>{
       if(e.key === "Enter"){
@@ -1124,7 +1199,7 @@
   // Ouvre au chargement
   openProfileGate();
 
-  // Collapsible table (mdp à chaque ouverture)
+  // ===== Tableau : mot de passe à chaque ouverture =====
   const tableCollapse = $("tableCollapse");
   const toggleTableBtn = $("toggleTableBtn");
   let tableShown = false;
@@ -1148,7 +1223,7 @@
   });
   setTableShown(false);
 
-  // Keys
+  // ===== Keys =====
   const RATINGS_KEY = "seat_ratings_current_final_v6";
   const PEOPLE_KEY  = "seat_people_passes_final_v6";
 
@@ -1164,7 +1239,7 @@
   const MODE_KEY = "seat_mode_v2";
   let mode = loadJson(MODE_KEY, "sujet");
 
-  // (clic) zones affichées en mode sujet
+  // (clic) zones visibles en mode sujet
   const GREEN_KEY = "seat_green_clicked_v2";
   let greenClicked = {};
 
@@ -1227,7 +1302,7 @@
   };
   function critLabelToScore(label){ return CRIT_TO_SCORE[label] ?? null; }
 
-  // Ratings (toujours vide)
+  // Ratings (toujours vide au démarrage)
   let ratings = {};
   let activeKey = null;
   let activeCriteria = {};
@@ -1260,7 +1335,6 @@
     if(score === 10) return { cls:"s10", label:"Optimum" };
     return { cls:"", label:"" };
   }
-
   function sliderTheme(score){
     if(score === 1)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Inacceptable" };
     if(score === 2)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Très insatisfait" };
@@ -1307,15 +1381,14 @@
     document.querySelectorAll(".zone").forEach(poly=>{
       const zoneName = poly.dataset.zone;
 
-      // ✅ MODE SUJET : zones grises (pas vertes)
+      // MODE SUJET : gris (pas vert)
       if(mode === "sujet"){
         const gKey = effectiveKeyForZone(zoneName);
         const on = !!greenClicked[gKey];
         if(!on){ hideZone(poly); return; }
-
         const grey = "rgba(190,200,220,1)";
-        poly.style.fill = rgbaWithAlpha(grey, Math.max(0.08, fillA));     // un peu visible
-        poly.style.stroke = rgbaWithAlpha(grey, Math.max(0.35, strokeA)); // bord plus net
+        poly.style.fill = rgbaWithAlpha(grey, Math.max(0.08, fillA));
+        poly.style.stroke = rgbaWithAlpha(grey, Math.max(0.35, strokeA));
         poly.style.strokeWidth = String(strokeW);
         return;
       }
@@ -1355,14 +1428,8 @@
   function computeKiviatValues(){
     // Axes: Confort (score), Présence, Dureté, Homogénéité, Symétrie
     const zones = getZones();
+    const scores = [], pres = [], dur = [], homo = [], sym = [];
 
-    const scores = [];
-    const pres = [];
-    const dur = [];
-    const homo = [];
-    const sym = [];
-
-    // score
     zones.forEach(z=>{
       const s = getScoreForZoneName(z);
       if(Number.isFinite(s)) scores.push(s);
@@ -1379,7 +1446,6 @@
       const h = critLabelToScore(hLabel);
       if(Number.isFinite(h)) homo.push(h);
 
-      // symétrie seulement si bolster
       const key = effectiveKeyForZone(z);
       if(isBolsterKey(key)){
         const sLabel = getCritForZoneName(z, "symetrie");
@@ -1423,7 +1489,6 @@
     const rings = 4;
     const N = items.length;
 
-    // Colors
     const gridCol = "rgba(255,255,255,.12)";
     const axisCol = "rgba(255,255,255,.14)";
     const textCol = "rgba(238,242,255,.88)";
@@ -1464,7 +1529,6 @@
       const text = items[i].label;
       const tw = ctx.measureText(text).width;
 
-      // align left/right
       const alignLeft = Math.cos(a) > 0.15;
       const alignRight = Math.cos(a) < -0.15;
       let tx = lx;
@@ -1506,7 +1570,7 @@
       ctx.fill();
     }
 
-    // small center label
+    // center label
     const g = avgGlobalComfort();
     ctx.font = "900 13px system-ui, -apple-system, Segoe UI, Roboto, Arial";
     ctx.fillStyle = "rgba(238,242,255,.92)";
@@ -1515,7 +1579,6 @@
     ctx.fillText(label, cx - lw/2, cy + 5);
   }
 
-  // Redraw on resize
   window.addEventListener("resize", ()=> drawRadar());
 
   function updateSummary(){
@@ -1558,7 +1621,7 @@
     drawRadar();
   }
   <!-- PARTIE 4/4 -->
-  // Criteria rendering
+  // ===== Criteria rendering =====
   function setCriteriaDefaultsFromExisting(existing){
     activeCriteria = {};
     activeCritId = null;
@@ -1721,7 +1784,7 @@
     });
   });
 
-  // People store
+  // ===== People store =====
   function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
   function savePeople(arr){ saveJson(PEOPLE_KEY, arr); }
 
@@ -1732,87 +1795,27 @@
     return g;
   }
 
-  function renderPeople(){
-    const people = loadPeople();
-    const view = people.map((p, idx)=>({p, idx})).reverse();
+  // ===== Captures re-générées (modal) =====
+  const capOverlay = $("capOverlay");
+  const capCloseBtn = $("capCloseBtn");
+  const capNote = $("capNote");
+  const capPresence = $("capPresence");
+  const capDurete = $("capDurete");
+  const capTitle = $("capTitle");
 
-    $("peopleCountPill").textContent = `${people.length} personne(s)`;
-
-    $("peopleBody").innerHTML = view.map(({p, idx})=>`
-      <tr data-idx="${idx}">
-        <td>${escapeHtml(p.ts)}</td>
-        <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.nom)}</td>
-        <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.prenom)}</td>
-        <td>${escapeHtml(p.taille)}</td>
-        <td>${escapeHtml(p.poids)}</td>
-        <td>${escapeHtml(p.globalAvg)}</td>
-        <td><button class="btn small ghost delRowBtn" data-del="${idx}" type="button">🗑️</button></td>
-      </tr>
-    `).join("");
-
-    $("peopleBody").querySelectorAll(".delRowBtn").forEach(btn=>{
-      btn.addEventListener("click", (e)=>{
-        e.stopPropagation();
-        const idx = Number(btn.dataset.del);
-        if(!Number.isFinite(idx)) return;
-        if(confirm("Supprimer cette ligne ?")){
-          const arr = loadPeople();
-          arr.splice(idx, 1);
-          savePeople(arr);
-          toast("Ligne supprimée");
-          renderPeople();
-        }
-      });
-    });
-
-    $("peopleBody").querySelectorAll("tr").forEach(tr=>{
-      tr.addEventListener("click", ()=>{
-        const idx = Number(tr.dataset.idx);
-        const arr = loadPeople();
-        const entry = arr[idx];
-        if(!entry) return;
-
-        $("nom").value = entry.nom || "";
-        $("prenom").value = entry.prenom || "";
-        $("taille").value = entry.taille || "";
-        $("poids").value = entry.poids || "";
-
-        ratings = entry.ratings || {};
-        greenClicked = rebuildGreenFromRatings(ratings);
-
-        setProfileUI();
-        closeProfileGate();
-        updateSummary();
-
-        if(typeof setMode === "function") setMode("stephane");
-
-        toast("✅ Enregistrement chargé");
-      });
-    });
+  function openCapModal(title){
+    capTitle.textContent = title || "📷 Captures";
+    capOverlay.classList.add("show");
+    capOverlay.setAttribute("aria-hidden","false");
   }
-
-  // CSV helpers
-  function buildExportZoneKeys(){
-    const zoneNames = Array.from(document.querySelectorAll(".zone")).map(z => z.dataset.zone);
-    const keys = [];
-    const seen = new Set();
-    for(const z of zoneNames){
-      const k = effectiveKeyForZone(z);
-      if(!seen.has(k)){
-        seen.add(k);
-        keys.push(k);
-      }
-    }
-    return keys;
+  function closeCapModal(){
+    capOverlay.classList.remove("show");
+    capOverlay.setAttribute("aria-hidden","true");
   }
-  function displayNameForKey(key){
-    const members = membersForKey(key);
-    if(members.length > 1) return `${key} [${members.join(" + ")}]`;
-    return key;
-  }
-  function getRatingByKey(entryRatings, key){
-    return entryRatings?.[key] || null;
-  }
+  capCloseBtn.addEventListener("click", closeCapModal);
+  capOverlay.addEventListener("click", (e)=>{
+    if(e.target === capOverlay) closeCapModal();
+  });
 
   // Embed background image for captures
   const _imgDataUrlCache = new Map();
@@ -1891,83 +1894,131 @@
     return canvas.toDataURL("image/png");
   }
 
-  // ✅ Reset total
-  function resetAll(){
-    ratings = {};
-    saveJson(RATINGS_KEY, ratings);
-    greenClicked = {};
-    saveJson(GREEN_KEY, greenClicked);
-    closeSheet();
-    clearProfileAll();
+  async function showCapturesForEntry(entry){
+    if(!entry) return;
+
+    // On sauvegarde l'état courant
+    const prevRatings = ratings;
+    const prevGreen = greenClicked;
+    const prevMode = mode;
+
+    // On injecte les ratings de l'entrée pour générer les captures
+    ratings = entry.ratings || {};
+    greenClicked = rebuildGreenFromRatings(ratings);
+
+    // on génère
+    capNote.src = "";
+    capPresence.src = "";
+    capDurete.src = "";
+
+    openCapModal(`📷 Captures — ${entry.prenom || ""} ${entry.nom || ""}`.trim());
+
+    try{ capNote.src = await captureSeatPngDataUrlForMode("stephane"); }catch(e){ capNote.src=""; }
+    try{ capPresence.src = await captureSeatPngDataUrlForMode("presence"); }catch(e){ capPresence.src=""; }
+    try{ capDurete.src = await captureSeatPngDataUrlForMode("durete"); }catch(e){ capDurete.src=""; }
+
+    // On restaure l'état courant
+    ratings = prevRatings;
+    greenClicked = prevGreen;
+    mode = prevMode;
+
+    // on refresh l'UI avec l'état courant
     updateSummary();
-    setTableShown(false);
-    openProfileGate();
-    toast("Tout réinitialisé");
+    setMode(mode);
   }
 
-  // Save person + reset profil + gate
-  $("savePersonBtn").addEventListener("click", async ()=>{
-    const nom = $("nom").value.trim();
-    const prenom = $("prenom").value.trim();
-    const taille = $("taille").value.trim();
-    const poids = $("poids").value.trim();
-
-    if(!nom || !prenom || !taille || !poids){
-      toast("⚠️ Profil requis");
-      openProfileGate();
-      return;
-    }
-
-    const a = avgGlobalComfort();
-    if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
-
-    let shotNote = "", shotPresence = "", shotDurete = "";
-    try{ shotNote = await captureSeatPngDataUrlForMode("stephane"); }catch(e){ shotNote = ""; }
-    try{ shotPresence = await captureSeatPngDataUrlForMode("presence"); }catch(e){ shotPresence = ""; }
-    try{ shotDurete = await captureSeatPngDataUrlForMode("durete"); }catch(e){ shotDurete = ""; }
-
-    const entry = {
-      ts: new Date().toLocaleString("fr-FR"),
-      nom, prenom, taille, poids,
-      globalAvg: a.toFixed(1),
-      ratings,
-      shotNote,
-      shotPresence,
-      shotDurete
-    };
-
+  function renderPeople(){
     const people = loadPeople();
-    people.push(entry);
-    savePeople(people);
+    const view = people.map((p, idx)=>({p, idx})).reverse();
 
-    toast("✅ Enregistré");
-    renderPeople();
+    $("peopleCountPill").textContent = `${people.length} personne(s)`;
 
-    ratings = {};
-    saveJson(RATINGS_KEY, ratings);
-    greenClicked = {};
-    saveJson(GREEN_KEY, greenClicked);
-    updateSummary();
+    $("peopleBody").innerHTML = view.map(({p, idx})=>`
+      <tr data-idx="${idx}">
+        <td>${escapeHtml(p.ts)}</td>
+        <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.nom)}</td>
+        <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.prenom)}</td>
+        <td>${escapeHtml(p.taille)}</td>
+        <td>${escapeHtml(p.poids)}</td>
+        <td>${escapeHtml(p.globalAvg)}</td>
+        <td>
+          <button class="btn small ghost capBtn" data-cap="${idx}" type="button">📷</button>
+          <button class="btn small ghost delRowBtn" data-del="${idx}" type="button">🗑️</button>
+        </td>
+      </tr>
+    `).join("");
 
-    clearProfileAll();
-    openProfileGate();
-  });
+    $("peopleBody").querySelectorAll(".delRowBtn").forEach(btn=>{
+      btn.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const idx = Number(btn.dataset.del);
+        if(!Number.isFinite(idx)) return;
+        if(confirm("Supprimer cette ligne ?")){
+          const arr = loadPeople();
+          arr.splice(idx, 1);
+          savePeople(arr);
+          toast("Ligne supprimée");
+          renderPeople();
+        }
+      });
+    });
 
-  $("resetBtn").addEventListener("click", ()=>{
-    if(confirm("Réinitialiser TOUT (notes + profil) ?")){
-      resetAll();
+    $("peopleBody").querySelectorAll(".capBtn").forEach(btn=>{
+      btn.addEventListener("click", async (e)=>{
+        e.stopPropagation();
+        const idx = Number(btn.dataset.cap);
+        const arr = loadPeople();
+        const entry = arr[idx];
+        if(!entry) return;
+        await showCapturesForEntry(entry);
+      });
+    });
+
+    $("peopleBody").querySelectorAll("tr").forEach(tr=>{
+      tr.addEventListener("click", ()=>{
+        const idx = Number(tr.dataset.idx);
+        const arr = loadPeople();
+        const entry = arr[idx];
+        if(!entry) return;
+
+        // Charge l'enregistrement
+        $("nom").value = entry.nom || "";
+        $("prenom").value = entry.prenom || "";
+        $("taille").value = entry.taille || "";
+        $("poids").value = entry.poids || "";
+
+        ratings = entry.ratings || {};
+        greenClicked = rebuildGreenFromRatings(ratings);
+
+        setProfileUI();
+        closeProfileGate();
+        updateSummary();
+
+        setMode("stephane");
+        toast("✅ Enregistrement chargé");
+      });
+    });
+  }
+
+  // CSV helpers (export/import)
+  function buildExportZoneKeys(){
+    const zoneNames = Array.from(document.querySelectorAll(".zone")).map(z => z.dataset.zone);
+    const keys = [];
+    const seen = new Set();
+    for(const z of zoneNames){
+      const k = effectiveKeyForZone(z);
+      if(!seen.has(k)){
+        seen.add(k);
+        keys.push(k);
+      }
     }
-  });
+    return keys;
+  }
+  function getRatingByKey(entryRatings, key){
+    return entryRatings?.[key] || null;
+  }
 
-  $("resetPeopleBtn").addEventListener("click", ()=>{
-    if(confirm("Supprimer TOUT l'historique des personnes ?")){
-      savePeople([]);
-      renderPeople();
-      toast("Tableau réinitialisé");
-    }
-  });
-
-  // Export CSV
+  // ===== Export CSV (SANS IMAGES) =====
   $("exportBtn").addEventListener("click", ()=>{
     const people = loadPeople();
     const SEP = ";";
@@ -1976,26 +2027,20 @@
     const zoneKeys = buildExportZoneKeys();
     const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale"];
 
+    // IMPORTANT: on exporte avec la clé interne (= import facile)
     const perZoneHeaders = [];
     for(const key of zoneKeys){
-      const zn = displayNameForKey(key);
       perZoneHeaders.push(
-        `${zn} - Score`,
-        `${zn} - Présence`,
-        `${zn} - Dureté`,
-        `${zn} - Symétrie`,
-        `${zn} - Homogénéité`,
-        `${zn} - Commentaire`
+        `${key} - Score`,
+        `${key} - Présence`,
+        `${key} - Dureté`,
+        `${key} - Symétrie`,
+        `${key} - Homogénéité`,
+        `${key} - Commentaire`
       );
     }
 
-    const captureHeaders = [
-      "Capture - Note (dataURL PNG)",
-      "Capture - Présence (dataURL PNG)",
-      "Capture - Dureté (dataURL PNG)"
-    ];
-
-    const allHeaders = [...headers, ...perZoneHeaders, ...captureHeaders];
+    const allHeaders = [...headers, ...perZoneHeaders];
     const lines = [allHeaders.map(esc).join(SEP)];
 
     for(const p of people){
@@ -2014,7 +2059,6 @@
         row.push(score, pres, dur, sym, homo, comm);
       }
 
-      row.push(p.shotNote ?? "", p.shotPresence ?? "", p.shotDurete ?? "");
       lines.push(row.map(esc).join(SEP));
     }
 
@@ -2022,10 +2066,232 @@
     const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "seat_people_passes.csv";
+    a.download = "seat_people_passes_light.csv";
     a.click();
     URL.revokeObjectURL(a.href);
-    toast("CSV exporté");
+    toast("CSV exporté (sans images)");
+  });
+
+  // ===== Import CSV (reconstruit people[] + ratings) =====
+  const importBtn = $("importBtn");
+  const importFile = $("importFile");
+
+  function parseCsvLine(line, sep=";"){
+    const out = [];
+    let cur = "";
+    let inQ = false;
+
+    for(let i=0;i<line.length;i++){
+      const ch = line[i];
+
+      if(ch === '"'){
+        if(inQ && line[i+1] === '"'){ cur += '"'; i++; }
+        else inQ = !inQ;
+        continue;
+      }
+
+      if(!inQ && ch === sep){
+        out.push(cur);
+        cur = "";
+        continue;
+      }
+
+      cur += ch;
+    }
+    out.push(cur);
+    return out;
+  }
+
+  function normalizeHeader(h){
+    return String(h||"").trim().toLowerCase().replaceAll("\ufeff","");
+  }
+
+  function buildZoneKeysFromHeaders(headers){
+    const keys = [];
+    const seen = new Set();
+    headers.forEach(h=>{
+      const m = String(h).match(/^(.*)\s-\sScore$/i);
+      if(m){
+        const key = m[1].trim();
+        if(key && !seen.has(key)){
+          seen.add(key);
+          keys.push(key);
+        }
+      }
+    });
+    return keys;
+  }
+
+  function importCsvToPeople(csvText){
+    const text = String(csvText || "").replace(/\r\n/g,"\n").replace(/\r/g,"\n").trim();
+    if(!text) throw new Error("CSV vide");
+
+    const lines = text.split("\n").filter(l=>l.trim().length>0);
+    if(lines.length < 2) throw new Error("CSV sans données");
+
+    const headers = parseCsvLine(lines[0], ";");
+    const H = headers.map(normalizeHeader);
+
+    const idxDate = H.indexOf("date");
+    const idxNom = H.indexOf("nom");
+    const idxPrenom = H.indexOf("prénom");
+    const idxTaille = H.indexOf("taille");
+    const idxPoids = H.indexOf("poids");
+    const idxGlobal = H.indexOf("moyenne globale");
+
+    if(idxNom < 0 || idxPrenom < 0 || idxGlobal < 0){
+      throw new Error("Header CSV non reconnu (Nom/Prénom/Moyenne globale manquants)");
+    }
+
+    const zoneKeys = buildZoneKeysFromHeaders(headers);
+    const people = [];
+
+    for(let li=1; li<lines.length; li++){
+      const cols = parseCsvLine(lines[li], ";");
+
+      const ts = (idxDate>=0 ? cols[idxDate] : "") || "";
+      const nom = cols[idxNom] || "";
+      const prenom = cols[idxPrenom] || "";
+      const taille = (idxTaille>=0 ? cols[idxTaille] : "") || "";
+      const poids = (idxPoids>=0 ? cols[idxPoids] : "") || "";
+      const globalAvg = cols[idxGlobal] || "";
+
+      const ratingsObj = {};
+
+      zoneKeys.forEach(key=>{
+        const idxScore = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Score`));
+        const idxPres  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Présence`));
+        const idxDur   = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Dureté`));
+        const idxSym   = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Symétrie`));
+        const idxHomo  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Homogénéité`));
+        const idxComm  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Commentaire`));
+
+        const scoreStr = idxScore>=0 ? cols[idxScore] : "";
+        const scoreNum = Number(scoreStr);
+        const hasScore = Number.isFinite(scoreNum) && scoreNum > 0;
+
+        const presence = idxPres>=0 ? (cols[idxPres] || "") : "";
+        const durete = idxDur>=0 ? (cols[idxDur] || "") : "";
+        const symetrie = idxSym>=0 ? (cols[idxSym] || "") : "";
+        const homogeneite = idxHomo>=0 ? (cols[idxHomo] || "") : "";
+        const comment = idxComm>=0 ? (cols[idxComm] || "") : "";
+
+        if(!hasScore && !presence && !durete && !symetrie && !homogeneite && !comment) return;
+
+        ratingsObj[key] = {
+          score: hasScore ? scoreNum : "",
+          criteria: { presence, durete, symetrie, homogeneite },
+          comment
+        };
+      });
+
+      people.push({
+        ts, nom, prenom, taille, poids,
+        globalAvg,
+        ratings: ratingsObj
+      });
+    }
+
+    return people;
+  }
+
+  importBtn.addEventListener("click", ()=> importFile.click());
+
+  importFile.addEventListener("change", async ()=>{
+    const file = importFile.files?.[0];
+    importFile.value = "";
+    if(!file) return;
+
+    try{
+      const text = await file.text();
+      const imported = importCsvToPeople(text);
+
+      if(!imported.length){
+        toast("⚠️ Aucune ligne importée");
+        return;
+      }
+
+      savePeople(imported);
+      renderPeople();
+      toast(`✅ Import OK (${imported.length} lignes)`);
+
+      // Optionnel: ouvrir tableau direct (avec mdp)
+      setTableShown(false);
+    }catch(e){
+      console.error(e);
+      toast("❌ Import impossible");
+      alert("Erreur import CSV: " + (e?.message || e));
+    }
+  });
+
+  // ===== Save person (sans images stockées) =====
+  $("savePersonBtn").addEventListener("click", async ()=>{
+    const nom = $("nom").value.trim();
+    const prenom = $("prenom").value.trim();
+    const taille = $("taille").value.trim();
+    const poids = $("poids").value.trim();
+
+    if(!nom || !prenom || !taille || !poids){
+      toast("⚠️ Profil requis");
+      openProfileGate();
+      return;
+    }
+
+    const a = avgGlobalComfort();
+    if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
+
+    const entry = {
+      ts: new Date().toLocaleString("fr-FR"),
+      nom, prenom, taille, poids,
+      globalAvg: a.toFixed(1),
+      ratings
+    };
+
+    const people = loadPeople();
+    people.push(entry);
+    savePeople(people);
+
+    toast("✅ Enregistré");
+    renderPeople();
+
+    // reset notes + profil + gate pour la prochaine personne
+    ratings = {};
+    saveJson(RATINGS_KEY, ratings);
+    greenClicked = {};
+    saveJson(GREEN_KEY, greenClicked);
+    updateSummary();
+
+    clearProfileAll();
+    openProfileGate();
+  });
+
+  // Reset total
+  function resetAll(){
+    ratings = {};
+    saveJson(RATINGS_KEY, ratings);
+    greenClicked = {};
+    saveJson(GREEN_KEY, greenClicked);
+    closeSheet();
+    clearProfileAll();
+    updateSummary();
+    setTableShown(false);
+    openProfileGate();
+    toast("Tout réinitialisé");
+  }
+
+  $("resetBtn").addEventListener("click", ()=>{
+    if(confirm("Réinitialiser TOUT (notes + profil) ?")){
+      resetAll();
+    }
+  });
+
+  // Reset people table
+  $("resetPeopleBtn").addEventListener("click", ()=>{
+    if(confirm("Supprimer TOUT l'historique des personnes ?")){
+      savePeople([]);
+      renderPeople();
+      toast("Tableau réinitialisé");
+    }
   });
 
   // Settings open/close
@@ -2264,8 +2530,10 @@
   (function(){
     const img = document.getElementById("logoImg");
     if(!img) return;
+
     const candidates = ["Forvia.png","Forvia.jpg","Forvia.jpeg","Forvia.webp","Forvia.svg"];
     let i = 0;
+
     img.onerror = ()=>{
       i++;
       if(i < candidates.length){
@@ -2275,6 +2543,7 @@
         console.warn("Logo introuvable. Mets le fichier Forvia.(png/jpg/webp/svg) dans le même dossier que le HTML.");
       }
     };
+
     img.src = candidates[0] + "?v=" + Date.now();
   })();
 </script>
