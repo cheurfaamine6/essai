@@ -1,3 +1,4 @@
+<!-- PARTIE 1/4 -->
 <!doctype html>
 <html lang="fr">
 <head>
@@ -63,16 +64,16 @@
       min-width: 180px;
     }
     .logo{
-  height:48px;          /* ✅ plus grand (essaie 44–56px) */
-  width:auto;
-  max-width:220px;      /* évite qu’il prenne trop de place */
-  object-fit:contain;
-  display:block;
-  filter: drop-shadow(0 8px 18px rgba(0,0,0,.35));
-}
-@media (max-width:520px){
-  .logo{ height:36px; max-width:160px; }
-}
+      height:48px;
+      width:auto;
+      max-width:220px;
+      object-fit:contain;
+      display:block;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,.35));
+    }
+    @media (max-width:520px){
+      .logo{ height:36px; max-width:160px; }
+    }
 
     .btn{
       border:1px solid rgba(255,255,255,.14);
@@ -310,11 +311,16 @@
       .scoreChip{ justify-content:center; }
     }
 
+    /* ✅ Slider corrigé (thumb bien centré) */
     .ratingSlider{
       width:100%;
       margin-top:10px;
       accent-color: var(--scol);
       background: transparent;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 22px;
+      padding: 0;
     }
     .ratingSlider::-webkit-slider-runnable-track{
       height:10px;
@@ -329,12 +335,13 @@
     }
     .ratingSlider::-webkit-slider-thumb{
       -webkit-appearance:none;
+      appearance:none;
       width:22px; height:22px;
       border-radius:999px;
       background: rgba(255,255,255,.95);
       border: 2px solid rgba(0,0,0,.35);
       box-shadow: 0 10px 22px rgba(0,0,0,.35);
-      margin-top:-6px;
+      margin-top:-6px; /* track=10px, thumb=22px => -6px */
     }
     .ratingSlider::-moz-range-track{
       height:10px;
@@ -454,7 +461,7 @@
       margin-top:10px;
       background: rgba(0,0,0,var(--settings-table-alpha));
     }
-    table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:820px}
+    table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:900px}
     th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap;text-align:left}
     th{position:sticky;top:0;background:rgba(17,25,50,.92);z-index:2}
     .collapse{display:none}
@@ -540,12 +547,12 @@
     }
   </style>
 </head>
-
+<!-- PARTIE 2/4 -->
 <body>
 <header>
   <div class="wrap top">
     <div class="brand">
-<img class="logo" id="logoImg" src="Forvia.png" alt="Forvia" loading="eager">     
+      <img class="logo" id="logoImg" src="Forvia.png" alt="Forvia" loading="eager">
       <div class="title">
         <b></b>
       </div>
@@ -647,6 +654,7 @@
         <div class="row" style="gap:8px">
           <span class="pill" id="peopleCountPill">0 personne</span>
           <button class="btn small" id="toggleTableBtn">Afficher tableau</button>
+          <button class="btn small ghost" id="resetPeopleBtn">Vider tableau</button>
         </div>
       </div>
 
@@ -655,7 +663,7 @@
           <table>
             <thead>
               <tr>
-                <th>Date</th><th>Nom</th><th>Prénom</th><th>Taille</th><th>Poids</th><th>Moyenne globale</th>
+                <th>Date</th><th>Nom</th><th>Prénom</th><th>Taille</th><th>Poids</th><th>Moyenne globale</th><th>Actions</th>
               </tr>
             </thead>
             <tbody id="peopleBody"></tbody>
@@ -695,7 +703,7 @@
     </div>
   </aside>
 </main>
-<!-- PARTIE 2/4 -->
+
 <!-- rating sheet -->
 <div class="overlay" id="overlay"></div>
 <div class="sheet" id="sheet">
@@ -847,7 +855,7 @@
 </div>
 
 <div class="toast" id="toast">OK</div>
-
+<!-- PARTIE 3/4 -->
 <script>
   const $ = (id)=>document.getElementById(id);
 
@@ -893,29 +901,27 @@
   window.addEventListener("orientationchange", checkOrientation);
   checkOrientation();
 
-  // ===== Password for table =====
+  // ===== Password: demandé à CHAQUE ouverture =====
   const TABLE_PASSWORD = "1234"; // 🔒 change ici
-  const TABLE_UNLOCK_KEY = "seat_table_unlocked_session_v1";
-  function isTableUnlocked(){ return sessionStorage.getItem(TABLE_UNLOCK_KEY) === "1"; }
-  function unlockTable(){ sessionStorage.setItem(TABLE_UNLOCK_KEY, "1"); }
 
   // Collapsible table
   const tableCollapse = $("tableCollapse");
   const toggleTableBtn = $("toggleTableBtn");
   let tableShown = false;
+
   function setTableShown(v){
     tableShown = v;
     tableCollapse.classList.toggle("show", tableShown);
     toggleTableBtn.textContent = tableShown ? "Masquer tableau" : "Afficher tableau";
   }
+
   toggleTableBtn.addEventListener("click", ()=>{
-    if(!isTableUnlocked()){
+    if(!tableShown){
       const pw = prompt("Mot de passe ?");
       if(pw !== TABLE_PASSWORD){
         toast("❌ Mot de passe incorrect");
         return;
       }
-      unlockTable();
       toast("✅ Tableau déverrouillé");
     }
     setTableShown(!tableShown);
@@ -926,15 +932,21 @@
   const RATINGS_KEY = "seat_ratings_current_final_v6";
   const PEOPLE_KEY  = "seat_people_passes_final_v6";
 
+  // ✅ Notes réinitialisées à chaque refresh
+  localStorage.removeItem(RATINGS_KEY);
+  localStorage.removeItem("seat_green_clicked_v2");
+
   // Images
   const IMG_SUJET = "seat.png";
   const IMG_STEPHANE = "Seat_o.png";
 
   // Modes
   const MODE_KEY = "seat_mode_v2";
-  const GREEN_KEY = "seat_green_clicked_v2";
   let mode = loadJson(MODE_KEY, "sujet");
-  let greenClicked = loadJson(GREEN_KEY, {});
+
+  // (clic vert pour mode sujet)
+  const GREEN_KEY = "seat_green_clicked_v2";
+  let greenClicked = {};
 
   function setSeatBackground(m){
     const img = $("seatImg");
@@ -995,8 +1007,8 @@
   };
   function critLabelToScore(label){ return CRIT_TO_SCORE[label] ?? null; }
 
-  // Ratings
-  let ratings = loadJson(RATINGS_KEY, {});
+  // Ratings (toujours vide au démarrage)
+  let ratings = {};
   let activeKey = null;
   let activeCriteria = {};
   let activeCritId = null;
@@ -1017,7 +1029,7 @@
     if(!vals.length) return null;
     return vals.reduce((a,b)=>a+b,0)/vals.length;
   }
-  <!-- PARTIE 3/4 -->
+
   function scoreMeta(score){
     if(score === 1)  return { cls:"s1",  label:"Inacceptable" };
     if(score === 2)  return { cls:"s2",  label:"Très insatisfait" };
@@ -1315,19 +1327,74 @@
   // People store
   function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
   function savePeople(arr){ saveJson(PEOPLE_KEY, arr); }
+
+  // ✅ reconstruire vert depuis ratings (pour re-visualiser une personne)
+  function rebuildGreenFromRatings(r){
+    const g = {};
+    if(!r || typeof r !== "object") return g;
+    Object.keys(r).forEach(k=> g[k] = true);
+    return g;
+  }
+
   function renderPeople(){
-    const people = loadPeople().slice().reverse();
+    const people = loadPeople(); // ordre réel
+    const view = people.map((p, idx)=>({p, idx})).reverse(); // affichage inversé
+
     $("peopleCountPill").textContent = `${people.length} personne(s)`;
-    $("peopleBody").innerHTML = people.map(p=>`
-      <tr>
+
+    $("peopleBody").innerHTML = view.map(({p, idx})=>`
+      <tr data-idx="${idx}">
         <td>${escapeHtml(p.ts)}</td>
-        <td>${escapeHtml(p.nom)}</td>
+        <td class="personLink" style="cursor:pointer; text-decoration:underline">${escapeHtml(p.nom)}</td>
         <td>${escapeHtml(p.prenom)}</td>
         <td>${escapeHtml(p.taille)}</td>
         <td>${escapeHtml(p.poids)}</td>
         <td>${escapeHtml(p.globalAvg)}</td>
+        <td>
+          <button class="btn small ghost delRowBtn" data-del="${idx}" type="button">🗑️</button>
+        </td>
       </tr>
     `).join("");
+
+    // supprimer ligne
+    $("peopleBody").querySelectorAll(".delRowBtn").forEach(btn=>{
+      btn.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const idx = Number(btn.dataset.del);
+        if(!Number.isFinite(idx)) return;
+        if(confirm("Supprimer cette ligne ?")){
+          const arr = loadPeople();
+          arr.splice(idx, 1);
+          savePeople(arr);
+          toast("Ligne supprimée");
+          renderPeople();
+        }
+      });
+    });
+
+    // cliquer sur une personne => recharger notes + map
+    $("peopleBody").querySelectorAll("tr").forEach(tr=>{
+      tr.addEventListener("click", ()=>{
+        const idx = Number(tr.dataset.idx);
+        const arr = loadPeople();
+        const entry = arr[idx];
+        if(!entry) return;
+
+        $("nom").value = entry.nom || "";
+        $("prenom").value = entry.prenom || "";
+        $("taille").value = entry.taille || "";
+        $("poids").value = entry.poids || "";
+
+        ratings = entry.ratings || {};
+        greenClicked = rebuildGreenFromRatings(ratings);
+
+        updateSummary();
+
+        if(typeof setMode === "function") setMode("stephane");
+
+        toast("✅ Enregistrement chargé");
+      });
+    });
   }
 
   // CSV helpers
@@ -1463,6 +1530,7 @@
     toast("✅ Enregistré");
     renderPeople();
 
+    // reset notes courantes après enregistrement
     ratings = {};
     saveJson(RATINGS_KEY, ratings);
     greenClicked = {};
@@ -1471,7 +1539,7 @@
     updateSummary();
   });
 
-  // Reset
+  // Reset notes actuelles
   $("resetBtn").addEventListener("click", ()=>{
     if(confirm("Réinitialiser les notes actuelles ?")){
       ratings = {};
@@ -1481,6 +1549,15 @@
       updateSummary();
       toast("Réinitialisé");
       closeSheet();
+    }
+  });
+
+  // ✅ Reset tableau (historique)
+  $("resetPeopleBtn").addEventListener("click", ()=>{
+    if(confirm("Supprimer TOUT l'historique des personnes ?")){
+      savePeople([]);
+      renderPeople();
+      toast("Tableau réinitialisé");
     }
   });
 
@@ -1591,7 +1668,6 @@
   setBgA.addEventListener("input", onUiAlphaChange);
   setPanelA.addEventListener("input", onUiAlphaChange);
   setTableA.addEventListener("input", onUiAlphaChange);
-  setTableA.addEventListener("input", onUiAlphaChange);
 
   // Zone style sliders
   const fillAlpha = $("fillAlpha");
@@ -1629,118 +1705,107 @@
   fillAlpha.addEventListener("input", onStyleChange);
   strokeAlpha.addEventListener("input", onStyleChange);
   strokeW.addEventListener("input", onStyleChange);
-// ===== SETTINGS: per-zone transforms (A AJOUTER) =====
-const ZTUNE_KEY = "seat_zone_tune_map_v4"; // nouvelle version si tu veux forcer des nouveaux defaults
 
-const DEFAULT_TUNE = {
-  "z_tete": {dx:-2, dy:30, sc:1.000},
-  "z_dossier_bleu": {dx:10, dy:-3, sc:1.000},
-  "z_dossier_rouge": {dx:10, dy:5, sc:1.000},
-  "z_central_gris": {dx:11, dy:5, sc:1.000},
-  "z_jaune": {dx:11, dy:5, sc:1.000},
-  "z_magenta": {dx:10, dy:0, sc:1.000},
-  "z_assise_vert": {dx:10, dy:4, sc:1.000},
-  "z_bas_gauche_vert": {dx:11, dy:4, sc:1.000},
-  "z_flanc_gauche_vert": {dx:10, dy:5, sc:1.000},
-  "z_flanc_gauche_noir": {dx:10, dy:5, sc:1.000},
-  "z_flanc_droit_violet": {dx:10, dy:4, sc:1.000},
-  "z_flanc_droit_orange": {dx:10, dy:5, sc:1.000},
-  "z_bas_droit_blanc": {dx:10, dy:4, sc:1.000},
-  "z_bas_droit_cyan": {dx:11, dy:5, sc:1.000},
-  "z_bas_gauche_orange": {dx:1, dy:4, sc:1.000}
-};
+  // ===== SETTINGS: per-zone transforms =====
+  const ZTUNE_KEY = "seat_zone_tune_map_v4";
 
-// charge ou initialise
-let zoneTune = loadJson(ZTUNE_KEY, null);
-if(!zoneTune || typeof zoneTune !== "object"){
-  zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
-  saveJson(ZTUNE_KEY, zoneTune);
-} else {
-  // si une nouvelle zone est ajoutée plus tard
-  Object.keys(DEFAULT_TUNE).forEach(k=>{
-    if(!zoneTune[k]) zoneTune[k] = {...DEFAULT_TUNE[k]};
+  const DEFAULT_TUNE = {
+    "z_tete": {dx:-2, dy:30, sc:1.000},
+    "z_dossier_bleu": {dx:10, dy:-3, sc:1.000},
+    "z_dossier_rouge": {dx:10, dy:5, sc:1.000},
+    "z_central_gris": {dx:11, dy:5, sc:1.000},
+    "z_jaune": {dx:11, dy:5, sc:1.000},
+    "z_magenta": {dx:10, dy:0, sc:1.000},
+    "z_assise_vert": {dx:10, dy:4, sc:1.000},
+    "z_bas_gauche_vert": {dx:11, dy:4, sc:1.000},
+    "z_flanc_gauche_vert": {dx:10, dy:5, sc:1.000},
+    "z_flanc_gauche_noir": {dx:10, dy:5, sc:1.000},
+    "z_flanc_droit_violet": {dx:10, dy:4, sc:1.000},
+    "z_flanc_droit_orange": {dx:10, dy:5, sc:1.000},
+    "z_bas_droit_blanc": {dx:10, dy:4, sc:1.000},
+    "z_bas_droit_cyan": {dx:11, dy:5, sc:1.000},
+    "z_bas_gauche_orange": {dx:1, dy:4, sc:1.000}
+  };
+
+  let zoneTune = loadJson(ZTUNE_KEY, null);
+  if(!zoneTune || typeof zoneTune !== "object"){
+    zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
+    saveJson(ZTUNE_KEY, zoneTune);
+  } else {
+    Object.keys(DEFAULT_TUNE).forEach(k=>{
+      if(!zoneTune[k]) zoneTune[k] = {...DEFAULT_TUNE[k]};
+    });
+    saveJson(ZTUNE_KEY, zoneTune);
+  }
+
+  // UI refs
+  const zoneSelect = $("zoneSelect");
+  const zdxEl = $("zdx"), zdyEl = $("zdy"), zscEl = $("zsc");
+  const zdxVal = $("zdxVal"), zdyVal = $("zdyVal"), zscVal = $("zscVal");
+  const zoneOut = $("zoneOut");
+  const polys = Array.from(document.querySelectorAll(".zone"));
+
+  // remplit le select
+  zoneSelect.innerHTML = "";
+  polys.forEach(p=>{
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    opt.textContent = p.dataset.zone;
+    zoneSelect.appendChild(opt);
   });
-  saveJson(ZTUNE_KEY, zoneTune);
-}
 
-// UI refs
-const zoneSelect = $("zoneSelect");
-const zdxEl = $("zdx"), zdyEl = $("zdy"), zscEl = $("zsc");
-const zdxVal = $("zdxVal"), zdyVal = $("zdyVal"), zscVal = $("zscVal");
-const zoneOut = $("zoneOut");
-const polys = Array.from(document.querySelectorAll(".zone"));
+  function applyOne(polyId){
+    const p = document.getElementById(polyId);
+    if(!p) return;
+    const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
+    p.setAttribute("transform", `translate(${t.dx} ${t.dy}) scale(${t.sc})`);
+  }
+  function applyAll(){ polys.forEach(p=>applyOne(p.id)); }
 
-// remplit le select
-zoneSelect.innerHTML = "";
-polys.forEach(p=>{
-  const opt = document.createElement("option");
-  opt.value = p.id;
-  opt.textContent = p.dataset.zone;
-  zoneSelect.appendChild(opt);
-});
+  function loadZoneToUI(polyId){
+    const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
+    zdxEl.value = t.dx; zdyEl.value = t.dy; zscEl.value = t.sc;
 
-function applyOne(polyId){
-  const p = document.getElementById(polyId);
-  if(!p) return;
-  const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
-  p.setAttribute("transform", `translate(${t.dx} ${t.dy}) scale(${t.sc})`);
-}
-function applyAll(){ polys.forEach(p=>applyOne(p.id)); }
+    zdxVal.textContent = t.dx;
+    zdyVal.textContent = t.dy;
+    zscVal.textContent = Number(t.sc).toFixed(3);
 
-function loadZoneToUI(polyId){
-  const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
-  zdxEl.value = t.dx; zdyEl.value = t.dy; zscEl.value = t.sc;
+    zoneOut.textContent = `${polyId}: transform="translate(${t.dx} ${t.dy}) scale(${Number(t.sc).toFixed(3)})"`;
+  }
 
-  zdxVal.textContent = t.dx;
-  zdyVal.textContent = t.dy;
-  zscVal.textContent = Number(t.sc).toFixed(3);
+  function onZoneTuneChange(){
+    const id = zoneSelect.value;
+    zoneTune[id] = { dx:Number(zdxEl.value), dy:Number(zdyEl.value), sc:Number(zscEl.value) };
+    saveJson(ZTUNE_KEY, zoneTune);
 
-  zoneOut.textContent = `${polyId}: transform="translate(${t.dx} ${t.dy}) scale(${Number(t.sc).toFixed(3)})"`;
-}
+    applyOne(id);
+    loadZoneToUI(id);
+    updateZoneVisuals();
+  }
 
-function onZoneTuneChange(){
-  const id = zoneSelect.value;
-  zoneTune[id] = { dx:Number(zdxEl.value), dy:Number(zdyEl.value), sc:Number(zscEl.value) };
-  saveJson(ZTUNE_KEY, zoneTune);
+  zoneSelect.addEventListener("change", ()=> loadZoneToUI(zoneSelect.value));
+  zdxEl.addEventListener("input", onZoneTuneChange);
+  zdyEl.addEventListener("input", onZoneTuneChange);
+  zscEl.addEventListener("input", onZoneTuneChange);
 
-  applyOne(id);
-  loadZoneToUI(id);
-  updateZoneVisuals();
-}
+  $("resetZoneBtn").addEventListener("click", ()=>{
+    const id = zoneSelect.value;
+    zoneTune[id] = {...(DEFAULT_TUNE[id] || {dx:0,dy:0,sc:1})};
+    saveJson(ZTUNE_KEY, zoneTune);
+    applyOne(id);
+    loadZoneToUI(id);
+    updateZoneVisuals();
+    toast("Zone reset");
+  });
 
-zoneSelect.addEventListener("change", ()=> loadZoneToUI(zoneSelect.value));
-zdxEl.addEventListener("input", onZoneTuneChange);
-zdyEl.addEventListener("input", onZoneTuneChange);
-zscEl.addEventListener("input", onZoneTuneChange);
-
-$("resetZoneBtn").addEventListener("click", ()=>{
-  const id = zoneSelect.value;
-  zoneTune[id] = {...(DEFAULT_TUNE[id] || {dx:0,dy:0,sc:1})};
-  saveJson(ZTUNE_KEY, zoneTune);
-  applyOne(id);
-  loadZoneToUI(id);
-  updateZoneVisuals();
-  toast("Zone reset");
-});
-
-$("copyZoneBtn").addEventListener("click", async ()=>{
-  const lines = polys.map(p=>{
-    const t = zoneTune[p.id] || {dx:0, dy:0, sc:1};
-    return `${p.id}: translate(${t.dx},${t.dy}) scale(${Number(t.sc).toFixed(3)})`;
-  }).join("\n");
-  try{ await navigator.clipboard.writeText(lines); toast("✅ Config copiée"); }
-  catch{ toast("⚠️ Copie impossible"); }
-});
-
-// init transforms + UI
-applyAll();
-loadZoneToUI(zoneSelect.value);
-  // Init
-  applyUiAlpha(uiAlpha);
-  applyZoneStyle(zStyle);
-  applySliderUI(7);
-  updateSummary();
-  renderPeople();
+  $("copyZoneBtn").addEventListener("click", async ()=>{
+    const lines = polys.map(p=>{
+      const t = zoneTune[p.id] || {dx:0, dy:0, sc:1};
+      return `${p.id}: translate(${t.dx},${t.dy}) scale(${Number(t.sc).toFixed(3)})`;
+    }).join("\n");
+    try{ await navigator.clipboard.writeText(lines); toast("✅ Config copiée"); }
+    catch{ toast("⚠️ Copie impossible"); }
+  });
 
   // Modes
   const modeSujetBtn = $("modeSujetBtn");
@@ -1774,28 +1839,38 @@ loadZoneToUI(zoneSelect.value);
   modePresenceBtn.addEventListener("click", ()=> setMode("presence"));
   modeDureteBtn.addEventListener("click", ()=> setMode("durete"));
 
+  // Init
+  applyUiAlpha(uiAlpha);
+  applyZoneStyle(zStyle);
+  applySliderUI(7);
+
+  applyAll();
+  loadZoneToUI(zoneSelect.value);
+
   setMode(mode);
-  // ===== Logo fallback (NEW) =====
-(function(){
-  const img = document.getElementById("logoImg");
-  if(!img) return;
+  updateSummary();
+  renderPeople();
 
-  const candidates = ["Forvia.png","Forvia.jpg","Forvia.jpeg","Forvia.webp","Forvia.svg"];
-  let i = 0;
+  // ===== Logo fallback =====
+  (function(){
+    const img = document.getElementById("logoImg");
+    if(!img) return;
 
-  img.onerror = ()=>{
-    i++;
-    if(i < candidates.length){
-      img.src = candidates[i] + "?v=" + Date.now(); // cache-bust
-    }else{
-      img.style.display = "none";
-      console.warn("Logo introuvable. Mets le fichier Forvia.(png/jpg/webp/svg) dans le même dossier que le HTML.");
-    }
-  };
+    const candidates = ["Forvia.png","Forvia.jpg","Forvia.jpeg","Forvia.webp","Forvia.svg"];
+    let i = 0;
 
-  // si le premier fichier n'existe pas, on déclenche la cascade
-  img.src = candidates[0] + "?v=" + Date.now();
-})();
+    img.onerror = ()=>{
+      i++;
+      if(i < candidates.length){
+        img.src = candidates[i] + "?v=" + Date.now();
+      }else{
+        img.style.display = "none";
+        console.warn("Logo introuvable. Mets le fichier Forvia.(png/jpg/webp/svg) dans le même dossier que le HTML.");
+      }
+    };
+
+    img.src = candidates[0] + "?v=" + Date.now();
+  })();
 </script>
 </body>
 </html>
