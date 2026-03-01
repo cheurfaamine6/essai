@@ -33,15 +33,19 @@
       --settings-bg-alpha: .95;
       --settings-panel-alpha: .12;
       --settings-table-alpha: .10;
+
+      --glass: rgba(255,255,255,.06);
+      --glass2: rgba(255,255,255,.09);
     }
 
     *{box-sizing:border-box}
     body{
       margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--txt);
-      background: radial-gradient(1200px 700px at 10% -20%, rgba(124,58,237,.25), transparent 60%),
-                  radial-gradient(1200px 700px at 90% -20%, rgba(79,140,255,.20), transparent 60%),
-                  linear-gradient(180deg,var(--bg0),var(--bg1));
+      background:
+        radial-gradient(1000px 650px at 15% -15%, rgba(124,58,237,.28), transparent 58%),
+        radial-gradient(1000px 650px at 85% -15%, rgba(79,140,255,.22), transparent 58%),
+        linear-gradient(180deg,var(--bg0),var(--bg1));
       min-height:100vh;
     }
 
@@ -57,18 +61,10 @@
     .title b{font-size:1.05rem;letter-spacing:.2px}
 
     /* ===== Logo ===== */
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width: 180px;
-    }
+    .brand{ display:flex; align-items:center; gap:10px; min-width: 180px; }
     .logo{
-      height:48px;
-      width:auto;
-      max-width:220px;
-      object-fit:contain;
-      display:block;
+      height:48px; width:auto; max-width:220px;
+      object-fit:contain; display:block;
       filter: drop-shadow(0 8px 18px rgba(0,0,0,.35));
     }
     @media (max-width:520px){
@@ -91,7 +87,6 @@
     .btn.ghost{background:transparent;border-color:rgba(255,255,255,.14)}
     .btn.small{padding:8px 10px;border-radius:12px}
     .btn.icon{display:inline-flex;gap:8px;align-items:center}
-
     .btn.modeOn{
       border-color: rgba(46,204,113,.55);
       background: rgba(46,204,113,.16);
@@ -112,18 +107,19 @@
     }
 
     .card{
-      background: var(--card);
+      background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(0,0,0,.08));
       border: 1px solid var(--line);
       border-radius: var(--r);
       overflow:hidden;
-      box-shadow: 0 10px 35px rgba(0,0,0,.25);
+      box-shadow: 0 12px 45px rgba(0,0,0,.28);
     }
     .p{padding:12px}
     .hint{color:var(--muted);font-size:.88rem;line-height:1.35}
     .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
     .pill{
       font-size:.78rem;
-      padding:5px 10px;
+      padding:6px 10px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
       color:var(--muted);
@@ -146,11 +142,36 @@
       outline:none;
     }
 
-    .modal input[type="range"]{ width:100%; accent-color: var(--a1); }
-    .modal input[type="range"]::-webkit-slider-runnable-track{ background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.12); height:10px; border-radius:999px; }
-    .modal input[type="range"]::-webkit-slider-thumb{ -webkit-appearance:auto; }
-    .modal input[type="range"]::-moz-range-track{ background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.12); height:10px; border-radius:999px; }
-    .modal input[type="range"]::-moz-range-progress{ background: rgba(255,255,255,.20); height:10px; border-radius:999px; }
+    /* ✅ Petite bannière "testeur" plus jolie */
+    .profileBar{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+      background: linear-gradient(90deg, rgba(79,140,255,.12), rgba(124,58,237,.10));
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .profileChip{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.10);
+      max-width:100%;
+    }
+    .profileChip .avatar{
+      width:28px; height:28px; border-radius:999px;
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      box-shadow: 0 12px 24px rgba(0,0,0,.25);
+      flex:0 0 auto;
+    }
+    .profileChip b{font-size:.92rem; letter-spacing:.2px}
+    .profileChip .sub{font-size:.78rem; color:rgba(167,176,216,.92); margin-top:1px}
+    .profileChipText{display:flex;flex-direction:column;line-height:1.1;min-width:0}
+    .profileChipText b, .profileChipText .sub{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 
     .seatFrame{
       width:100%;
@@ -160,11 +181,7 @@
       align-items:center;
       padding:10px;
     }
-    .seatFrame svg{
-      width:100%;
-      height: min(72vh, 900px);
-      display:block;
-    }
+    .seatFrame svg{ width:100%; height: min(72vh, 900px); display:block; }
     @media (max-width:980px){
       @media (orientation:portrait){ .seatFrame svg{ height: 58vh; } }
       @media (orientation:landscape){ .seatFrame svg{ height: 78vh; } }
@@ -185,13 +202,12 @@
     }
 
     .list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
-
     .item{
       position:relative;
       border:1px solid rgba(255,255,255,.12);
       border-radius:18px;
       padding:12px 12px;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.10));
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.12));
       box-shadow: 0 10px 30px rgba(0,0,0,.18);
       display:flex;
       align-items:center;
@@ -200,7 +216,6 @@
     }
     .item b{font-size:.95rem; letter-spacing:.2px}
     .item .sub{color:rgba(167,176,216,.9); font-size:.82rem; margin-top:3px}
-
     .val{
       font-weight:950;
       padding:8px 12px;
@@ -238,13 +253,7 @@
       background: linear-gradient(90deg, var(--a1), var(--a2));
       box-shadow: 0 8px 18px rgba(124,58,237,.25);
     }
-    .scoreLabel{
-      margin-top:6px;
-      font-size:.78rem;
-      color: rgba(255,255,255,.75);
-      font-weight:800;
-      letter-spacing:.25px;
-    }
+    .scoreLabel{ margin-top:6px; font-size:.78rem; color: rgba(255,255,255,.75); font-weight:800; letter-spacing:.25px; }
 
     .val.s1, .val.s2 { border-color: rgba(231,76,60,.55); background: rgba(231,76,60,.14); }
     .val.s34        { border-color: rgba(243,156,18,.55); background: rgba(243,156,18,.14); }
@@ -503,7 +512,7 @@
     }
     .profileOverlay.show{display:flex;}
     .profileOverlay .box{
-      width:min(560px, 100%);
+      width:min(620px, 100%);
       border:1px solid rgba(255,255,255,.14);
       background: rgba(17,25,50,.92);
       border-radius:22px;
@@ -520,9 +529,10 @@
     }
     @media (max-width:520px){ .profileGrid{grid-template-columns:1fr;} }
     .profileActions{
-      display:flex; gap:10px; margin-top:14px;
+      display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;
     }
     .profileActions .btn{flex:1}
+    .devNote{font-size:.78rem; color:rgba(167,176,216,.85); margin-top:10px}
 
     .modalOverlay{
       position:fixed; inset:0; z-index:80;
@@ -594,7 +604,7 @@
     <div class="row" style="gap:8px">
       <button class="btn icon" id="settingsBtn" title="Settings">⚙️ Settings</button>
       <button class="btn" id="fsBtn">Plein écran</button>
-      <button class="btn ghost" id="resetBtn">Réinitialiser notes</button>
+      <button class="btn ghost" id="resetBtn">Réinitialiser</button>
       <button class="btn" id="exportBtn">Exporter CSV</button>
       <button class="btn primary" id="savePersonBtn">Enregistrer</button>
     </div>
@@ -608,7 +618,7 @@
   </div>
 </div>
 
-<!-- ✅ GATE PROFIL -->
+<!-- ✅ GATE PROFIL + ACCÈS DEV (mdp = même que tableau) -->
 <div class="profileOverlay" id="profileOverlay">
   <div class="box">
     <b>Profil requis</b>
@@ -635,22 +645,29 @@
 
     <div class="profileActions">
       <button class="btn primary" id="gateContinueBtn" type="button">Continuer</button>
+      <button class="btn ghost" id="gateDevBtn" type="button">Accès dev</button>
     </div>
 
     <div class="hint" id="gateHint" style="margin-top:10px; display:none">⚠️ Merci de remplir tous les champs correctement.</div>
+    <div class="devNote">Accès dev = mot de passe du tableau.</div>
   </div>
 </div>
 
 <main class="wrap grid">
   <section class="card">
-    <div class="p row">
-      <div class="row" style="gap:8px">
-        <div class="pill" id="countPill">0 zone notée</div>
-        <div class="pill good" id="globalPill">Confort global —</div>
+    <!-- ✅ On retire les "pills" du haut et on met une bannière testeur -->
+    <div class="profileBar">
+      <div class="profileChip" title="Testeur actuel">
+        <span class="avatar"></span>
+        <div class="profileChipText">
+          <b id="profileName">Testeur —</b>
+          <div class="sub" id="profileMeta">Renseigne le profil pour commencer</div>
+        </div>
       </div>
+      <span class="pill" id="countPill">0 zone notée</span>
     </div>
 
-    <div class="p row" style="border-top:1px solid rgba(255,255,255,.06)">
+    <div class="p row">
       <div class="row" style="gap:8px">
         <button class="btn small" id="modeSujetBtn">Sujet</button>
         <button class="btn small" id="modeStephaneBtn">Note</button>
@@ -658,15 +675,14 @@
         <button class="btn small" id="modeDureteBtn">Dureté</button>
         <span class="pill" id="modePill">Mode —</span>
       </div>
+      <div class="pill good" id="globalPill">Confort global —</div>
     </div>
 
     <div class="seatFrame">
       <svg id="seatSvg" viewBox="0 0 270.933 406.4" preserveAspectRatio="xMidYMid meet">
         <image id="seatImg" href="seat.png" x="0" y="0" width="270.933" height="406.4" />
-
         <g id="zonesLayer">
-          <rect id="z_tete" class="zone" data-zone="Coussin de tête"
-                x="110" y="8" width="50" height="32" rx="12" ry="12" />
+          <rect id="z_tete" class="zone" data-zone="Coussin de tête" x="110" y="8" width="50" height="32" rx="12" ry="12" />
 
           <!-- Dossier -->
           <path id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)"
@@ -967,10 +983,14 @@
   window.addEventListener("orientationchange", checkOrientation);
   checkOrientation();
 
+  // ===== Password (même pour tableau + accès dev) =====
+  const TABLE_PASSWORD = "1234"; // 🔒 change ici
+
   // ===== GATE PROFIL (bloque accès au site) =====
   const profileOverlay = $("profileOverlay");
   const gateNom = $("gateNom"), gatePrenom = $("gatePrenom"), gateTaille = $("gateTaille"), gatePoids = $("gatePoids");
   const gateContinueBtn = $("gateContinueBtn");
+  const gateDevBtn = $("gateDevBtn");
   const gateHint = $("gateHint");
 
   function isValidNumberStr(s){
@@ -978,19 +998,49 @@
     return Number.isFinite(v) && v > 0;
   }
 
+  function setProfileUI(){
+    const nom = $("nom").value.trim();
+    const prenom = $("prenom").value.trim();
+    const taille = $("taille").value.trim();
+    const poids = $("poids").value.trim();
+
+    if(nom && prenom){
+      $("profileName").textContent = `Testeur: ${prenom} ${nom}`;
+      const meta = [];
+      if(taille) meta.push(`${taille} cm`);
+      if(poids) meta.push(`${poids} kg`);
+      $("profileMeta").textContent = meta.length ? meta.join(" • ") : "Profil renseigné";
+    }else{
+      $("profileName").textContent = "Testeur —";
+      $("profileMeta").textContent = "Renseigne le profil pour commencer";
+    }
+  }
+
+  function clearProfileAll(){
+    $("nom").value = "";
+    $("prenom").value = "";
+    $("taille").value = "";
+    $("poids").value = "";
+
+    gateNom.value = "";
+    gatePrenom.value = "";
+    gateTaille.value = "";
+    gatePoids.value = "";
+
+    setProfileUI();
+  }
+
   function openProfileGate(){
     gateHint.style.display = "none";
-    // pré-remplir avec les champs de droite si jamais
+    // pré-remplir depuis la colonne de droite si besoin
     gateNom.value = $("nom")?.value?.trim() || "";
     gatePrenom.value = $("prenom")?.value?.trim() || "";
     gateTaille.value = $("taille")?.value?.trim() || "";
     gatePoids.value = $("poids")?.value?.trim() || "";
 
     profileOverlay.classList.add("show");
-    // focus
     setTimeout(()=> gateNom.focus(), 50);
   }
-
   function closeProfileGate(){
     profileOverlay.classList.remove("show");
   }
@@ -1013,12 +1063,25 @@
     $("taille").value = String(Number(taille.replace(",", ".")));
     $("poids").value = String(Number(poids.replace(",", ".")));
 
+    setProfileUI();
     closeProfileGate();
     toast("✅ Profil validé");
     return true;
   }
 
   gateContinueBtn.addEventListener("click", validateAndApplyProfile);
+
+  // ✅ Accès dev: bypass sans remplir, avec le même mot de passe
+  gateDevBtn.addEventListener("click", ()=>{
+    const pw = prompt("Mot de passe dev ?");
+    if(pw !== TABLE_PASSWORD){
+      toast("❌ Mot de passe incorrect");
+      return;
+    }
+    closeProfileGate();
+    toast("✅ Accès dev");
+  });
+
   [gateNom, gatePrenom, gateTaille, gatePoids].forEach(inp=>{
     inp.addEventListener("keydown", (e)=>{
       if(e.key === "Enter"){
@@ -1028,13 +1091,10 @@
     });
   });
 
-  // Ouvre le gate au chargement (toujours)
+  // Ouvre le gate au chargement
   openProfileGate();
 
-  // ===== Password: demandé à CHAQUE ouverture =====
-  const TABLE_PASSWORD = "1234"; // 🔒 change ici
-
-  // Collapsible table
+  // Collapsible table (mdp demandé à chaque ouverture)
   const tableCollapse = $("tableCollapse");
   const toggleTableBtn = $("toggleTableBtn");
   let tableShown = false;
@@ -1289,6 +1349,7 @@
     }).join("");
 
     updateZoneVisuals();
+    setProfileUI();
   }
   <!-- PARTIE 4/4 -->
   // Criteria rendering
@@ -1474,14 +1535,12 @@
     $("peopleBody").innerHTML = view.map(({p, idx})=>`
       <tr data-idx="${idx}">
         <td>${escapeHtml(p.ts)}</td>
-        <td class="personLink" style="cursor:pointer; text-decoration:underline">${escapeHtml(p.nom)}</td>
-        <td>${escapeHtml(p.prenom)}</td>
+        <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.nom)}</td>
+        <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.prenom)}</td>
         <td>${escapeHtml(p.taille)}</td>
         <td>${escapeHtml(p.poids)}</td>
         <td>${escapeHtml(p.globalAvg)}</td>
-        <td>
-          <button class="btn small ghost delRowBtn" data-del="${idx}" type="button">🗑️</button>
-        </td>
+        <td><button class="btn small ghost delRowBtn" data-del="${idx}" type="button">🗑️</button></td>
       </tr>
     `).join("");
 
@@ -1507,6 +1566,7 @@
         const entry = arr[idx];
         if(!entry) return;
 
+        // Charge l'enregistrement
         $("nom").value = entry.nom || "";
         $("prenom").value = entry.prenom || "";
         $("taille").value = entry.taille || "";
@@ -1515,6 +1575,8 @@
         ratings = entry.ratings || {};
         greenClicked = rebuildGreenFromRatings(ratings);
 
+        setProfileUI();
+        closeProfileGate(); // ✅ si gate ouvert, on le ferme
         updateSummary();
 
         if(typeof setMode === "function") setMode("stephane");
@@ -1624,14 +1686,33 @@
     return canvas.toDataURL("image/png");
   }
 
-  // Save person (3 captures)
+  // ✅ Reset total (notes + profil + UI + gate)
+  function resetAll(){
+    ratings = {};
+    saveJson(RATINGS_KEY, ratings);
+    greenClicked = {};
+    saveJson(GREEN_KEY, greenClicked);
+    closeSheet();
+    clearProfileAll();
+    updateSummary();
+    setTableShown(false);
+    openProfileGate();
+    toast("Tout réinitialisé");
+  }
+
+  // Save person (3 captures) + ✅ après sauvegarde => reset profil et re-demander identité
   $("savePersonBtn").addEventListener("click", async ()=>{
     const nom = $("nom").value.trim();
     const prenom = $("prenom").value.trim();
     const taille = $("taille").value.trim();
     const poids = $("poids").value.trim();
 
-    if(!nom || !prenom){ toast("⚠️ Nom + prénom requis"); return; }
+    if(!nom || !prenom || !taille || !poids){
+      toast("⚠️ Profil requis");
+      openProfileGate();
+      return;
+    }
+
     const a = avgGlobalComfort();
     if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
@@ -1657,25 +1738,21 @@
     toast("✅ Enregistré");
     renderPeople();
 
-    // reset notes courantes après enregistrement
+    // reset notes + profil + gate pour la prochaine personne
     ratings = {};
     saveJson(RATINGS_KEY, ratings);
     greenClicked = {};
     saveJson(GREEN_KEY, greenClicked);
-
     updateSummary();
+
+    clearProfileAll();
+    openProfileGate();
   });
 
-  // Reset notes actuelles
+  // Reset bouton => reset total
   $("resetBtn").addEventListener("click", ()=>{
-    if(confirm("Réinitialiser les notes actuelles ?")){
-      ratings = {};
-      saveJson(RATINGS_KEY, ratings);
-      greenClicked = {};
-      saveJson(GREEN_KEY, greenClicked);
-      updateSummary();
-      toast("Réinitialisé");
-      closeSheet();
+    if(confirm("Réinitialiser TOUT (notes + profil) ?")){
+      resetAll();
     }
   });
 
@@ -1835,7 +1912,6 @@
 
   // ===== SETTINGS: per-zone transforms =====
   const ZTUNE_KEY = "seat_zone_tune_map_v4";
-
   const DEFAULT_TUNE = {
     "z_tete": {dx:-2, dy:30, sc:1.000},
     "z_dossier_bleu": {dx:10, dy:-3, sc:1.000},
@@ -1872,7 +1948,6 @@
   const zoneOut = $("zoneOut");
   const polys = Array.from(document.querySelectorAll(".zone"));
 
-  // remplit le select
   zoneSelect.innerHTML = "";
   polys.forEach(p=>{
     const opt = document.createElement("option");
@@ -1975,6 +2050,7 @@
   loadZoneToUI(zoneSelect.value);
 
   setMode(mode);
+  setProfileUI();
   updateSummary();
   renderPeople();
 
