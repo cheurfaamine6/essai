@@ -1122,19 +1122,61 @@
   document.addEventListener("click", closeMenu);
 
   // ===== Fullscreen =====
-  const fsBtn = $("fsBtn");
-  function isFullscreen(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); }
-  async function enterFullscreen(){
-    const el = document.documentElement;
-    try{ if(el.requestFullscreen) await el.requestFullscreen(); else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen(); }catch(e){}
+  // ===== Fullscreen (verrouillé) =====
+const fsBtn = $("fsBtn");
+
+let fsLocked = false;          // l'utilisateur a demandé le plein écran
+let fsRelockPending = false;   // on attend un prochain tap pour le remettre
+
+function isFullscreen(){
+  return !!(document.fullscreenElement || document.webkitFullscreenElement);
+}
+
+async function enterFullscreen(){
+  const el = document.documentElement;
+  try{
+    if(el.requestFullscreen) await el.requestFullscreen();
+  }catch(e){}
+}
+
+async function exitFullscreen(){
+  try{
+    if(document.exitFullscreen) await document.exitFullscreen();
+  }catch(e){}
+}
+
+async function setFullscreenLocked(on){
+  fsLocked = !!on;
+  if(fsLocked){
+    await enterFullscreen();
+    toast("⛶ Plein écran verrouillé");
+  }else{
+    await exitFullscreen();
+    toast("⛶ Plein écran quitté");
   }
-  async function exitFullscreen(){
-    try{ if(document.exitFullscreen) await document.exitFullscreen(); else if(document.webkitExitFullscreen) document.webkitExitFullscreen(); }catch(e){}
+}
+
+// bouton menu
+fsBtn.addEventListener("click", async ()=>{
+  await setFullscreenLocked(!fsLocked);
+  closeMenu();
+});
+
+// si on sort du fullscreen alors que c'est verrouillé -> on ré-entre au prochain tap
+document.addEventListener("fullscreenchange", ()=>{
+  if(fsLocked && !isFullscreen()){
+    fsRelockPending = true;
+    toast("⛶ Tap pour revenir en plein écran");
   }
-  async function toggleFullscreen(){
-    if(isFullscreen()) await exitFullscreen(); else await enterFullscreen();
+});
+
+// dès qu'il y a un geste utilisateur, si pending -> on ré-entre
+document.addEventListener("pointerdown", async ()=>{
+  if(fsLocked && fsRelockPending && !isFullscreen()){
+    fsRelockPending = false;
+    await enterFullscreen();
   }
-  fsBtn.addEventListener("click", async ()=>{ await toggleFullscreen(); closeMenu(); });
+}, true);
 
   // ===== Orientation helper =====
   const rotateOverlay = $("rotateOverlay");
