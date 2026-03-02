@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#070a14" />
   <title>seat comf</title>
 
+  <!-- ✅ Police moderne -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
@@ -16,8 +17,10 @@
       --cardTop:rgba(255,255,255,.085);
       --cardBot:rgba(0,0,0,.14);
       --line:rgba(255,255,255,.11);
+
       --txt:#eef2ff; --muted:#a7b0d8;
 
+      /* ✅ Accent (modifiable) */
       --a1:#4f8cff; --a2:#7c3aed;
 
       --shadow: 0 18px 55px rgba(0,0,0,.40);
@@ -68,7 +71,9 @@
       object-fit:contain; display:block;
       filter: drop-shadow(0 10px 22px rgba(0,0,0,.40));
     }
-    @media (max-width:520px){ .logo{ height:34px; max-width:160px; } }
+    @media (max-width:520px){
+      .logo{ height:34px; max-width:160px; }
+    }
 
     .btn{
       border:1px solid rgba(255,255,255,.14);
@@ -90,9 +95,11 @@
     .btn.icon{display:inline-flex;gap:8px;align-items:center}
     .btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
 
+    /* ✅ Menu ⋯ */
     .menuWrap{ position:relative; }
     .menu{
-      position:absolute; right:0; top: calc(100% + 10px);
+      position:absolute;
+      right:0; top: calc(100% + 10px);
       width: 240px;
       background: rgba(17,25,50,.92);
       border:1px solid rgba(255,255,255,.14);
@@ -131,7 +138,9 @@
     }
     @media (max-width:980px){
       .grid{grid-template-columns:1fr;}
-      @media (orientation:landscape){ .grid{grid-template-columns: 1.15fr .85fr;} }
+      @media (orientation:landscape){
+        .grid{grid-template-columns: 1.15fr .85fr;}
+      }
     }
 
     .card{
@@ -163,6 +172,7 @@
       background: rgba(46, 204, 113, .10);
     }
 
+    /* ✅ champs global (fix inputs blancs) */
     .field{display:flex;flex-direction:column;gap:6px}
     .field label{font-size:.82rem;color:var(--muted);font-weight:900}
     .field input, .field select{
@@ -179,6 +189,7 @@
       box-shadow: 0 0 0 4px rgba(124,58,237,.18);
     }
 
+    /* ✅ Bannière testeur */
     .profileBar{
       display:flex; gap:10px; align-items:center; justify-content:space-between;
       padding:10px 12px;
@@ -293,6 +304,7 @@
     .val.s78, .val.s9 { border-color: rgba(46,204,113,.55); background: rgba(46,204,113,.14); }
     .val.s10        { border-color: rgba(0,229,255,.55); background: rgba(0,229,255,.14); }
 
+    /* ✅ Tableau plus moderne */
     .tableTitle{
       display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
       margin-top:6px;
@@ -314,6 +326,7 @@
     .collapse{display:none}
     .collapse.show{display:block}
 
+    /* ✅ Slider */
     .ratingSlider{
       width:100%;
       margin-top:10px;
@@ -364,6 +377,7 @@
       box-shadow: 0 10px 22px rgba(0,0,0,.35);
     }
 
+    /* ✅ Modales / overlays */
     .overlay{position:fixed; inset:0; background: rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:.18s; z-index:20}
     .overlay.show{opacity:1; pointer-events:auto}
 
@@ -407,7 +421,6 @@
       color:transparent;
     }
     .scale{color:var(--muted);font-size:.82rem;display:flex;justify-content:space-between;margin-top:4px}
-
     .sheetActions{display:flex;gap:10px;margin-top:14px}
     .sheetActions .btn{flex:1}
 
@@ -481,6 +494,7 @@
       transition:.2s; box-shadow: var(--shadow); max-width:92vw; font-weight:900;}
     .toast.show{opacity:1; transform: translateX(-50%) translateY(0)}
 
+    /* ✅ Rotate overlay */
     .rotateOverlay{
       position:fixed; inset:0; z-index:50;
       display:none;
@@ -498,6 +512,7 @@
       box-shadow: var(--shadow);
     }
 
+    /* ✅ Gate profil */
     .profileOverlay{
       position:fixed; inset:0; z-index:70;
       display:none;
@@ -522,7 +537,7 @@
     .profileActions .btn{flex:1}
     .devNote{font-size:.78rem; color:rgba(167,176,216,.85); margin-top:10px}
 
-    /* Kiviat */
+    /* ✅ KIVIAT */
     .kiviatWrap{ padding:12px; border-top: 1px solid rgba(255,255,255,.06); }
     .kiviatCard{
       border:1px solid rgba(255,255,255,.12);
@@ -560,7 +575,88 @@
       box-shadow: 0 0 0 5px rgba(255,255,255,.06);
     }
 
-    /* Captures modal */
+    /* ✅ Affichage commentaire global + mots sous Kiviat */
+    .globalBox{
+      margin-top:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.10);
+      border-radius:18px;
+      padding:12px;
+    }
+    .globalBox h3{margin:0 0 8px;font-size:.92rem}
+    .globalText{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.12);
+      border-radius:14px;
+      padding:10px;
+      color: rgba(238,242,255,.92);
+      font-weight:850;
+      white-space:pre-wrap;
+      min-height:44px;
+    }
+    .wordPills{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .wordPill{
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      font-weight:900;
+      font-size:.80rem;
+      color: rgba(238,242,255,.92);
+    }
+
+    /* ✅ Nuage de mots */
+    .wordMode .seatFrame { display:none; }
+    .wordMode .wordCloudFrame { display:block; }
+    .wordCloudFrame{
+      width:100%;
+      border-top: 1px solid rgba(255,255,255,.06);
+      display:none;
+      padding:14px;
+    }
+    .wordCloudCard{
+      width:100%;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.12);
+      border-radius: 18px;
+      padding:14px;
+      overflow:hidden;
+    }
+    .wordCloudHead{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .wordCloudMeta{ color: var(--muted); font-size:.82rem; font-weight:850; }
+    .wordCloud{
+      position:relative;
+      width:100%;
+      height: min(68vh, 520px);
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(600px 420px at 40% 30%, rgba(79,140,255,.10), transparent 60%),
+        radial-gradient(600px 420px at 70% 70%, rgba(124,58,237,.10), transparent 60%),
+        rgba(0,0,0,.08);
+      overflow:hidden;
+    }
+    .wWord{
+      position:absolute;
+      left:0; top:0;
+      font-weight:950;
+      letter-spacing:.2px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(238,242,255,.92);
+      line-height: 1;
+      user-select:none;
+      white-space:nowrap;
+      transform: translate(-50%, -50%);
+      will-change: transform, left, top;
+    }
+
+    /* ✅ Captures modal */
     .capOverlay{
       position:fixed; inset:0; z-index:90;
       background: rgba(0,0,0,.62);
@@ -606,7 +702,7 @@
       background: rgba(0,0,0,.20);
     }
 
-    /* Settings modal */
+    /* ✅ Settings modal */
     .modalOverlay{
       position:fixed; inset:0; z-index:80;
       background: rgba(0,0,0,.60);
@@ -660,60 +756,7 @@
     /* hidden inputs */
     .hiddenInputs{display:none;}
 
-    /* ========= Mode Mots (nuage désordonné) ========= */
-    .wordMode .seatFrame { display:none; }
-    .wordMode .wordCloudFrame { display:block; }
-
-    .wordCloudFrame{
-      width:100%;
-      border-top: 1px solid rgba(255,255,255,.06);
-      display:none;
-      padding:14px;
-    }
-    .wordCloudCard{
-      width:100%;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.12);
-      border-radius: 18px;
-      padding:14px;
-      overflow:hidden;
-    }
-    .wordCloudHead{
-      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
-      margin-bottom:10px;
-    }
-    .wordCloudMeta{ color: var(--muted); font-size:.82rem; font-weight:850; }
-
-    .wordCloud{
-      position:relative;
-      width:100%;
-      height: min(68vh, 520px);
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background:
-        radial-gradient(600px 420px at 40% 30%, rgba(79,140,255,.10), transparent 60%),
-        radial-gradient(600px 420px at 70% 70%, rgba(124,58,237,.10), transparent 60%),
-        rgba(0,0,0,.08);
-      overflow:hidden;
-    }
-    .wWord{
-      position:absolute;
-      left:0; top:0;
-      font-weight:950;
-      letter-spacing:.2px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: rgba(238,242,255,.92);
-      line-height: 1;
-      user-select:none;
-      white-space:nowrap;
-      transform: translate(-50%, -50%);
-      will-change: transform, left, top;
-    }
-
-    /* ========= Modal commentaire global + 3 mots ========= */
+    /* ✅ Modal commentaire global obligatoire */
     .gcOverlay{
       position:fixed; inset:0; z-index:95;
       background: rgba(0,0,0,.62);
@@ -796,17 +839,29 @@
   </div>
 </div>
 
-<!-- Gate profil -->
+<!-- ✅ GATE PROFIL -->
 <div class="profileOverlay" id="profileOverlay">
   <div class="box">
     <b>Profil requis</b>
     <p>Renseigne <b>Nom</b>, <b>Prénom</b>, <b>Taille</b> et <b>Poids</b> pour accéder au test.</p>
 
     <div class="profileGrid">
-      <div class="field"><label>Nom</label><input id="gateNom" placeholder="Ex: Dupont" autocomplete="off"></div>
-      <div class="field"><label>Prénom</label><input id="gatePrenom" placeholder="Ex: Amine" autocomplete="off"></div>
-      <div class="field"><label>Taille (cm)</label><input id="gateTaille" inputmode="numeric" placeholder="178" autocomplete="off"></div>
-      <div class="field"><label>Poids (kg)</label><input id="gatePoids" inputmode="numeric" placeholder="75" autocomplete="off"></div>
+      <div class="field">
+        <label>Nom</label>
+        <input id="gateNom" placeholder="Ex: Dupont" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Prénom</label>
+        <input id="gatePrenom" placeholder="Ex: Amine" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Taille (cm)</label>
+        <input id="gateTaille" inputmode="numeric" placeholder="178" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Poids (kg)</label>
+        <input id="gatePoids" inputmode="numeric" placeholder="75" autocomplete="off">
+      </div>
     </div>
 
     <div class="profileActions">
@@ -819,16 +874,16 @@
   </div>
 </div>
 
-<!-- Modal commentaire global obligatoire -->
+<!-- ✅ MODAL commentaire global -->
 <div class="gcOverlay" id="gcOverlay" aria-hidden="true">
   <div class="gcModal" role="dialog" aria-modal="true" aria-label="Commentaire global">
     <div class="gcHead">
-      <b>📝 Commentaire obligatoire</b>
-      <span class="pill" id="gcPill">Toutes les zones notées</span>
+      <b>📝 Commentaire global</b>
+      <span class="pill good" id="gcPill">Fin du test</span>
     </div>
     <div class="gcBody">
       <div class="hint">
-        Pour enregistrer, tu dois écrire un <b>commentaire global</b>. Les 3 mots sont optionnels.
+        Tu as noté <b>toutes les zones</b>. Pour pouvoir enregistrer, tu dois écrire un <b>commentaire global</b>.
       </div>
 
       <label class="commentLabel" for="gcComment">Commentaire global *</label>
@@ -846,7 +901,7 @@
 
       <div class="gcActions">
         <button class="btn ghost" id="gcCancelBtn" type="button">Annuler</button>
-        <button class="btn primary" id="gcSaveBtn" type="button">Valider & enregistrer</button>
+        <button class="btn primary" id="gcSaveBtn" type="button">Valider</button>
       </div>
     </div>
   </div>
@@ -881,10 +936,10 @@
       <svg id="seatSvg" viewBox="0 0 270.933 406.4" preserveAspectRatio="xMidYMid meet">
         <image id="seatImg" href="seat.png" x="0" y="0" width="270.933" height="406.4" />
         <g id="zonesLayer">
-          <!-- ✅ CHANGÉ : Coussin de tête -> Appui tête -->
+          <!-- ✅ Appui tête -->
           <rect id="z_tete" class="zone" data-zone="Appui tête" x="110" y="8" width="50" height="32" rx="12" ry="12" />
 
-          <!-- ZONES (identiques à ton code) -->
+          <!-- ✅ ZONES SVG (identiques à ton code original) -->
           <path id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)"
             d="m 82.248776,115.24582 4.226224,-1.30038 3.576032,-0.97528 3.413487,-0.65019 3.576034,-0.65019 5.282777,-0.73146 3.90113,-0.48764 3.08839,-0.65019 1.46293,-0.16254 h 1.2191 l 2.11311,-0.0813 0.81273,-0.16255 1.70675,-0.16254 2.03183,-0.24382 1.62547,-0.0813 1.86929,0.0813 1.78802,-0.0813 1.86929,-0.0813 h 2.27566 2.27566 l 2.85054,-0.0363 h 1.72408 l 1.6666,-0.0575 1.60913,-0.11494 3.39067,0.0575 6.55147,-0.0575 4.59753,0.45976 2.87345,0.22987 2.36951,0.41311 1.78802,1.13783 0.97528,1.13783 0.81274,0.81273 0.97528,1.78802 0.32509,0.65019 0.24383,0.97528 0.32509,1.2191 0.0813,0.97528 0.16255,0.97528 -0.16255,0.89401 v 0.73146 l -0.24382,0.73147 -0.32509,1.05655 -5.44533,12.02848 -17.55507,-0.89401 -7.31462,-0.0813 -6.7457,0.0813 -9.67154,0.16255 -18.53036,-0.16255 -4.388768,0.0813 -2.438204,0.3251 -2.113111,0.48764 -2.194385,0.65019 -1.056555,0.81273 -3.169666,-6.98952 -2.275658,-6.25806 -0.894008,-2.84457 0.08127,-1.05656 0.325096,-0.73146 0.325094,-0.65019 0.48764,-0.48764 0.812734,-0.81273 z" />
           <path id="z_dossier_rouge" class="zone" data-zone="Dossier milieu (rouge)"
@@ -925,9 +980,7 @@
           <div class="wordCloudMeta" id="wordCloudMeta">—</div>
         </div>
         <div class="wordCloud" id="wordCloud"></div>
-        <div class="hint" style="margin-top:10px">
-          Plus un mot est cité dans l’historique, plus il est grand. Placement désordonné (nuage).
-        </div>
+        <div class="hint" style="margin-top:10px">Plus un mot est cité, plus il est grand (placement désordonné).</div>
       </div>
     </div>
 
@@ -955,6 +1008,7 @@
     </div>
   </section>
 
+  <!-- Colonne droite -->
   <aside class="card">
     <div class="p">
       <div class="row">
@@ -972,9 +1026,17 @@
           <div class="kiviatLegend">
             <span class="kBadge"><span class="kDot"></span> Profil actuel</span>
           </div>
+
+          <div class="globalBox">
+            <h3>Commentaire global</h3>
+            <div class="globalText" id="globalCommentView">—</div>
+            <h3 style="margin-top:12px">3 mots</h3>
+            <div class="wordPills" id="globalWordsView"><span class="wordPill">—</span></div>
+          </div>
         </div>
       </div>
 
+      <!-- Inputs cachés -->
       <div class="hiddenInputs">
         <input id="nom"><input id="prenom"><input id="taille"><input id="poids">
       </div>
@@ -1003,7 +1065,7 @@
 
       <input id="slider" class="ratingSlider" type="range" min="1" max="10" step="1" value="7" />
 
-      <!-- ✅ Doublons supprimés (plus de 1 et 10 ici) -->
+      <!-- ✅ plus de doublons 1/10 -->
       <div class="scoreRow">
         <div class="scoreBig"><span id="sliderVal">7</span>/10</div>
       </div>
@@ -1024,7 +1086,7 @@
           <div class="chips" id="critOptions"></div>
         </div>
 
-        <label class="commentLabel" for="reasonText">Commentaire (zone)</label>
+        <label class="commentLabel" for="reasonText">Commentaire</label>
         <textarea id="reasonText" placeholder="Commentaire (optionnel)"></textarea>
       </div>
 
@@ -1074,7 +1136,7 @@
   </div>
 </div>
 
-<!-- Settings modal -->
+<!-- SETTINGS modal -->
 <div class="modalOverlay" id="settingsOverlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-label="Settings">
     <div class="modalHead">
@@ -1192,22 +1254,25 @@
     setTimeout(()=>t.classList.remove("show"), 1200);
   }
 
+  // ===== Keys =====
   const TABLE_PASSWORD = "1234"; // change ici
-  const RATINGS_KEY = "seat_ratings_current_final_v7";
-  const PEOPLE_KEY  = "seat_people_passes_final_v7";
-  const MODE_KEY = "seat_mode_v3";
-  const GREEN_KEY = "seat_green_clicked_v3";
+  const RATINGS_KEY = "seat_ratings_current_final_v9";
+  const PEOPLE_KEY  = "seat_people_passes_final_v9";
+  const MODE_KEY = "seat_mode_v5";
+  const GREEN_KEY = "seat_green_clicked_v5";
   const ZSTYLE_KEY = "seat_zone_style_v1";
   const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
   const ACCENT_KEY = "seat_accent_v1";
 
-  // reset notes à chaque refresh
+  // ✅ reset notes à chaque refresh
   localStorage.removeItem(RATINGS_KEY);
   localStorage.removeItem(GREEN_KEY);
 
+  // Images
   const IMG_SUJET = "seat.png";
   const IMG_STEPHANE = "Seat_o.png";
 
+  // ===== Accent theme =====
   const ACCENTS = {
     forvia: { a1:"#4f8cff", a2:"#7c3aed" },
     cyan:   { a1:"#22d3ee", a2:"#3b82f6" },
@@ -1223,17 +1288,21 @@
     saveJson(ACCENT_KEY, accent);
   }
 
-  // Menu ⋯
+  // ===== Menu ⋯ =====
   const moreBtn = $("moreBtn");
   const moreMenu = $("moreMenu");
   function closeMenu(){ moreMenu.classList.remove("show"); }
-  moreBtn.addEventListener("click", (e)=>{ e.stopPropagation(); moreMenu.classList.toggle("show"); });
+  moreBtn.addEventListener("click", (e)=>{
+    e.stopPropagation();
+    moreMenu.classList.toggle("show");
+  });
   document.addEventListener("click", closeMenu);
 
-  // Fullscreen verrouillé UX
+  // ===== Fullscreen LOCKED =====
   const fsBtn = $("fsBtn");
   let fsLocked = false;
   let fsRelockPending = false;
+
   function isFullscreen(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); }
   async function enterFullscreen(){
     const el = document.documentElement;
@@ -1244,10 +1313,16 @@
   }
   async function setFullscreenLocked(on){
     fsLocked = !!on;
-    if(fsLocked){ await enterFullscreen(); toast("⛶ Plein écran verrouillé"); }
-    else{ await exitFullscreen(); toast("⛶ Plein écran quitté"); }
+    if(fsLocked){
+      await enterFullscreen();
+      toast("⛶ Plein écran verrouillé");
+    }else{
+      await exitFullscreen();
+      toast("⛶ Plein écran quitté");
+    }
   }
   fsBtn.addEventListener("click", async ()=>{ await setFullscreenLocked(!fsLocked); closeMenu(); });
+
   document.addEventListener("fullscreenchange", ()=>{
     if(fsLocked && !isFullscreen()){
       fsRelockPending = true;
@@ -1261,7 +1336,7 @@
     }
   }, true);
 
-  // Orientation helper
+  // ===== Orientation helper =====
   const rotateOverlay = $("rotateOverlay");
   function checkOrientation(){
     const isMobile = window.matchMedia("(max-width: 980px)").matches;
@@ -1272,7 +1347,7 @@
   window.addEventListener("orientationchange", checkOrientation);
   checkOrientation();
 
-  // Gate profil
+  // ===== Gate profil =====
   const profileOverlay = $("profileOverlay");
   const gateNom = $("gateNom"), gatePrenom = $("gatePrenom"), gateTaille = $("gateTaille"), gatePoids = $("gatePoids");
   const gateContinueBtn = $("gateContinueBtn");
@@ -1303,8 +1378,16 @@
   }
 
   function clearProfileAll(){
-    $("nom").value = ""; $("prenom").value = ""; $("taille").value = ""; $("poids").value = "";
-    gateNom.value = ""; gatePrenom.value = ""; gateTaille.value = ""; gatePoids.value = "";
+    $("nom").value = "";
+    $("prenom").value = "";
+    $("taille").value = "";
+    $("poids").value = "";
+
+    gateNom.value = "";
+    gatePrenom.value = "";
+    gateTaille.value = "";
+    gatePoids.value = "";
+
     setProfileUI();
   }
 
@@ -1355,9 +1438,11 @@
       if(e.key === "Enter"){ e.preventDefault(); validateAndApplyProfile(); }
     });
   });
+
+  // show gate at start
   openProfileGate();
 
-  // Collapsible table (mdp à chaque ouverture)
+  // ===== Collapsible table (mdp à chaque ouverture) =====
   const tableCollapse = $("tableCollapse");
   const toggleTableBtn = $("toggleTableBtn");
   let tableShown = false;
@@ -1376,7 +1461,7 @@
   });
   setTableShown(false);
 
-  // State
+  // ===== Modes / state =====
   let mode = loadJson(MODE_KEY, "sujet");
   let ratings = {};
   let greenClicked = {};
@@ -1384,7 +1469,13 @@
   let activeCriteria = {};
   let activeCritId = null;
 
-  // Nouvelle personne enable logic
+  // ✅ commentaire global session + mots session
+  let currentGlobalComment = "";
+  let currentWords = [];
+  // ✅ auto-popup UNIQUEMENT quand on vient de finir toutes zones
+  let wasAllRated = false;
+
+  // ===== Nouvelle personne enable logic =====
   const newPersonBtn = $("newPersonBtn");
   let canStartNewPerson = false;
   function setNewPersonEnabled(on){
@@ -1411,10 +1502,15 @@
   BOLSTER_GROUPS.forEach(g => g.members.forEach(m => MEMBER_TO_GROUP.set(m, g.key)));
   function effectiveKeyForZone(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
   function effectiveDisplayName(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
+  function membersForKey(key){
+    const g = BOLSTER_GROUPS.find(x=>x.key===key);
+    return g ? g.members : [key];
+  }
   function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
 
-  // ✅ Critères (nouvelle échelle)
-  const CRIT_SCALE = [
+  // ===== Critères =====
+  // Présence/Dureté/Symétrie : échelle "trop faible/trop forte"
+  const CRIT_SCALE_PD = [
     "Beaucoup trop faible",
     "Trop faible",
     "Légèrement trop faible",
@@ -1424,21 +1520,26 @@
     "Beaucoup trop forte"
   ];
 
+  // Homogénéité: uniquement Bande magenta + Assise bas (vert)
+  const CRIT_SCALE_HOMO = ["Très insatisfait","Insatisfait","Moyen","Satisfait","Très satisfait"];
+  const HOMO_ALLOWED_ZONES = new Set(["Bande magenta", "Assise bas (vert)"]);
+
   const CRITERIA = [
-    { id:"presence",    label:"Présence" },
-    { id:"durete",      label:"Dureté" },
-    { id:"symetrie",    label:"Symétrie" },
-    { id:"homogeneite", label:"Homogénéité" }
+    { id:"presence",   label:"Présence" },
+    { id:"durete",     label:"Dureté" },
+    { id:"symetrie",   label:"Symétrie" },
+    { id:"homogeneite",label:"Homogénéité" }
   ];
 
   const CRIT_OPTIONS = {
-    presence: CRIT_SCALE,
-    durete: CRIT_SCALE,
-    symetrie: CRIT_SCALE,
-    homogeneite: CRIT_SCALE
+    presence:CRIT_SCALE_PD,
+    durete:CRIT_SCALE_PD,
+    symetrie:CRIT_SCALE_PD,
+    homogeneite:CRIT_SCALE_HOMO
   };
 
-  const CRIT_TO_SCORE = {
+  // mapping pour les couleurs (rouge/orange/jaune/vert/cyan)
+  const CRIT_TO_SCORE_PD = {
     "Beaucoup trop faible": 1,
     "Trop faible": 2,
     "Légèrement trop faible": 4,
@@ -1447,7 +1548,18 @@
     "Trop forte": 9,
     "Beaucoup trop forte": 10
   };
-  function critLabelToScore(label){ return CRIT_TO_SCORE[label] ?? null; }
+  const CRIT_TO_SCORE_HOMO = {
+    "Très insatisfait": 2,
+    "Insatisfait": 4,
+    "Moyen": 6,
+    "Satisfait": 8,
+    "Très satisfait": 10
+  };
+
+  function critLabelToScore(critId, label){
+    if(critId === "homogeneite") return CRIT_TO_SCORE_HOMO[label] ?? null;
+    return CRIT_TO_SCORE_PD[label] ?? null;
+  }
 
   function getZones(){ return Array.from(document.querySelectorAll(".zone")).map(z=>z.dataset.zone); }
   function getScoreForZoneName(zoneName){
@@ -1464,7 +1576,7 @@
     if(!vals.length) return null;
     return vals.reduce((a,b)=>a+b,0)/vals.length;
   }
-
+  <script>
   function scoreMeta(score){
     if(score === 1)  return { cls:"s1",  label:"Inacceptable" };
     if(score === 2)  return { cls:"s2",  label:"Très insatisfait" };
@@ -1475,7 +1587,6 @@
     if(score === 10) return { cls:"s10", label:"Optimum" };
     return { cls:"", label:"" };
   }
-
   function sliderTheme(score){
     if(score === 1)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Inacceptable" };
     if(score === 2)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Très insatisfait" };
@@ -1509,7 +1620,15 @@
     $("scoreWord").textContent = s.word;
   }
 
-  // Settings alpha
+  // ===== Affichage commentaire global + mots (sous Kiviat)
+  function updateGlobalView(){
+    $("globalCommentView").textContent = (currentGlobalComment || "").trim() ? currentGlobalComment.trim() : "—";
+    const wrap = $("globalWordsView");
+    const ws = (Array.isArray(currentWords) ? currentWords : []).map(w=>String(w||"").trim()).filter(Boolean).slice(0,3);
+    wrap.innerHTML = ws.length ? ws.map(w=>`<span class="wordPill">${escapeHtml(w)}</span>`).join("") : `<span class="wordPill">—</span>`;
+  }
+
+  // ===== Settings alpha
   const defaultUiAlpha = { bg: 0.95, panel: 0.12, table: 0.10 };
   let uiAlpha = loadJson(SET_UI_ALPHA_KEY, defaultUiAlpha);
   const setBgA = $("setBgA"), setPanelA = $("setPanelA"), setTableA = $("setTableA");
@@ -1588,7 +1707,7 @@
 
       if(mode === "presence" || mode === "durete"){
         const label = getCritForZoneName(zoneName, mode);
-        const s = critLabelToScore(label);
+        const s = critLabelToScore(mode, label);
         if(!Number.isFinite(s)){ hideZone(poly); return; }
         const theme = sliderTheme(Number(s));
         poly.style.fill = rgbaWithAlpha(theme.col, fillA);
@@ -1600,9 +1719,70 @@
       hideZone(poly);
     });
   }
+
+  // ===== Helpers "toutes zones notées"
+  function buildExportZoneKeys(){
+    const zoneNames = Array.from(document.querySelectorAll(".zone")).map(z => z.dataset.zone);
+    const keys = [];
+    const seen = new Set();
+    for(const z of zoneNames){
+      const k = effectiveKeyForZone(z);
+      if(!seen.has(k)){ seen.add(k); keys.push(k); }
+    }
+    return keys;
+  }
+  function allZonesRated(){
+    const keys = buildExportZoneKeys();
+    let c = 0;
+    for(const k of keys){
+      const s = ratings?.[k]?.score;
+      if(Number.isFinite(Number(s))) c++;
+    }
+    return c >= keys.length;
+  }
+
+  // ===== Modal commentaire global logic
+  const gcOverlay = $("gcOverlay");
+  const gcComment = $("gcComment");
+  const gcW1 = $("gcW1"), gcW2 = $("gcW2"), gcW3 = $("gcW3");
+  const gcCancelBtn = $("gcCancelBtn");
+  const gcSaveBtn = $("gcSaveBtn");
+
+  function cleanWord(w){ return String(w||"").trim().replace(/\s+/g," "); }
+  function getWordsFromModal(){
+    return [gcW1.value, gcW2.value, gcW3.value].map(cleanWord).filter(Boolean).slice(0,3);
+  }
+  function openGlobalModal(prefill=true){
+    if(prefill){
+      gcComment.value = currentGlobalComment || "";
+      gcW1.value = currentWords?.[0] || "";
+      gcW2.value = currentWords?.[1] || "";
+      gcW3.value = currentWords?.[2] || "";
+    }
+    gcOverlay.classList.add("show");
+    gcOverlay.setAttribute("aria-hidden","false");
+    setTimeout(()=> gcComment.focus(), 50);
+  }
+  function closeGlobalModal(){
+    gcOverlay.classList.remove("show");
+    gcOverlay.setAttribute("aria-hidden","true");
+  }
+  gcCancelBtn.addEventListener("click", ()=>{
+    closeGlobalModal();
+    toast("OK, tu peux modifier les notes");
+  });
+  gcSaveBtn.addEventListener("click", ()=>{
+    const c = (gcComment.value||"").trim();
+    if(!c){ toast("⚠️ Commentaire obligatoire"); gcComment.focus(); return; }
+    currentGlobalComment = c;
+    currentWords = getWordsFromModal();
+    updateGlobalView();
+    closeGlobalModal();
+    toast("✅ Commentaire enregistré");
+  });
 </script>
 <script>
-  // ===== KIVIAT =====
+  // ===== KIVIAT (inchangé globalement, mais homogénéité seulement sur zones autorisées) =====
   const kiviatCanvas = $("kiviat");
   const kiviatMetaEl = $("kiviatMeta");
   let radarAnimReq = null;
@@ -1621,21 +1801,21 @@
       const s = getScoreForZoneName(z);
       if(Number.isFinite(s)) scores.push(s);
 
-      const p = critLabelToScore(getCritForZoneName(z,"presence"));
+      const p = critLabelToScore("presence", getCritForZoneName(z,"presence"));
       if(Number.isFinite(p)) pres.push(p);
 
-      const d = critLabelToScore(getCritForZoneName(z,"durete"));
+      const d = critLabelToScore("durete", getCritForZoneName(z,"durete"));
       if(Number.isFinite(d)) dur.push(d);
 
-      // ✅ Homogénéité ignorée pour Appui tête
-      if(effectiveKeyForZone(z) !== "Appui tête"){
-        const h = critLabelToScore(getCritForZoneName(z,"homogeneite"));
+      // ✅ Homogénéité uniquement Bande magenta + Assise bas (vert)
+      if(HOMO_ALLOWED_ZONES.has(effectiveKeyForZone(z))){
+        const h = critLabelToScore("homogeneite", getCritForZoneName(z,"homogeneite"));
         if(Number.isFinite(h)) homo.push(h);
       }
 
       const key = effectiveKeyForZone(z);
       if(isBolsterKey(key)){
-        const ss = critLabelToScore(getCritForZoneName(z,"symetrie"));
+        const ss = critLabelToScore("symetrie", getCritForZoneName(z,"symetrie"));
         if(Number.isFinite(ss)) sym.push(ss);
       }
     });
@@ -1662,7 +1842,6 @@
 
     radarT0 = performance.now();
     if(radarAnimReq) cancelAnimationFrame(radarAnimReq);
-
     const tick = (t)=>{
       const k = Math.min(1, (t - radarT0) / 240);
       const mix = radarTarget.map((x,i)=>{
@@ -1673,8 +1852,12 @@
         return { label:x.label, value: (1-k)*va + k*vb };
       });
       drawRadar(mix);
-      if(k < 1) radarAnimReq = requestAnimationFrame(tick);
-      else{ radarPrev = radarTarget.map(x=>({label:x.label, value:x.value})); radarAnimReq = null; }
+      if(k < 1){
+        radarAnimReq = requestAnimationFrame(tick);
+      }else{
+        radarPrev = radarTarget.map(x=>({label:x.label, value:x.value}));
+        radarAnimReq = null;
+      }
     };
     radarAnimReq = requestAnimationFrame(tick);
   }
@@ -1731,8 +1914,11 @@
       const x2 = cx + R * Math.cos(a);
       const y2 = cy + R * Math.sin(a);
 
-      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x2,y2);
-      ctx.strokeStyle = axisCol; ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.lineTo(x2,y2);
+      ctx.strokeStyle = axisCol;
+      ctx.stroke();
 
       const label = items[i].label;
       const val = items[i].value;
@@ -1747,8 +1933,9 @@
       const alignLeft = Math.cos(a) > 0.15;
       const alignRight = Math.cos(a) < -0.15;
       let tx = lx;
-      if(alignRight) tx = lx - tw;
-      else if(!alignLeft) tx = lx - tw/2;
+      if(alignLeft) tx = lx;
+      else if(alignRight) tx = lx - tw;
+      else tx = lx - tw/2;
 
       ctx.fillText(text, tx, ly + 4);
     }
@@ -1765,16 +1952,21 @@
       if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
     }
     ctx.closePath();
-    ctx.fillStyle = softCol; ctx.fill();
-    ctx.lineWidth = 2; ctx.strokeStyle = strokeCol; ctx.stroke();
+    ctx.fillStyle = softCol;
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = strokeCol;
+    ctx.stroke();
 
     for(let i=0; i<N; i++){
       const a = (-Math.PI/2) + (i * 2*Math.PI/N);
       const rr = R * norm(items[i].value);
       const x = cx + rr * Math.cos(a);
       const y = cy + rr * Math.sin(a);
-      ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2);
-      ctx.fillStyle = dotCol; ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x,y,4,0,Math.PI*2);
+      ctx.fillStyle = dotCol;
+      ctx.fill();
     }
 
     const g = avgGlobalComfort();
@@ -1824,7 +2016,16 @@
 
     updateZoneVisuals();
     setProfileUI();
+    updateGlobalView();
     requestRadarRedraw(true);
+
+    // ✅ déclenchement AUTO popup uniquement transition false->true
+    const nowAll = allZonesRated();
+    if(nowAll && !wasAllRated && !(currentGlobalComment||"").trim()){
+      openGlobalModal(true);
+      toast("📝 Commentaire global requis");
+    }
+    wasAllRated = nowAll;
 
     if(mode === "words") renderWordCloud();
   }
@@ -1841,13 +2042,13 @@
     }
   }
 
-  // ✅ Homogénéité retirée pour Appui tête
   function visibleCriteriaForActiveKey(){
     const isBolster = isBolsterKey(activeKey);
-    const isHead = (activeKey === "Appui tête");
+    const allowHomo = HOMO_ALLOWED_ZONES.has(activeKey);
+
     return CRITERIA.filter(c=>{
       if(c.id === "symetrie") return isBolster;
-      if(c.id === "homogeneite" && isHead) return false;
+      if(c.id === "homogeneite") return allowHomo;
       return true;
     });
   }
@@ -1866,7 +2067,8 @@
           <div class="criteriaBtn" data-crit="${escapeHtml(c.id)}">
             <span>${escapeHtml(c.label)}</span>
             <span class="badgeMini">${escapeHtml(sel)}</span>
-          </div>`;
+          </div>
+        `;
       }).join("");
 
       listEl.querySelectorAll(".criteriaBtn").forEach(btn=>{
@@ -1956,10 +2158,22 @@
     renderCriteria();
   });
 
+  // ✅ Présence & Dureté obligatoires pour enregistrer une zone
+  function hasRequiredPD(){
+    const p = (activeCriteria.presence || "").trim();
+    const d = (activeCriteria.durete || "").trim();
+    return !!p && !!d;
+  }
+
   $("saveBtn").addEventListener("click", ()=>{
     if(!activeKey) return;
-    const score = Number($("slider").value);
 
+    if(!hasRequiredPD()){
+      toast("⚠️ Présence et Dureté obligatoires");
+      return;
+    }
+
+    const score = Number($("slider").value);
     ratings[activeKey] = { score, criteria: activeCriteria, comment: $("reasonText").value.trim() };
     saveJson(RATINGS_KEY, ratings);
 
@@ -2001,7 +2215,187 @@
     return g;
   }
 
-  // ===== Captures =====
+  // ===== Word cloud =====
+  function normalizeWord(w){ return String(w||"").trim().replace(/\s+/g," ").toLowerCase(); }
+  function collectWordStats(){
+    const people = loadPeople();
+    const freq = new Map();
+    for(const p of people){
+      const arr = Array.isArray(p.words) ? p.words : [];
+      for(const raw of arr){
+        const w = normalizeWord(raw);
+        if(!w) continue;
+        freq.set(w, (freq.get(w) || 0) + 1);
+      }
+    }
+    return Array.from(freq.entries())
+      .map(([word,count])=>({word,count}))
+      .sort((a,b)=> b.count - a.count || a.word.localeCompare(b.word));
+  }
+
+  function renderWordCloud(){
+    const cloud = $("wordCloud");
+    const meta = $("wordCloudMeta");
+    if(!cloud || !meta) return;
+
+    const items = collectWordStats();
+    const peopleCount = loadPeople().length;
+
+    cloud.innerHTML = "";
+    if(!items.length){
+      meta.textContent = `Aucun mot (0 personne)`;
+      cloud.innerHTML = `<div class="hint" style="padding:12px">Aucun mot enregistré.</div>`;
+      return;
+    }
+
+    const max = Math.max(...items.map(x=>x.count));
+    const min = Math.min(...items.map(x=>x.count));
+    meta.textContent = `${items.length} mot(s) • ${peopleCount} personne(s)`;
+
+    const sizeFor = (c)=>{
+      if(max === min) return 22;
+      const t = (c - min) / (max - min);
+      return 14 + t * 30;
+    };
+
+    const words = items.slice(0, 70).map(({word,count})=>{
+      const el = document.createElement("span");
+      el.className = "wWord";
+      el.textContent = word;
+      el.title = `${count} fois`;
+      el.style.fontSize = sizeFor(count).toFixed(1) + "px";
+      el.style.transform = `translate(-50%,-50%) rotate(${(Math.random()*18-9).toFixed(1)}deg)`;
+      cloud.appendChild(el);
+      return el;
+    });
+
+    const rect = cloud.getBoundingClientRect();
+    const W = rect.width, H = rect.height;
+    const placed = [];
+    const pad = 10;
+
+    function intersects(a,b){
+      return !(a.x2 < b.x1 || a.x1 > b.x2 || a.y2 < b.y1 || a.y1 > b.y2);
+    }
+    function tryPlace(el){
+      const b = el.getBoundingClientRect();
+      const ew = b.width, eh = b.height;
+
+      const minX = pad + ew/2, maxX = Math.max(minX, W - pad - ew/2);
+      const minY = pad + eh/2, maxY = Math.max(minY, H - pad - eh/2);
+
+      const tries = 240;
+      const cx = W/2, cy = H/2;
+
+      for(let i=0;i<tries;i++){
+        let x,y;
+        if(i < 150){
+          x = minX + Math.random()*(maxX-minX);
+          y = minY + Math.random()*(maxY-minY);
+        }else{
+          const t = (i-150) * 0.35;
+          x = cx + (t*6) * Math.cos(t);
+          y = cy + (t*6) * Math.sin(t);
+          x = Math.max(minX, Math.min(maxX, x));
+          y = Math.max(minY, Math.min(maxY, y));
+        }
+
+        const box = { x1:x-ew/2, y1:y-eh/2, x2:x+ew/2, y2:y+eh/2 };
+        let ok = true;
+        for(const p of placed){ if(intersects(box,p)){ ok=false; break; } }
+        if(ok){
+          placed.push(box);
+          el.style.left = x + "px";
+          el.style.top  = y + "px";
+          return true;
+        }
+      }
+      const x = minX + Math.random()*(maxX-minX);
+      const y = minY + Math.random()*(maxY-minY);
+      placed.push({ x1:x-10, y1:y-10, x2:x+10, y2:y+10 });
+      el.style.left = x + "px";
+      el.style.top  = y + "px";
+      el.style.opacity = "0.92";
+      return false;
+    }
+    requestAnimationFrame(()=>{ words.forEach(w=> tryPlace(w)); });
+  }
+
+  // ===== Render table + selection =====
+  let selectedRowId = null;
+  function renderPeople(){
+    const people = loadPeople();
+    const view = people.map((p, idx)=>({p, idx})).reverse();
+
+    $("peopleCountPill").textContent = `${people.length} personne(s)`;
+
+    $("peopleBody").innerHTML = view.map(({p, idx})=>`
+      <tr data-idx="${idx}" data-row="${idx}">
+        <td>${escapeHtml(p.ts)}</td>
+        <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.nom)}</td>
+        <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.prenom)}</td>
+        <td>${escapeHtml(p.taille)}</td>
+        <td>${escapeHtml(p.poids)}</td>
+        <td>${escapeHtml(p.globalAvg)}</td>
+        <td>
+          <button class="btn small ghost capBtn" data-cap="${idx}" type="button">📷</button>
+          <button class="btn small ghost delRowBtn" data-del="${idx}" type="button">🗑️</button>
+        </td>
+      </tr>
+    `).join("");
+
+    $("peopleBody").querySelectorAll(".delRowBtn").forEach(btn=>{
+      btn.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const idx = Number(btn.dataset.del);
+        if(!Number.isFinite(idx)) return;
+        if(confirm("Supprimer cette ligne ?")){
+          const arr = loadPeople();
+          arr.splice(idx, 1);
+          savePeople(arr);
+          toast("Ligne supprimée");
+          if(selectedRowId === idx) selectedRowId = null;
+          renderPeople();
+        }
+      });
+    });
+
+    // load entry
+    $("peopleBody").querySelectorAll("tr").forEach(tr=>{
+      tr.addEventListener("click", ()=>{
+        $("peopleBody").querySelectorAll("tr").forEach(x=>x.classList.remove("selected"));
+        tr.classList.add("selected");
+        selectedRowId = Number(tr.dataset.row);
+
+        const idx = Number(tr.dataset.idx);
+        const arr = loadPeople();
+        const entry = arr[idx];
+        if(!entry) return;
+
+        $("nom").value = entry.nom || "";
+        $("prenom").value = entry.prenom || "";
+        $("taille").value = entry.taille || "";
+        $("poids").value = entry.poids || "";
+
+        ratings = entry.ratings || {};
+        greenClicked = rebuildGreenFromRatings(ratings);
+
+        // restore comment/words for display (just display)
+        currentGlobalComment = entry.globalComment || "";
+        currentWords = Array.isArray(entry.words) ? entry.words : [];
+
+        setProfileUI();
+        closeProfileGate();
+        updateSummary();
+        setMode("stephane");
+        toast("✅ Enregistrement chargé");
+      });
+    });
+
+    renderWordCloud();
+  }
+
+  // ===== Captures modal (repris du code original) =====
   const capOverlay = $("capOverlay");
   const capCloseBtn = $("capCloseBtn");
   const capNote = $("capNote");
@@ -2084,7 +2478,7 @@
       }
       if(modeToRender === "presence" || modeToRender === "durete"){
         const label = getCritForZoneName(zoneName, modeToRender);
-        const s = critLabelToScore(label);
+        const s = critLabelToScore(modeToRender, label);
         if(!Number.isFinite(s)){ hide(poly); return; }
         const theme = sliderTheme(Number(s));
         poly.setAttribute("style", `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeWn};`);
@@ -2135,50 +2529,8 @@
     updateSummary();
   }
 
-  // ===== Table render + selection =====
-  let selectedRowId = null;
-  function renderPeople(){
-    const people = loadPeople();
-    const view = people.map((p, idx)=>({p, idx})).reverse();
-
-    $("peopleCountPill").textContent = `${people.length} personne(s)`;
-
-    $("peopleBody").innerHTML = view.map(({p, idx})=>`
-      <tr data-idx="${idx}" data-row="${idx}">
-        <td>${escapeHtml(p.ts)}</td>
-        <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.nom)}</td>
-        <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.prenom)}</td>
-        <td>${escapeHtml(p.taille)}</td>
-        <td>${escapeHtml(p.poids)}</td>
-        <td>${escapeHtml(p.globalAvg)}</td>
-        <td>
-          <button class="btn small ghost capBtn" data-cap="${idx}" type="button">📷</button>
-          <button class="btn small ghost delRowBtn" data-del="${idx}" type="button">🗑️</button>
-        </td>
-      </tr>
-    `).join("");
-
-    if(selectedRowId !== null){
-      const tr = document.querySelector(`tr[data-row="${selectedRowId}"]`);
-      if(tr) tr.classList.add("selected");
-    }
-
-    $("peopleBody").querySelectorAll(".delRowBtn").forEach(btn=>{
-      btn.addEventListener("click", (e)=>{
-        e.stopPropagation();
-        const idx = Number(btn.dataset.del);
-        if(!Number.isFinite(idx)) return;
-        if(confirm("Supprimer cette ligne ?")){
-          const arr = loadPeople();
-          arr.splice(idx, 1);
-          savePeople(arr);
-          toast("Ligne supprimée");
-          if(selectedRowId === idx) selectedRowId = null;
-          renderPeople();
-        }
-      });
-    });
-
+  // connect capture buttons
+  function wireCapButtons(){
     $("peopleBody").querySelectorAll(".capBtn").forEach(btn=>{
       btn.addEventListener("click", async (e)=>{
         e.stopPropagation();
@@ -2189,48 +2541,9 @@
         await showCapturesForEntry(entry);
       });
     });
-
-    $("peopleBody").querySelectorAll("tr").forEach(tr=>{
-      tr.addEventListener("click", ()=>{
-        $("peopleBody").querySelectorAll("tr").forEach(x=>x.classList.remove("selected"));
-        tr.classList.add("selected");
-        selectedRowId = Number(tr.dataset.row);
-
-        const idx = Number(tr.dataset.idx);
-        const arr = loadPeople();
-        const entry = arr[idx];
-        if(!entry) return;
-
-        $("nom").value = entry.nom || "";
-        $("prenom").value = entry.prenom || "";
-        $("taille").value = entry.taille || "";
-        $("poids").value = entry.poids || "";
-
-        ratings = entry.ratings || {};
-        greenClicked = rebuildGreenFromRatings(ratings);
-
-        setProfileUI();
-        closeProfileGate();
-        updateSummary();
-        setMode("stephane");
-        toast("✅ Enregistrement chargé");
-      });
-    });
-
-    renderWordCloud();
   }
 
-  // ===== CSV export/import =====
-  function buildExportZoneKeys(){
-    const zoneNames = Array.from(document.querySelectorAll(".zone")).map(z => z.dataset.zone);
-    const keys = [];
-    const seen = new Set();
-    for(const z of zoneNames){
-      const k = effectiveKeyForZone(z);
-      if(!seen.has(k)){ seen.add(k); keys.push(k); }
-    }
-    return keys;
-  }
+  // ===== CSV export/import (étendu: commentaire global + mots) =====
   function getRatingByKey(entryRatings, key){ return entryRatings?.[key] || null; }
 
   $("exportBtn").addEventListener("click", ()=>{
@@ -2239,7 +2552,7 @@
     const esc = (v)=>`"${String(v??"").replaceAll('"','""')}"`;
 
     const zoneKeys = buildExportZoneKeys();
-    const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale","Commentaire global","Mots (1-3)"];
+    const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale","Commentaire global","Mots"];
     const perZoneHeaders = [];
     for(const key of zoneKeys){
       perZoneHeaders.push(
@@ -2256,8 +2569,8 @@
     const lines = [allHeaders.map(esc).join(SEP)];
 
     for(const p of people){
-      const words = Array.isArray(p.words) ? p.words.join(", ") : "";
-      const row = [p.ts, p.nom, p.prenom, p.taille, p.poids, p.globalAvg, (p.globalComment||""), words];
+      const wordsStr = Array.isArray(p.words) ? p.words.join(", ") : "";
+      const row = [p.ts, p.nom, p.prenom, p.taille, p.poids, p.globalAvg, p.globalComment || "", wordsStr];
 
       for(const key of zoneKeys){
         const rz = getRatingByKey(p.ratings, key);
@@ -2265,7 +2578,8 @@
         const pres  = rz?.criteria?.presence ?? "";
         const dur   = rz?.criteria?.durete ?? "";
         const sym   = (isBolsterKey(key) ? (rz?.criteria?.symetrie ?? "") : "");
-        const homo  = rz?.criteria?.homogeneite ?? "";
+        // homog seulement si zone autorisée, sinon vide
+        const homo  = (HOMO_ALLOWED_ZONES.has(key) ? (rz?.criteria?.homogeneite ?? "") : "");
         const comm  = rz?.comment ?? "";
         row.push(score, pres, dur, sym, homo, comm);
       }
@@ -2331,7 +2645,7 @@
     const idxPoids = H.indexOf("poids");
     const idxGlobal = H.indexOf("moyenne globale");
     const idxGComm = H.indexOf("commentaire global");
-    const idxWords = H.indexOf("mots (1-3)");
+    const idxWords = H.indexOf("mots");
 
     if(idxNom < 0 || idxPrenom < 0 || idxGlobal < 0){
       throw new Error("Header CSV non reconnu");
@@ -2348,9 +2662,8 @@
       const taille = (idxTaille>=0 ? cols[idxTaille] : "") || "";
       const poids = (idxPoids>=0 ? cols[idxPoids] : "") || "";
       const globalAvg = cols[idxGlobal] || "";
-
-      const globalComment = (idxGComm>=0 ? (cols[idxGComm] || "") : "");
-      const wordsStr = (idxWords>=0 ? (cols[idxWords] || "") : "");
+      const globalComment = (idxGComm>=0 ? (cols[idxGComm]||"") : "");
+      const wordsStr = (idxWords>=0 ? (cols[idxWords]||"") : "");
       const words = wordsStr.split(",").map(x=>x.trim()).filter(Boolean).slice(0,3);
 
       const ratingsObj = {};
@@ -2381,7 +2694,7 @@
         };
       });
 
-      people.push({ ts, nom, prenom, taille, poids, globalAvg, ratings: ratingsObj, globalComment, words });
+      people.push({ ts, nom, prenom, taille, poids, globalAvg, globalComment, words, ratings: ratingsObj });
     }
     return people;
   }
@@ -2399,6 +2712,7 @@
       savePeople(imported);
       selectedRowId = null;
       renderPeople();
+      wireCapButtons();
       toast(`✅ Import OK (${imported.length})`);
       closeMenu();
     }catch(e){
@@ -2408,218 +2722,7 @@
     }
   });
 
-  // ===== Modal commentaire obligatoire (quand toutes zones notées) =====
-  const gcOverlay = $("gcOverlay");
-  const gcComment = $("gcComment");
-  const gcW1 = $("gcW1"), gcW2 = $("gcW2"), gcW3 = $("gcW3");
-  const gcCancelBtn = $("gcCancelBtn");
-  const gcSaveBtn = $("gcSaveBtn");
-
-  let _pendingSavePayload = null;
-
-  function openGlobalCommentModal(payload){
-    _pendingSavePayload = payload;
-    gcComment.value = "";
-    gcW1.value = ""; gcW2.value = ""; gcW3.value = "";
-    gcOverlay.classList.add("show");
-    gcOverlay.setAttribute("aria-hidden","false");
-    setTimeout(()=> gcComment.focus(), 50);
-  }
-  function closeGlobalCommentModal(){
-    gcOverlay.classList.remove("show");
-    gcOverlay.setAttribute("aria-hidden","true");
-    _pendingSavePayload = null;
-  }
-  gcCancelBtn.addEventListener("click", ()=>{ closeGlobalCommentModal(); toast("Enregistrement annulé"); });
-
-  function cleanWord(w){
-    return String(w||"").trim().replace(/\s+/g," ");
-  }
-  function normalizeWord(w){
-    return cleanWord(w).toLowerCase();
-  }
-  function getWordsFromModal(){
-    return [gcW1.value, gcW2.value, gcW3.value].map(cleanWord).filter(Boolean).slice(0,3);
-  }
-
-  gcSaveBtn.addEventListener("click", ()=>{
-    const comment = (gcComment.value || "").trim();
-    if(!comment){
-      toast("⚠️ Commentaire obligatoire");
-      gcComment.focus();
-      return;
-    }
-    if(!_pendingSavePayload) return;
-
-    const words = getWordsFromModal();
-    finalizeSavePerson({
-      ..._pendingSavePayload,
-      globalComment: comment,
-      words
-    });
-    closeGlobalCommentModal();
-  });
-
-  // Helpers “toutes zones notées”
-  function uniqueZoneKeysCount(){ return buildExportZoneKeys().length; }
-  function ratedKeysCount(){
-    const keys = buildExportZoneKeys();
-    let c = 0;
-    for(const k of keys){
-      const s = ratings?.[k]?.score;
-      if(Number.isFinite(Number(s))) c++;
-    }
-    return c;
-  }
-  function allZonesRated(){ return ratedKeysCount() >= uniqueZoneKeysCount(); }
-
-  // ===== Word cloud (désordonné + anti-collision) =====
-  function collectWordStats(){
-    const people = loadPeople();
-    const freq = new Map();
-    for(const p of people){
-      const arr = Array.isArray(p.words) ? p.words : [];
-      for(const raw of arr){
-        const w = normalizeWord(raw);
-        if(!w) continue;
-        freq.set(w, (freq.get(w) || 0) + 1);
-      }
-    }
-    return Array.from(freq.entries())
-      .map(([word,count])=>({word,count}))
-      .sort((a,b)=> b.count - a.count || a.word.localeCompare(b.word));
-  }
-
-  function renderWordCloud(){
-    const cloud = $("wordCloud");
-    const meta = $("wordCloudMeta");
-    if(!cloud || !meta) return;
-
-    const items = collectWordStats();
-    const peopleCount = loadPeople().length;
-
-    cloud.innerHTML = "";
-    if(!items.length){
-      meta.textContent = `Aucun mot (0 personne)`;
-      cloud.innerHTML = `<div class="hint" style="padding:12px">Aucun mot enregistré. Après un test complet, la fenêtre te proposera 3 mots.</div>`;
-      return;
-    }
-
-    const max = Math.max(...items.map(x=>x.count));
-    const min = Math.min(...items.map(x=>x.count));
-    meta.textContent = `${items.length} mot(s) • ${peopleCount} personne(s)`;
-
-    const sizeFor = (c)=>{
-      if(max === min) return 22;
-      const t = (c - min) / (max - min);
-      return 14 + t * 30; // 14 → 44
-    };
-
-    // création des spans (on place ensuite)
-    const words = items.slice(0, 70).map(({word,count})=>{
-      const el = document.createElement("span");
-      el.className = "wWord";
-      el.textContent = word;
-      el.title = `${count} fois`;
-      el.style.fontSize = sizeFor(count).toFixed(1) + "px";
-      el.style.transform = `translate(-50%,-50%) rotate(${(Math.random()*18-9).toFixed(1)}deg)`;
-      cloud.appendChild(el);
-      return el;
-    });
-
-    // placement anti-collision simple
-    const rect = cloud.getBoundingClientRect();
-    const W = rect.width;
-    const H = rect.height;
-
-    const placed = [];
-    const pad = 10;
-
-    function intersects(a,b){
-      return !(a.x2 < b.x1 || a.x1 > b.x2 || a.y2 < b.y1 || a.y1 > b.y2);
-    }
-
-    function tryPlace(el){
-      const b = el.getBoundingClientRect();
-      const ew = b.width, eh = b.height;
-
-      // on limite la zone utile (marges)
-      const minX = pad + ew/2, maxX = Math.max(minX, W - pad - ew/2);
-      const minY = pad + eh/2, maxY = Math.max(minY, H - pad - eh/2);
-
-      // stratégie: essais random puis spirale
-      const tries = 220;
-      let cx = W/2, cy = H/2;
-
-      for(let i=0;i<tries;i++){
-        let x,y;
-        if(i < 140){
-          x = minX + Math.random()*(maxX-minX);
-          y = minY + Math.random()*(maxY-minY);
-        }else{
-          // spirale autour du centre
-          const t = (i-140) * 0.35;
-          x = cx + (t*6) * Math.cos(t);
-          y = cy + (t*6) * Math.sin(t);
-          x = Math.max(minX, Math.min(maxX, x));
-          y = Math.max(minY, Math.min(maxY, y));
-        }
-
-        const box = { x1:x-ew/2, y1:y-eh/2, x2:x+ew/2, y2:y+eh/2 };
-        let ok = true;
-        for(const p of placed){ if(intersects(box,p)){ ok=false; break; } }
-        if(ok){
-          placed.push(box);
-          el.style.left = x + "px";
-          el.style.top  = y + "px";
-          return true;
-        }
-      }
-
-      // fallback (accept overlap léger)
-      const x = minX + Math.random()*(maxX-minX);
-      const y = minY + Math.random()*(maxY-minY);
-      placed.push({ x1:x-10, y1:y-10, x2:x+10, y2:y+10 });
-      el.style.left = x + "px";
-      el.style.top  = y + "px";
-      el.style.opacity = "0.92";
-      return false;
-    }
-
-    // important: attendre layout
-    requestAnimationFrame(()=>{
-      words.forEach(w=> tryPlace(w));
-    });
-  }
-
-  // ===== Save / New Person (avec modal obligatoire) =====
-  function loadPeopleSafe(){ return loadPeople(); }
-
-  function finalizeSavePerson({nom, prenom, taille, poids, globalAvg, ratingsObj, globalComment, words}){
-    const entry = {
-      ts: new Date().toLocaleString("fr-FR"),
-      nom, prenom, taille, poids,
-      globalAvg: String(globalAvg),
-      ratings: ratingsObj,
-      globalComment: globalComment || "",
-      words: Array.isArray(words) ? words : []
-    };
-
-    const people = loadPeopleSafe();
-    people.push(entry);
-    savePeople(people);
-
-    toast("✅ Enregistré");
-    renderPeople();
-
-    // reset notes only
-    ratings = {}; saveJson(RATINGS_KEY, ratings);
-    greenClicked = {}; saveJson(GREEN_KEY, greenClicked);
-    updateSummary();
-
-    setNewPersonEnabled(true);
-  }
-
+  // ===== Save + new person =====
   $("savePersonBtn").addEventListener("click", ()=>{
     const nom = $("nom").value.trim();
     const prenom = $("prenom").value.trim();
@@ -2635,20 +2738,43 @@
     const a = avgGlobalComfort();
     if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
-    const payload = {
-      nom, prenom, taille, poids,
-      globalAvg: a.toFixed(1),
-      ratingsObj: ratings
-    };
-
-    // ✅ Si toutes zones notées => modal obligatoire
-    if(allZonesRated()){
-      openGlobalCommentModal(payload);
+    // ✅ si toutes zones notées => commentaire global obligatoire
+    if(allZonesRated() && !(currentGlobalComment||"").trim()){
+      openGlobalModal(true);
+      toast("⚠️ Commentaire global obligatoire");
       return;
     }
 
-    // sinon on autorise enregistrement direct (sans commentaire)
-    finalizeSavePerson({ ...payload, globalComment:"", words:[] });
+    const entry = {
+      ts: new Date().toLocaleString("fr-FR"),
+      nom, prenom, taille, poids,
+      globalAvg: a.toFixed(1),
+      ratings,
+      globalComment: currentGlobalComment || "",
+      words: Array.isArray(currentWords) ? currentWords.slice(0,3) : []
+    };
+
+    const people = loadPeople();
+    people.push(entry);
+    savePeople(people);
+
+    toast("✅ Enregistré");
+    renderPeople();
+    wireCapButtons();
+
+    // reset notes only
+    ratings = {};
+    saveJson(RATINGS_KEY, ratings);
+    greenClicked = {};
+    saveJson(GREEN_KEY, greenClicked);
+
+    // reset global comment session for next tester
+    currentGlobalComment = "";
+    currentWords = [];
+    updateGlobalView();
+
+    updateSummary();
+    setNewPersonEnabled(true);
   });
 
   $("newPersonBtn").addEventListener("click", ()=>{
@@ -2659,17 +2785,26 @@
     closeSheet();
     updateSummary();
 
+    currentGlobalComment = "";
+    currentWords = [];
+    updateGlobalView();
+
     clearProfileAll();
     openProfileGate();
     setNewPersonEnabled(false);
   });
 
-  // Reset ALL
+  // ===== Reset (menu item) =====
   function resetAll(){
     ratings = {}; saveJson(RATINGS_KEY, ratings);
     greenClicked = {}; saveJson(GREEN_KEY, greenClicked);
     closeSheet();
     clearProfileAll();
+
+    currentGlobalComment = "";
+    currentWords = [];
+    updateGlobalView();
+
     updateSummary();
     setTableShown(false);
     setNewPersonEnabled(true);
@@ -2678,7 +2813,7 @@
   }
   $("resetBtn").addEventListener("click", ()=>{ closeMenu(); if(confirm("Réinitialiser TOUT (notes + profil) ?")) resetAll(); });
 
-  // ✅ Vider tableau : mot de passe obligatoire
+  // ===== Reset people (menu item) => ✅ mot de passe obligatoire =====
   $("resetPeopleBtn").addEventListener("click", ()=>{
     closeMenu();
     const pw = prompt("Mot de passe ?");
@@ -2691,7 +2826,7 @@
     }
   });
 
-  // Settings open/close
+  // ===== Settings open/close =====
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     closeMenu();
@@ -2709,6 +2844,7 @@
     }
   });
 
+  // Reset settings
   $("resetSettingsBtn").addEventListener("click", ()=>{
     if(confirm("Reset settings (accent + transparence + style zones) ?")){
       applyAccent("forvia");
@@ -2727,13 +2863,14 @@
     }
   });
 
+  // Accent select
   const accentSelect = $("accentSelect");
   accentSelect.addEventListener("change", ()=>{
     applyAccent(accentSelect.value);
     requestRadarRedraw(true);
   });
 
-  // Per-zone transforms
+  // ===== Per-zone transforms (repris) =====
   const ZTUNE_KEY = "seat_zone_tune_map_v4";
   const DEFAULT_TUNE = {
     "z_tete": {dx:-2, dy:21, sc:1.000},
@@ -2826,7 +2963,7 @@
     catch{ toast("⚠️ Copie impossible"); }
   });
 
-  // Modes buttons
+  // ===== Modes buttons =====
   const modeSujetBtn = $("modeSujetBtn");
   const modeStephaneBtn = $("modeStephaneBtn");
   const modePresenceBtn = $("modePresenceBtn");
@@ -2840,12 +2977,6 @@
 
     document.body.classList.toggle("wordMode", mode === "words");
 
-    modeSujetBtn.classList.toggle("modeOn", mode === "sujet");
-    modeStephaneBtn.classList.toggle("modeOn", mode === "stephane");
-    modePresenceBtn.classList.toggle("modeOn", mode === "presence");
-    modeDureteBtn.classList.toggle("modeOn", mode === "durete");
-    modeWordsBtn.classList.toggle("modeOn", mode === "words");
-
     modePill.textContent =
       mode === "sujet" ? "Sujet" :
       mode === "stephane" ? "Note" :
@@ -2856,7 +2987,6 @@
     closeSheet();
     updateZoneVisuals();
     requestRadarRedraw(true);
-
     if(mode === "words") renderWordCloud();
   }
 
@@ -2866,7 +2996,7 @@
   modeDureteBtn.addEventListener("click", ()=> setMode("durete"));
   modeWordsBtn.addEventListener("click", ()=> setMode("words"));
 
-  // Init
+  // ===== Init =====
   applyAccent(accent);
   $("accentSelect").value = accent;
 
@@ -2879,8 +3009,10 @@
 
   setMode(mode);
   setProfileUI();
+  updateGlobalView();
   updateSummary();
   renderPeople();
+  wireCapButtons();
   requestRadarRedraw(false);
 
   // logo fallback
@@ -2900,4 +3032,3 @@
 
 </body>
 </html>
-  
