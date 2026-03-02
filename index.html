@@ -974,6 +974,25 @@
           </div>
         </div>
       </div>
+      <!-- Affichage commentaire + mots (profil courant) -->
+<div class="kiviatWrap" style="padding-top:0">
+  <div class="kiviatCard">
+    <div class="kiviatHead" style="margin-bottom:8px">
+      <b>Commentaire & mots</b>
+      <div class="kiviatMeta" id="gcDisplayMeta">—</div>
+    </div>
+
+    <div class="hint" style="margin-top:0">
+      <b>Commentaire global :</b>
+      <div id="gcDisplayComment" style="margin-top:6px; font-weight:850; color: rgba(238,242,255,.92)"></div>
+
+      <div style="margin-top:10px">
+        <b>Mots :</b>
+        <div id="gcDisplayWords" style="margin-top:6px; display:flex; gap:8px; flex-wrap:wrap;"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
       <div class="hiddenInputs">
         <input id="nom"><input id="prenom"><input id="taille"><input id="poids">
@@ -1200,6 +1219,7 @@
   const ZSTYLE_KEY = "seat_zone_style_v1";
   const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
   const ACCENT_KEY = "seat_accent_v1";
+  const CURRENT_GC_KEY = "seat_current_global_comment_v1"; // commentaire global courant (avant enregistrement)
 
   // reset notes à chaque refresh
   localStorage.removeItem(RATINGS_KEY);
@@ -1383,7 +1403,50 @@
   let activeKey = null;
   let activeCriteria = {};
   let activeCritId = null;
+  let currentGlobalComment = loadJson(CURRENT_GC_KEY, "");
+let currentWords = loadJson(CURRENT_GC_KEY + "_words", []);
 
+function saveCurrentGlobalFeedback(comment, words){
+  currentGlobalComment = String(comment || "").trim();
+  currentWords = Array.isArray(words) ? words.slice(0,3) : [];
+  saveJson(CURRENT_GC_KEY, currentGlobalComment);
+  saveJson(CURRENT_GC_KEY + "_words", currentWords);
+  updateGlobalFeedbackDisplay();
+}
+
+function clearCurrentGlobalFeedback(){
+  currentGlobalComment = "";
+  currentWords = [];
+  localStorage.removeItem(CURRENT_GC_KEY);
+  localStorage.removeItem(CURRENT_GC_KEY + "_words");
+  updateGlobalFeedbackDisplay();
+}
+
+function updateGlobalFeedbackDisplay(){
+  const meta = document.getElementById("gcDisplayMeta");
+  const c = document.getElementById("gcDisplayComment");
+  const w = document.getElementById("gcDisplayWords");
+  if(!meta || !c || !w) return;
+
+  const has = !!currentGlobalComment;
+  meta.textContent = has ? "Saisi" : "Non saisi";
+  c.textContent = has ? currentGlobalComment : "—";
+
+  w.innerHTML = "";
+  if(Array.isArray(currentWords) && currentWords.length){
+    currentWords.forEach(word=>{
+      const span = document.createElement("span");
+      span.className = "badgeMini";
+      span.textContent = word;
+      w.appendChild(span);
+    });
+  }else{
+    const span = document.createElement("span");
+    span.className = "badgeMini";
+    span.textContent = "—";
+    w.appendChild(span);
+  }
+}
   // Nouvelle personne enable logic
   const newPersonBtn = $("newPersonBtn");
   let canStartNewPerson = false;
@@ -1423,6 +1486,13 @@
     "Trop forte",
     "Beaucoup trop forte"
   ];
+  const HOMO_SCALE = [
+  "Très insatisfait",
+  "Insatisfait",
+  "Moyen",
+  "Satisfait",
+  "Très satisfait"
+];
 
   const CRITERIA = [
     { id:"presence",    label:"Présence" },
@@ -1435,7 +1505,7 @@
     presence: CRIT_SCALE,
     durete: CRIT_SCALE,
     symetrie: CRIT_SCALE,
-    homogeneite: CRIT_SCALE
+   homogeneite: HOMO_SCALE
   };
 
   const CRIT_TO_SCORE = {
@@ -1446,6 +1516,11 @@
     "Légèrement trop forte": 8,
     "Trop forte": 9,
     "Beaucoup trop forte": 10
+      "Très insatisfait": 2,
+  "Insatisfait": 4,
+  "Moyen": 6,
+  "Satisfait": 8,
+  "Très satisfait": 9,
   };
   function critLabelToScore(label){ return CRIT_TO_SCORE[label] ?? null; }
 
@@ -1628,7 +1703,9 @@
       if(Number.isFinite(d)) dur.push(d);
 
       // ✅ Homogénéité ignorée pour Appui tête
-      if(effectiveKeyForZone(z) !== "Appui tête"){
+           // ✅ Homogénéité uniquement pour Bande magenta + Assise bas (vert)
+      const k = effectiveKeyForZone(z);
+      if(k === "Bande magenta" || k === "Assise bas (vert)"){
         const h = critLabelToScore(getCritForZoneName(z,"homogeneite"));
         if(Number.isFinite(h)) homo.push(h);
       }
@@ -1827,6 +1904,11 @@
     requestRadarRedraw(true);
 
     if(mode === "words") renderWordCloud();
+        // ✅ Auto: dès que toutes les zones sont notées, demander commentaire global la 1ère fois
+    if(allZonesRated() && !currentGlobalComment && !gcOverlay.classList.contains("show")){
+      // ici: on ouvre sans payload => juste pour saisir et mémoriser
+      openGlobalCommentModal(null);
+    }
   }
 
   // ===== Criteria rendering =====
@@ -1843,14 +1925,17 @@
 
   // ✅ Homogénéité retirée pour Appui tête
   function visibleCriteriaForActiveKey(){
-    const isBolster = isBolsterKey(activeKey);
-    const isHead = (activeKey === "Appui tête");
-    return CRITERIA.filter(c=>{
-      if(c.id === "symetrie") return isBolster;
-      if(c.id === "homogeneite" && isHead) return false;
-      return true;
-    });
-  }
+  const isBolster = isBolsterKey(activeKey);
+
+  // ✅ Homogénéité uniquement pour ces zones
+  const homoAllowed = (activeKey === "Bande magenta" || activeKey === "Assise bas (vert)");
+
+  return CRITERIA.filter(c=>{
+    if(c.id === "symetrie") return isBolster;
+    if(c.id === "homogeneite") return homoAllowed;
+    return true;
+  });
+}
 
   function renderCriteria(){
     const listEl = $("criteriaList");
@@ -1958,6 +2043,14 @@
 
   $("saveBtn").addEventListener("click", ()=>{
     if(!activeKey) return;
+        // ✅ Présence & Dureté obligatoires
+    if(!activeCriteria?.presence || !activeCriteria?.durete){
+      toast("⚠️ Présence et Dureté obligatoires");
+      // on force l'utilisateur à choisir
+      activeCritId = (!activeCriteria?.presence) ? "presence" : "durete";
+      renderCriteria();
+      return;
+    }
     const score = Number($("slider").value);
 
     ratings[activeKey] = { score, criteria: activeCriteria, comment: $("reasonText").value.trim() };
@@ -2417,21 +2510,28 @@
 
   let _pendingSavePayload = null;
 
-  function openGlobalCommentModal(payload){
-    _pendingSavePayload = payload;
-    gcComment.value = "";
-    gcW1.value = ""; gcW2.value = ""; gcW3.value = "";
-    gcOverlay.classList.add("show");
-    gcOverlay.setAttribute("aria-hidden","false");
-    setTimeout(()=> gcComment.focus(), 50);
-  }
+ function openGlobalCommentModal(payload){
+  _pendingSavePayload = payload || null;
+
+  // si déjà saisi, on pré-remplit (utile si on rouvre)
+  gcComment.value = currentGlobalComment || "";
+  gcW1.value = (currentWords?.[0] || "");
+  gcW2.value = (currentWords?.[1] || "");
+  gcW3.value = (currentWords?.[2] || "");
+
+  gcOverlay.classList.add("show");
+  gcOverlay.setAttribute("aria-hidden","false");
+  setTimeout(()=> gcComment.focus(), 50);
+}
   function closeGlobalCommentModal(){
     gcOverlay.classList.remove("show");
     gcOverlay.setAttribute("aria-hidden","true");
     _pendingSavePayload = null;
   }
-  gcCancelBtn.addEventListener("click", ()=>{ closeGlobalCommentModal(); toast("Enregistrement annulé"); });
-
+gcCancelBtn.addEventListener("click", ()=>{
+  closeGlobalCommentModal();
+  toast("Modifiable avant enregistrement");
+});
   function cleanWord(w){
     return String(w||"").trim().replace(/\s+/g," ");
   }
@@ -2443,22 +2543,33 @@
   }
 
   gcSaveBtn.addEventListener("click", ()=>{
-    const comment = (gcComment.value || "").trim();
-    if(!comment){
-      toast("⚠️ Commentaire obligatoire");
-      gcComment.focus();
-      return;
-    }
-    if(!_pendingSavePayload) return;
+  const comment = (gcComment.value || "").trim();
+  if(!comment){
+    toast("⚠️ Commentaire obligatoire");
+    gcComment.focus();
+    return;
+  }
 
-    const words = getWordsFromModal();
+  const words = getWordsFromModal();
+
+  // ✅ On mémorise TOUJOURS pour la personne courante
+  saveCurrentGlobalFeedback(comment, words);
+
+  // ✅ Si on venait ici depuis "Enregistrer personne", on finalise l'enregistrement
+  if(_pendingSavePayload){
     finalizeSavePerson({
       ..._pendingSavePayload,
-      globalComment: comment,
-      words
+      globalComment: currentGlobalComment,
+      words: currentWords
     });
     closeGlobalCommentModal();
-  });
+    return;
+  }
+
+  // ✅ Sinon (auto ouverture fin de notation), on ferme juste
+  closeGlobalCommentModal();
+  toast("✅ Commentaire enregistré (profil courant)");
+});
 
   // Helpers “toutes zones notées”
   function uniqueZoneKeysCount(){ return buildExportZoneKeys().length; }
@@ -2642,7 +2753,14 @@
     };
 
     // ✅ Si toutes zones notées => modal obligatoire
+        // ✅ Si toutes zones notées => commentaire obligatoire
     if(allZonesRated()){
+      // si déjà saisi => on enregistre directement
+      if(currentGlobalComment){
+        finalizeSavePerson({ ...payload, globalComment: currentGlobalComment, words: currentWords });
+        return;
+      }
+      // sinon on force la modal
       openGlobalCommentModal(payload);
       return;
     }
@@ -2882,7 +3000,7 @@
   updateSummary();
   renderPeople();
   requestRadarRedraw(false);
-
+  updateGlobalFeedbackDisplay();
   // logo fallback
   (function(){
     const img = document.getElementById("logoImg");
