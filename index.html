@@ -1488,13 +1488,13 @@
   ];
 
   // ✅ Homogénéité: satisfaction
-  const HOMO_SCALE = [
-    "Très insatisfait",
-    "Insatisfait",
-    "Moyen",
-    "Satisfait",
-    "Très satisfait"
-  ];
+  const SAT_SCALE = [
+  "Très insatisfait",
+  "Insatisfait",
+  "Moyen",
+  "Satisfait",
+  "Très satisfait"
+];
 
   const CRITERIA = [
     { id:"presence",    label:"Présence" },
@@ -1504,11 +1504,11 @@
   ];
 
   const CRIT_OPTIONS = {
-    presence: CRIT_SCALE,
-    durete: CRIT_SCALE,
-    symetrie: CRIT_SCALE,
-    homogeneite: HOMO_SCALE
-  };
+  presence: CRIT_SCALE,
+  durete: CRIT_SCALE,
+  symetrie: SAT_SCALE,      // ✅ Symétrie en satisfaction
+  homogeneite: SAT_SCALE    // ✅ Homogénéité en satisfaction
+};
 
   const CRIT_TO_SCORE = {
     "Beaucoup trop faible": 1,
