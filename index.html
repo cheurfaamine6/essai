@@ -660,7 +660,7 @@
     /* hidden inputs */
     .hiddenInputs{display:none;}
 
-    /* ========= Mode Mots (nuage désordonné) ========= */
+    /* ========= Mode Mots ========= */
     .wordMode .seatFrame { display:none; }
     .wordMode .wordCloudFrame { display:block; }
 
@@ -713,7 +713,7 @@
       will-change: transform, left, top;
     }
 
-    /* ========= Modal commentaire global + 3 mots ========= */
+    /* ========= Modal commentaire ========= */
     .gcOverlay{
       position:fixed; inset:0; z-index:95;
       background: rgba(0,0,0,.62);
@@ -882,7 +882,6 @@
         <g id="zonesLayer">
           <rect id="z_tete" class="zone" data-zone="Appui tête" x="110" y="8" width="50" height="32" rx="12" ry="12" />
 
-          <!-- ZONES -->
           <path id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)"
             d="m 82.248776,115.24582 4.226224,-1.30038 3.576032,-0.97528 3.413487,-0.65019 3.576034,-0.65019 5.282777,-0.73146 3.90113,-0.48764 3.08839,-0.65019 1.46293,-0.16254 h 1.2191 l 2.11311,-0.0813 0.81273,-0.16255 1.70675,-0.16254 2.03183,-0.24382 1.62547,-0.0813 1.86929,0.0813 1.78802,-0.0813 1.86929,-0.0813 h 2.27566 2.27566 l 2.85054,-0.0363 h 1.72408 l 1.6666,-0.0575 1.60913,-0.11494 3.39067,0.0575 6.55147,-0.0575 4.59753,0.45976 2.87345,0.22987 2.36951,0.41311 1.78802,1.13783 0.97528,1.13783 0.81274,0.81273 0.97528,1.78802 0.32509,0.65019 0.24383,0.97528 0.32509,1.2191 0.0813,0.97528 0.16255,0.97528 -0.16255,0.89401 v 0.73146 l -0.24382,0.73147 -0.32509,1.05655 -5.44533,12.02848 -17.55507,-0.89401 -7.31462,-0.0813 -6.7457,0.0813 -9.67154,0.16255 -18.53036,-0.16255 -4.388768,0.0813 -2.438204,0.3251 -2.113111,0.48764 -2.194385,0.65019 -1.056555,0.81273 -3.169666,-6.98952 -2.275658,-6.25806 -0.894008,-2.84457 0.08127,-1.05656 0.325096,-0.73146 0.325094,-0.65019 0.48764,-0.48764 0.812734,-0.81273 z" />
           <path id="z_dossier_rouge" class="zone" data-zone="Dossier milieu (rouge)"
@@ -973,7 +972,7 @@
         </div>
       </div>
 
-      <!-- ✅ Affichage commentaire + mots (profil courant) -->
+      <!-- ✅ Affichage commentaire + mots -->
       <div class="kiviatWrap" style="padding-top:0">
         <div class="kiviatCard">
           <div class="kiviatHead" style="margin-bottom:8px">
@@ -1250,7 +1249,7 @@
   moreBtn.addEventListener("click", (e)=>{ e.stopPropagation(); moreMenu.classList.toggle("show"); });
   document.addEventListener("click", closeMenu);
 
-  // Fullscreen verrouillé UX
+  // Fullscreen
   const fsBtn = $("fsBtn");
   let fsLocked = false;
   let fsRelockPending = false;
@@ -1396,7 +1395,7 @@
   });
   setTableShown(false);
 
-  // ===== Commentaire global courant (avant save personne) =====
+  // ===== Commentaire global courant =====
   let currentGlobalComment = loadJson(CURRENT_GC_KEY, "");
   let currentWords = loadJson(CURRENT_GC_KEY + "_words", []);
 
@@ -1488,7 +1487,7 @@
     "Beaucoup trop forte"
   ];
 
-  // ✅ Homogénéité : échelle satisfaction (demandé)
+  // ✅ Homogénéité: satisfaction
   const HOMO_SCALE = [
     "Très insatisfait",
     "Insatisfait",
@@ -1520,7 +1519,6 @@
     "Trop forte": 9,
     "Beaucoup trop forte": 10,
 
-    // ✅ Homogénéité mapping (satisfaction)
     "Très insatisfait": 2,
     "Insatisfait": 4,
     "Moyen": 6,
@@ -1681,7 +1679,7 @@
     });
   }
 </script>
-<script>
+  <script>
   // ===== KIVIAT =====
   const kiviatCanvas = $("kiviat");
   const kiviatMetaEl = $("kiviatMeta");
@@ -1714,7 +1712,6 @@
         if(Number.isFinite(h)) homo.push(h);
       }
 
-      // symétrie uniquement bolsters
       const key = effectiveKeyForZone(z);
       if(isBolsterKey(key)){
         const ss = critLabelToScore(getCritForZoneName(z,"symetrie"));
@@ -1910,10 +1907,9 @@
 
     if(mode === "words") renderWordCloud();
 
-    // ✅ Auto: dès que toutes les zones sont notées, demander commentaire global la 1ère fois
+    // ✅ Auto modal commentaire dès que tout est noté (si pas encore saisi)
     if(allZonesRated() && !currentGlobalComment){
-      const ov = $("gcOverlay");
-      if(ov && !ov.classList.contains("show")){
+      if(!$("gcOverlay").classList.contains("show")){
         openGlobalCommentModal(null);
       }
     }
@@ -2100,31 +2096,6 @@
     return g;
   }
 
-  // ===== CSV helpers =====
-  function buildExportZoneKeys(){
-    const zoneNames = Array.from(document.querySelectorAll(".zone")).map(z => z.dataset.zone);
-    const keys = [];
-    const seen = new Set();
-    for(const z of zoneNames){
-      const k = effectiveKeyForZone(z);
-      if(!seen.has(k)){ seen.add(k); keys.push(k); }
-    }
-    return keys;
-  }
-
-  // Helpers “toutes zones notées”
-  function uniqueZoneKeysCount(){ return buildExportZoneKeys().length; }
-  function ratedKeysCount(){
-    const keys = buildExportZoneKeys();
-    let c = 0;
-    for(const k of keys){
-      const s = ratings?.[k]?.score;
-      if(Number.isFinite(Number(s))) c++;
-    }
-    return c;
-  }
-  function allZonesRated(){ return ratedKeysCount() >= uniqueZoneKeysCount(); }
-
   // ===== Modal commentaire obligatoire =====
   const gcOverlay = $("gcOverlay");
   const gcComment = $("gcComment");
@@ -2136,13 +2107,10 @@
 
   function openGlobalCommentModal(payload){
     _pendingSavePayload = payload || null;
-
-    // préfill si déjà saisi
     gcComment.value = currentGlobalComment || "";
     gcW1.value = (currentWords?.[0] || "");
     gcW2.value = (currentWords?.[1] || "");
     gcW3.value = (currentWords?.[2] || "");
-
     gcOverlay.classList.add("show");
     gcOverlay.setAttribute("aria-hidden","false");
     setTimeout(()=> gcComment.focus(), 50);
@@ -2152,15 +2120,12 @@
     gcOverlay.setAttribute("aria-hidden","true");
     _pendingSavePayload = null;
   }
-
   gcCancelBtn.addEventListener("click", ()=>{
     closeGlobalCommentModal();
     toast("Modifiable avant enregistrement");
   });
 
-  function cleanWord(w){
-    return String(w||"").trim().replace(/\s+/g," ");
-  }
+  function cleanWord(w){ return String(w||"").trim().replace(/\s+/g," "); }
   function getWordsFromModal(){
     return [gcW1.value, gcW2.value, gcW3.value].map(cleanWord).filter(Boolean).slice(0,3);
   }
@@ -2172,13 +2137,9 @@
       gcComment.focus();
       return;
     }
-
     const words = getWordsFromModal();
-
-    // ✅ mémoriser dans le profil courant
     saveCurrentGlobalFeedback(comment, words);
 
-    // ✅ si déclenché par "Enregistrer personne"
     if(_pendingSavePayload){
       finalizeSavePerson({
         ..._pendingSavePayload,
@@ -2192,6 +2153,29 @@
     closeGlobalCommentModal();
     toast("✅ Commentaire enregistré (profil courant)");
   });
+
+  // Helpers “toutes zones notées”
+  function buildExportZoneKeys(){
+    const zoneNames = Array.from(document.querySelectorAll(".zone")).map(z => z.dataset.zone);
+    const keys = [];
+    const seen = new Set();
+    for(const z of zoneNames){
+      const k = effectiveKeyForZone(z);
+      if(!seen.has(k)){ seen.add(k); keys.push(k); }
+    }
+    return keys;
+  }
+  function uniqueZoneKeysCount(){ return buildExportZoneKeys().length; }
+  function ratedKeysCount(){
+    const keys = buildExportZoneKeys();
+    let c = 0;
+    for(const k of keys){
+      const s = ratings?.[k]?.score;
+      if(Number.isFinite(Number(s))) c++;
+    }
+    return c;
+  }
+  function allZonesRated(){ return ratedKeysCount() >= uniqueZoneKeysCount(); }
 
   // ===== Save / New Person =====
   function finalizeSavePerson({nom, prenom, taille, poids, globalAvg, ratingsObj, globalComment, words}){
@@ -2211,13 +2195,9 @@
     toast("✅ Enregistré");
     renderPeople();
 
-    // reset notes only
     ratings = {}; saveJson(RATINGS_KEY, ratings);
     greenClicked = {}; saveJson(GREEN_KEY, greenClicked);
-
-    // ✅ reset commentaire + mots courants après save personne
     clearCurrentGlobalFeedback();
-
     updateSummary();
     setNewPersonEnabled(true);
   }
@@ -2245,36 +2225,29 @@
 
     // ✅ si toutes zones notées => commentaire obligatoire
     if(allZonesRated()){
-      // si déjà saisi => enregistrement direct
       if(currentGlobalComment){
         finalizeSavePerson({ ...payload, globalComment: currentGlobalComment, words: currentWords });
         return;
       }
-      // sinon modal obligatoire
       openGlobalCommentModal(payload);
       return;
     }
 
-    // sinon enregistrement direct autorisé
     finalizeSavePerson({ ...payload, globalComment:"", words:[] });
   });
 
   $("newPersonBtn").addEventListener("click", ()=>{
     if(!canStartNewPerson){ toast("⚠️ Enregistre ou réinitialise d'abord"); return; }
-
     ratings = {}; saveJson(RATINGS_KEY, ratings);
     greenClicked = {}; saveJson(GREEN_KEY, greenClicked);
     clearCurrentGlobalFeedback();
-
     closeSheet();
     updateSummary();
-
     clearProfileAll();
     openProfileGate();
     setNewPersonEnabled(false);
   });
 
-  // Reset ALL
   function resetAll(){
     ratings = {}; saveJson(RATINGS_KEY, ratings);
     greenClicked = {}; saveJson(GREEN_KEY, greenClicked);
@@ -2289,7 +2262,246 @@
   }
   $("resetBtn").addEventListener("click", ()=>{ closeMenu(); if(confirm("Réinitialiser TOUT (notes + profil) ?")) resetAll(); });
 
-  // ===== Export CSV (inchangé sauf homo/sym logique existante) =====
+  // ✅ Vider tableau : mot de passe obligatoire
+  $("resetPeopleBtn").addEventListener("click", ()=>{
+    closeMenu();
+    const pw = prompt("Mot de passe ?");
+    if(pw !== TABLE_PASSWORD){ toast("❌ Mot de passe incorrect"); return; }
+    if(confirm("Supprimer TOUT l'historique des personnes ?")){
+      savePeople([]);
+      selectedRowId = null;
+      renderPeople();
+      toast("Historique supprimé");
+    }
+  });
+
+  // ===== Captures =====
+  const capOverlay = $("capOverlay");
+  const capCloseBtn = $("capCloseBtn");
+  const capNote = $("capNote");
+  const capPresence = $("capPresence");
+  const capDurete = $("capDurete");
+  const capTitle = $("capTitle");
+
+  const dlNoteBtn = $("dlNoteBtn");
+  const dlPresenceBtn = $("dlPresenceBtn");
+  const dlDureteBtn = $("dlDureteBtn");
+
+  function downloadDataUrl(dataUrl, filename){
+    if(!dataUrl) return;
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+  dlNoteBtn.onclick = ()=> downloadDataUrl(capNote.src, "capture_note.png");
+  dlPresenceBtn.onclick = ()=> downloadDataUrl(capPresence.src, "capture_presence.png");
+  dlDureteBtn.onclick = ()=> downloadDataUrl(capDurete.src, "capture_durete.png");
+
+  function openCapModal(title){
+    capTitle.textContent = title || "📷 Captures";
+    capOverlay.classList.add("show");
+    capOverlay.setAttribute("aria-hidden","false");
+  }
+  function closeCapModal(){
+    capOverlay.classList.remove("show");
+    capOverlay.setAttribute("aria-hidden","true");
+  }
+  capCloseBtn.addEventListener("click", closeCapModal);
+  capOverlay.addEventListener("click", (e)=>{ if(e.target === capOverlay) closeCapModal(); });
+
+  const _imgDataUrlCache = new Map();
+  async function loadImageAsDataURL(url){
+    if(_imgDataUrlCache.has(url)) return _imgDataUrlCache.get(url);
+    const res = await fetch(url, { cache: "force-cache" });
+    const blob = await res.blob();
+    const dataUrl = await new Promise((resolve, reject)=>{
+      const r = new FileReader();
+      r.onload = ()=> resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(blob);
+    });
+    _imgDataUrlCache.set(url, dataUrl);
+    return dataUrl;
+  }
+  function setSvgImageHref(imgEl, href){
+    imgEl.setAttribute("href", href);
+    imgEl.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
+  }
+
+  async function captureSeatPngDataUrlForMode(modeToRender){
+    const svg = document.getElementById("seatSvg");
+    const clone = svg.cloneNode(true);
+
+    let bgDataUrl = "";
+    try{ bgDataUrl = await loadImageAsDataURL(IMG_STEPHANE); }
+    catch(e){ bgDataUrl = IMG_STEPHANE; }
+
+    const cloneImg = clone.querySelector("#seatImg");
+    if(cloneImg){ setSvgImageHref(cloneImg, bgDataUrl); }
+
+    const fillA = Number(zStyle?.fillA ?? 0.12);
+    const strokeA = Number(zStyle?.strokeA ?? 0.55);
+    const strokeWn = Number(zStyle?.strokeW ?? 2);
+
+    const hide = (poly)=> poly.setAttribute("style","fill:rgba(0,0,0,0);stroke:rgba(0,0,0,0);stroke-width:0;");
+    clone.querySelectorAll(".zone").forEach(poly=>{
+      const zoneName = poly.dataset.zone;
+
+      if(modeToRender === "stephane"){
+        const score = getScoreForZoneName(zoneName);
+        if(!Number.isFinite(score)){ hide(poly); return; }
+        const theme = sliderTheme(Number(score));
+        poly.setAttribute("style", `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeWn};`);
+        return;
+      }
+      if(modeToRender === "presence" || modeToRender === "durete"){
+        const label = getCritForZoneName(zoneName, modeToRender);
+        const s = critLabelToScore(label);
+        if(!Number.isFinite(s)){ hide(poly); return; }
+        const theme = sliderTheme(Number(s));
+        poly.setAttribute("style", `fill:${rgbaWithAlpha(theme.col, fillA)};stroke:${rgbaWithAlpha(theme.col, strokeA)};stroke-width:${strokeWn};`);
+        return;
+      }
+      hide(poly);
+    });
+
+    const xml = new XMLSerializer().serializeToString(clone);
+    const svgBlob = new Blob([xml], {type:"image/svg+xml;charset=utf-8"});
+    const url = URL.createObjectURL(svgBlob);
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    await new Promise((res, rej)=>{ img.onload = res; img.onerror = rej; img.src = url; });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = svg.viewBox.baseVal.width;
+    canvas.height = svg.viewBox.baseVal.height;
+    canvas.getContext("2d").drawImage(img, 0, 0);
+
+    URL.revokeObjectURL(url);
+    return canvas.toDataURL("image/png");
+  }
+
+  async function showCapturesForEntry(entry){
+    if(!entry) return;
+
+    const prevRatings = ratings;
+    const prevGreen = greenClicked;
+    const prevMode = mode;
+
+    ratings = entry.ratings || {};
+    greenClicked = rebuildGreenFromRatings(ratings);
+
+    capNote.src = ""; capPresence.src = ""; capDurete.src = "";
+    openCapModal(`📷 Captures — ${entry.prenom || ""} ${entry.nom || ""}`.trim());
+
+    try{ capNote.src = await captureSeatPngDataUrlForMode("stephane"); }catch(e){}
+    try{ capPresence.src = await captureSeatPngDataUrlForMode("presence"); }catch(e){}
+    try{ capDurete.src = await captureSeatPngDataUrlForMode("durete"); }catch(e){}
+
+    ratings = prevRatings;
+    greenClicked = prevGreen;
+    mode = prevMode;
+
+    setMode(mode);
+    updateSummary();
+  }
+
+  // ===== Table render + selection =====
+  let selectedRowId = null;
+
+  function renderPeople(){
+    const people = loadPeople();
+    const view = people.map((p, idx)=>({p, idx})).reverse();
+
+    $("peopleCountPill").textContent = `${people.length} personne(s)`;
+
+    $("peopleBody").innerHTML = view.map(({p, idx})=>`
+      <tr data-idx="${idx}" data-row="${idx}">
+        <td>${escapeHtml(p.ts)}</td>
+        <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.nom)}</td>
+        <td style="cursor:pointer; text-decoration:underline">${escapeHtml(p.prenom)}</td>
+        <td>${escapeHtml(p.taille)}</td>
+        <td>${escapeHtml(p.poids)}</td>
+        <td>${escapeHtml(p.globalAvg)}</td>
+        <td>
+          <button class="btn small ghost capBtn" data-cap="${idx}" type="button">📷</button>
+          <button class="btn small ghost delRowBtn" data-del="${idx}" type="button">🗑️</button>
+        </td>
+      </tr>
+    `).join("");
+
+    if(selectedRowId !== null){
+      const tr = document.querySelector(`tr[data-row="${selectedRowId}"]`);
+      if(tr) tr.classList.add("selected");
+    }
+
+    $("peopleBody").querySelectorAll(".delRowBtn").forEach(btn=>{
+      btn.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const idx = Number(btn.dataset.del);
+        if(!Number.isFinite(idx)) return;
+        if(confirm("Supprimer cette ligne ?")){
+          const arr = loadPeople();
+          arr.splice(idx, 1);
+          savePeople(arr);
+          toast("Ligne supprimée");
+          if(selectedRowId === idx) selectedRowId = null;
+          renderPeople();
+        }
+      });
+    });
+
+    $("peopleBody").querySelectorAll(".capBtn").forEach(btn=>{
+      btn.addEventListener("click", async (e)=>{
+        e.stopPropagation();
+        const idx = Number(btn.dataset.cap);
+        const arr = loadPeople();
+        const entry = arr[idx];
+        if(!entry) return;
+        await showCapturesForEntry(entry);
+      });
+    });
+
+    $("peopleBody").querySelectorAll("tr").forEach(tr=>{
+      tr.addEventListener("click", ()=>{
+        $("peopleBody").querySelectorAll("tr").forEach(x=>x.classList.remove("selected"));
+        tr.classList.add("selected");
+        selectedRowId = Number(tr.dataset.row);
+
+        const idx = Number(tr.dataset.idx);
+        const arr = loadPeople();
+        const entry = arr[idx];
+        if(!entry) return;
+
+        $("nom").value = entry.nom || "";
+        $("prenom").value = entry.prenom || "";
+        $("taille").value = entry.taille || "";
+        $("poids").value = entry.poids || "";
+
+        ratings = entry.ratings || {};
+        greenClicked = rebuildGreenFromRatings(ratings);
+
+        // affichage commentaire+mots de l'historique (juste "afficher")
+        currentGlobalComment = entry.globalComment || "";
+        currentWords = Array.isArray(entry.words) ? entry.words : [];
+        updateGlobalFeedbackDisplay();
+
+        setProfileUI();
+        closeProfileGate();
+        updateSummary();
+        setMode("stephane");
+        toast("✅ Enregistrement chargé");
+      });
+    });
+
+    renderWordCloud();
+  }
+
+  // ===== CSV export/import =====
   $("exportBtn").addEventListener("click", ()=>{
     const people = loadPeople();
     const SEP = ";";
@@ -2339,17 +2551,6 @@
     toast("CSV exporté");
   });
 
-  // ===== Import CSV (inchangé) + renderPeople + word cloud + settings + tuning =====
-  // ⚠️ Pour garder la réponse pas trop énorme, si tu veux je te remets la partie import/wordcloud/settings/tuning EXACTEMENT
-  // (car elle n’a pas changé de logique par rapport à ton code, sauf qu’elle doit rester après ceci).
-  //
-  // ✅ Ici je remets TOUT ce bloc complet inchangé depuis ton code original :
-  //
-  // -----
-  // IMPORT / RENDER TABLE / CAPTURES / WORD CLOUD / SETTINGS / TUNE / MODES / INIT / LOGO FALLBACK
-  // -----
-
-  // ===== CSV import =====
   const importBtn = $("importBtn");
   const importFile = $("importFile");
 
@@ -2465,9 +2666,10 @@
       const imported = importCsvToPeople(text);
       if(!imported.length){ toast("⚠️ Aucune ligne importée"); return; }
       savePeople(imported);
+      selectedRowId = null;
+      renderPeople();
       toast(`✅ Import OK (${imported.length})`);
       closeMenu();
-      renderPeople();
     }catch(e){
       console.error(e);
       toast("❌ Import impossible");
@@ -2588,53 +2790,7 @@
     });
   }
 
-  // ===== Table render =====
-  let selectedRowId = null;
-
-  async function showCapturesForEntry(entry){
-    alert("Captures: bloc inchangé dans ta version originale. Si tu veux je te réintègre aussi la capture SVG->PNG.");
-  }
-
-  function renderPeople(){
-    const people = loadPeople();
-    const view = people.map((p, idx)=>({p, idx})).reverse();
-
-    $("peopleCountPill").textContent = `${people.length} personne(s)`;
-
-    $("peopleBody").innerHTML = view.map(({p, idx})=>`
-      <tr data-idx="${idx}" data-row="${idx}">
-        <td>${escapeHtml(p.ts)}</td>
-        <td>${escapeHtml(p.nom)}</td>
-        <td>${escapeHtml(p.prenom)}</td>
-        <td>${escapeHtml(p.taille)}</td>
-        <td>${escapeHtml(p.poids)}</td>
-        <td>${escapeHtml(p.globalAvg)}</td>
-        <td>
-          <button class="btn small ghost delRowBtn" data-del="${idx}" type="button">🗑️</button>
-        </td>
-      </tr>
-    `).join("");
-
-    $("peopleBody").querySelectorAll(".delRowBtn").forEach(btn=>{
-      btn.addEventListener("click", (e)=>{
-        e.stopPropagation();
-        const idx = Number(btn.dataset.del);
-        if(!Number.isFinite(idx)) return;
-        if(confirm("Supprimer cette ligne ?")){
-          const arr = loadPeople();
-          arr.splice(idx, 1);
-          savePeople(arr);
-          toast("Ligne supprimée");
-          if(selectedRowId === idx) selectedRowId = null;
-          renderPeople();
-        }
-      });
-    });
-
-    renderWordCloud();
-  }
-
-  // Settings open/close
+  // ===== Settings open/close =====
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     closeMenu();
@@ -2676,7 +2832,100 @@
     requestRadarRedraw(true);
   });
 
-  // Modes buttons
+  // ===== Per-zone transforms (tuning) =====
+  const ZTUNE_KEY = "seat_zone_tune_map_v4";
+  const DEFAULT_TUNE = {
+    "z_tete": {dx:-2, dy:21, sc:1.000},
+    "z_dossier_bleu": {dx:11, dy:3, sc:1.000},
+    "z_dossier_rouge": {dx:12, dy:5, sc:1.000},
+    "z_central_gris": {dx:15, dy:5, sc:1.000},
+    "z_jaune": {dx:13, dy:2, sc:1.000},
+    "z_magenta": {dx:15, dy:4, sc:1.000},
+    "z_assise_vert": {dx:15, dy:4, sc:1.000},
+    "z_bas_gauche_vert": {dx:11, dy:4, sc:1.000},
+    "z_flanc_gauche_vert": {dx:11, dy:5, sc:1.000},
+    "z_flanc_gauche_noir": {dx:11, dy:5, sc:1.000},
+    "z_flanc_droit_violet": {dx:12, dy:4, sc:1.000},
+    "z_flanc_droit_orange": {dx:12, dy:5, sc:1.000},
+    "z_bas_droit_blanc": {dx:17, dy:4, sc:1.000},
+    "z_bas_droit_cyan": {dx:18, dy:5, sc:1.000},
+    "z_bas_gauche_orange": {dx:11, dy:4, sc:1.000}
+  };
+
+  let zoneTune = loadJson(ZTUNE_KEY, null);
+  if(!zoneTune || typeof zoneTune !== "object"){
+    zoneTune = JSON.parse(JSON.stringify(DEFAULT_TUNE));
+    saveJson(ZTUNE_KEY, zoneTune);
+  }else{
+    Object.keys(DEFAULT_TUNE).forEach(k=>{ if(!zoneTune[k]) zoneTune[k] = {...DEFAULT_TUNE[k]}; });
+    saveJson(ZTUNE_KEY, zoneTune);
+  }
+
+  const zoneSelect = $("zoneSelect");
+  const zdxEl = $("zdx"), zdyEl = $("zdy"), zscEl = $("zsc");
+  const zdxVal = $("zdxVal"), zdyVal = $("zdyVal"), zscVal = $("zscVal");
+  const zoneOut = $("zoneOut");
+  const polys = Array.from(document.querySelectorAll(".zone"));
+
+  zoneSelect.innerHTML = "";
+  polys.forEach(p=>{
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    opt.textContent = p.dataset.zone;
+    zoneSelect.appendChild(opt);
+  });
+
+  function applyOne(polyId){
+    const p = document.getElementById(polyId);
+    if(!p) return;
+    const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
+    p.setAttribute("transform", `translate(${t.dx} ${t.dy}) scale(${t.sc})`);
+  }
+  function applyAll(){ polys.forEach(p=>applyOne(p.id)); }
+
+  function loadZoneToUI(polyId){
+    const t = zoneTune[polyId] || {dx:0, dy:0, sc:1};
+    zdxEl.value = t.dx; zdyEl.value = t.dy; zscEl.value = t.sc;
+    zdxVal.textContent = t.dx;
+    zdyVal.textContent = t.dy;
+    zscVal.textContent = Number(t.sc).toFixed(3);
+    zoneOut.textContent = `${polyId}: transform="translate(${t.dx} ${t.dy}) scale(${Number(t.sc).toFixed(3)})"`;
+  }
+  function onZoneTuneChange(){
+    const id = zoneSelect.value;
+    zoneTune[id] = { dx:Number(zdxEl.value), dy:Number(zdyEl.value), sc:Number(zscEl.value) };
+    saveJson(ZTUNE_KEY, zoneTune);
+    applyOne(id);
+    loadZoneToUI(id);
+    updateZoneVisuals();
+    requestRadarRedraw(true);
+  }
+  zoneSelect.addEventListener("change", ()=> loadZoneToUI(zoneSelect.value));
+  zdxEl.addEventListener("input", onZoneTuneChange);
+  zdyEl.addEventListener("input", onZoneTuneChange);
+  zscEl.addEventListener("input", onZoneTuneChange);
+
+  $("resetZoneBtn").addEventListener("click", ()=>{
+    const id = zoneSelect.value;
+    zoneTune[id] = {...(DEFAULT_TUNE[id] || {dx:0,dy:0,sc:1})};
+    saveJson(ZTUNE_KEY, zoneTune);
+    applyOne(id);
+    loadZoneToUI(id);
+    updateZoneVisuals();
+    requestRadarRedraw(true);
+    toast("Zone reset");
+  });
+
+  $("copyZoneBtn").addEventListener("click", async ()=>{
+    const lines = polys.map(p=>{
+      const t = zoneTune[p.id] || {dx:0, dy:0, sc:1};
+      return `${p.id}: translate(${t.dx},${t.dy}) scale(${Number(t.sc).toFixed(3)})`;
+    }).join("\n");
+    try{ await navigator.clipboard.writeText(lines); toast("✅ Config copiée"); }
+    catch{ toast("⚠️ Copie impossible"); }
+  });
+
+  // ===== Modes buttons =====
   const modeSujetBtn = $("modeSujetBtn");
   const modeStephaneBtn = $("modeStephaneBtn");
   const modePresenceBtn = $("modePresenceBtn");
@@ -2710,26 +2959,16 @@
   modeDureteBtn.addEventListener("click", ()=> setMode("durete"));
   modeWordsBtn.addEventListener("click", ()=> setMode("words"));
 
-  // ✅ Vider tableau : mdp obligatoire
-  $("resetPeopleBtn").addEventListener("click", ()=>{
-    closeMenu();
-    const pw = prompt("Mot de passe ?");
-    if(pw !== TABLE_PASSWORD){ toast("❌ Mot de passe incorrect"); return; }
-    if(confirm("Supprimer TOUT l'historique des personnes ?")){
-      savePeople([]);
-      selectedRowId = null;
-      renderPeople();
-      toast("Historique supprimé");
-    }
-  });
-
-  // Init
+  // ===== INIT =====
   applyAccent(accent);
   $("accentSelect").value = accent;
 
   applyUiAlpha(uiAlpha);
   applyZoneStyle(zStyle);
   applySliderUI(7);
+
+  applyAll();
+  loadZoneToUI(zoneSelect.value);
 
   setMode(mode);
   setProfileUI();
@@ -2754,5 +2993,7 @@
 </script>
 
 </body>
-</html>  
+</html>
+  
+</head>
 <body>
