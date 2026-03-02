@@ -1,4 +1,3 @@
-<!-- PARTIE 1/4 -->
 <!doctype html>
 <html lang="fr">
 <head>
@@ -327,7 +326,7 @@
     .collapse{display:none}
     .collapse.show{display:block}
 
-    /* ✅ Slider (inchangé globalement) */
+    /* ✅ Slider */
     .ratingSlider{
       width:100%;
       margin-top:10px;
@@ -675,9 +674,93 @@
 
     /* hidden inputs */
     .hiddenInputs{display:none;}
+
+    /* ===========================
+       ✅ AJOUTS : Word cloud + inputs
+       =========================== */
+
+    /* Mode mots : cacher seat, afficher cloud */
+    .wordMode .seatFrame { display:none; }
+    .wordMode .wordCloudFrame { display:flex; }
+
+    .wordCloudFrame{
+      width:100%;
+      border-top: 1px solid rgba(255,255,255,.06);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      padding:14px;
+      min-height: min(72vh, 900px);
+    }
+    .wordCloudCard{
+      width:100%;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.12);
+      border-radius: 18px;
+      padding:14px;
+    }
+    .wordCloudHead{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .wordCloudHead b{font-size:1rem}
+    .wordCloudMeta{ color: var(--muted); font-size:.82rem; font-weight:850; }
+    .wordCloud{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 12px;
+      padding: 10px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(600px 420px at 40% 30%, rgba(79,140,255,.10), transparent 60%),
+        radial-gradient(600px 420px at 70% 70%, rgba(124,58,237,.10), transparent 60%),
+        rgba(0,0,0,.08);
+      min-height: 240px;
+    }
+    .wWord{
+      font-weight:950;
+      letter-spacing:.2px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(238,242,255,.92);
+      line-height: 1;
+      user-select:none;
+      transform: translateZ(0);
+    }
+
+    .rightBox{
+      margin-top:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.12);
+      border-radius:18px;
+      padding:12px;
+    }
+    .rightBox h3{margin:0 0 8px; font-size:.95rem}
+    .smallHint{color:var(--muted); font-size:.80rem; font-weight:850; margin-top:6px}
+
+    .wordsRow{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    @media (max-width:900px){ .wordsRow{grid-template-columns:1fr;} }
+
+    #globalComment{
+      width:100%;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color:var(--txt);
+      border-radius:14px;
+      padding:9px 10px;
+      min-height:64px;
+      resize:vertical;
+      outline:none;
+    }
+    #globalComment:focus{
+      border-color: rgba(124,58,237,.55);
+      box-shadow: 0 0 0 4px rgba(124,58,237,.18);
+    }
   </style>
 </head>
-<!-- PARTIE 2/4 -->
 <body>
 <header>
   <div class="wrap top">
@@ -769,6 +852,7 @@
         <button class="btn small" id="modeStephaneBtn">Note</button>
         <button class="btn small" id="modePresenceBtn">Présence</button>
         <button class="btn small" id="modeDureteBtn">Dureté</button>
+        <button class="btn small" id="modeWordsBtn">Mots</button>
         <span class="pill" id="modePill">Mode —</span>
       </div>
       <div class="pill good" id="globalPill">Confort global —</div>
@@ -779,7 +863,6 @@
         <image id="seatImg" href="seat.png" x="0" y="0" width="270.933" height="406.4" />
         <g id="zonesLayer">
           <rect id="z_tete" class="zone" data-zone="Coussin de tête" x="110" y="8" width="50" height="32" rx="12" ry="12" />
-          <!-- ✅ ZONES SVG (identiques) -->
           <path id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)"
             d="m 82.248776,115.24582 4.226224,-1.30038 3.576032,-0.97528 3.413487,-0.65019 3.576034,-0.65019 5.282777,-0.73146 3.90113,-0.48764 3.08839,-0.65019 1.46293,-0.16254 h 1.2191 l 2.11311,-0.0813 0.81273,-0.16255 1.70675,-0.16254 2.03183,-0.24382 1.62547,-0.0813 1.86929,0.0813 1.78802,-0.0813 1.86929,-0.0813 h 2.27566 2.27566 l 2.85054,-0.0363 h 1.72408 l 1.6666,-0.0575 1.60913,-0.11494 3.39067,0.0575 6.55147,-0.0575 4.59753,0.45976 2.87345,0.22987 2.36951,0.41311 1.78802,1.13783 0.97528,1.13783 0.81274,0.81273 0.97528,1.78802 0.32509,0.65019 0.24383,0.97528 0.32509,1.2191 0.0813,0.97528 0.16255,0.97528 -0.16255,0.89401 v 0.73146 l -0.24382,0.73147 -0.32509,1.05655 -5.44533,12.02848 -17.55507,-0.89401 -7.31462,-0.0813 -6.7457,0.0813 -9.67154,0.16255 -18.53036,-0.16255 -4.388768,0.0813 -2.438204,0.3251 -2.113111,0.48764 -2.194385,0.65019 -1.056555,0.81273 -3.169666,-6.98952 -2.275658,-6.25806 -0.894008,-2.84457 0.08127,-1.05656 0.325096,-0.73146 0.325094,-0.65019 0.48764,-0.48764 0.812734,-0.81273 z" />
           <path id="z_dossier_rouge" class="zone" data-zone="Dossier milieu (rouge)"
@@ -810,6 +893,20 @@
             d="m 68.919925,272.75385 -1.13783,6.17678 -1.462923,7.47717 -0.812734,6.50187 -1.300377,9.75284 -0.325094,0.16253 -3.25094,-0.16253 -3.250938,-0.65019 -3.901128,-1.46293 -3.250941,-1.62547 -3.576034,-2.27566 -3.088394,-3.0884 -2.763297,-3.57603 -1.788018,-3.41349 -1.62547,-5.52659 -0.325093,-2.60075 0.48764,-3.73859 0.812736,-3.73859 0.975281,-3.08837 0.162547,-1.13785 1.62547,-0.97528 1.462924,-0.48762 2.275657,-0.16256 2.113111,0.16256 2.275657,0.16253 2.113111,0.16256 1.950564,0.65019 h 0.975283 l 2.438204,0.48762 2.600754,0.65019 2.438204,0.81275 2.438204,0.97528 2.438204,1.46291 z" />
         </g>
       </svg>
+    </div>
+
+    <!-- ✅ Word cloud frame (Mode Mots) -->
+    <div class="wordCloudFrame" id="wordCloudFrame">
+      <div class="wordCloudCard">
+        <div class="wordCloudHead">
+          <b>Nuage de mots</b>
+          <div class="wordCloudMeta" id="wordCloudMeta">—</div>
+        </div>
+        <div class="wordCloud" id="wordCloud"></div>
+        <div class="hint" style="margin-top:10px">
+          Plus un mot est cité dans l’historique, plus il est grand.
+        </div>
+      </div>
     </div>
 
     <div class="p" style="border-top:1px solid rgba(255,255,255,.06)">
@@ -862,6 +959,34 @@
         <input id="nom"><input id="prenom"><input id="taille"><input id="poids">
       </div>
 
+      <!-- ✅ 3 mots + commentaire global -->
+      <div class="rightBox">
+        <h3>3 mots pour décrire le siège</h3>
+        <div class="wordsRow">
+          <div class="field">
+            <label>Mot 1</label>
+            <input id="w1" placeholder="Ex: ferme" autocomplete="off">
+          </div>
+          <div class="field">
+            <label>Mot 2</label>
+            <input id="w2" placeholder="Ex: enveloppant" autocomplete="off">
+          </div>
+          <div class="field">
+            <label>Mot 3</label>
+            <input id="w3" placeholder="Ex: stable" autocomplete="off">
+          </div>
+        </div>
+        <div class="smallHint">Maximum 3 mots. Ils seront utilisés dans le mode “Mots”.</div>
+      </div>
+
+      <div class="rightBox">
+        <h3>Commentaire global</h3>
+        <div class="hint" id="globalCommentHint">
+          Obligatoire seulement quand <b>toutes les zones</b> sont notées.
+        </div>
+        <textarea id="globalComment" placeholder="Commentaire global (obligatoire si toutes les zones sont notées)"></textarea>
+      </div>
+
       <div class="list" id="list"></div>
     </div>
   </aside>
@@ -908,7 +1033,7 @@
           <div class="chips" id="critOptions"></div>
         </div>
 
-        <label class="commentLabel" for="reasonText">Commentaire</label>
+        <label class="commentLabel" for="reasonText">Commentaire (zone)</label>
         <textarea id="reasonText" placeholder="Commentaire (optionnel)"></textarea>
       </div>
 
@@ -1058,7 +1183,6 @@
 </div>
 
 <div class="toast" id="toast">OK</div>
-<!-- PARTIE 3/4 -->
 <script>
   const $ = (id)=>document.getElementById(id);
 
@@ -1121,62 +1245,53 @@
   });
   document.addEventListener("click", closeMenu);
 
-  // ===== Fullscreen =====
-  // ===== Fullscreen (verrouillé) =====
-const fsBtn = $("fsBtn");
+  // ===== Fullscreen (verrouillé UX) =====
+  const fsBtn = $("fsBtn");
+  let fsLocked = false;
+  let fsRelockPending = false;
 
-let fsLocked = false;          // l'utilisateur a demandé le plein écran
-let fsRelockPending = false;   // on attend un prochain tap pour le remettre
-
-function isFullscreen(){
-  return !!(document.fullscreenElement || document.webkitFullscreenElement);
-}
-
-async function enterFullscreen(){
-  const el = document.documentElement;
-  try{
-    if(el.requestFullscreen) await el.requestFullscreen();
-  }catch(e){}
-}
-
-async function exitFullscreen(){
-  try{
-    if(document.exitFullscreen) await document.exitFullscreen();
-  }catch(e){}
-}
-
-async function setFullscreenLocked(on){
-  fsLocked = !!on;
-  if(fsLocked){
-    await enterFullscreen();
-    toast("⛶ Plein écran verrouillé");
-  }else{
-    await exitFullscreen();
-    toast("⛶ Plein écran quitté");
+  function isFullscreen(){
+    return !!(document.fullscreenElement || document.webkitFullscreenElement);
   }
-}
-
-// bouton menu
-fsBtn.addEventListener("click", async ()=>{
-  await setFullscreenLocked(!fsLocked);
-  closeMenu();
-});
-
-// si on sort du fullscreen alors que c'est verrouillé -> on ré-entre au prochain tap
-document.addEventListener("fullscreenchange", ()=>{
-  if(fsLocked && !isFullscreen()){
-    fsRelockPending = true;
-    toast("⛶ Tap pour revenir en plein écran");
+  async function enterFullscreen(){
+    const el = document.documentElement;
+    try{
+      if(el.requestFullscreen) await el.requestFullscreen();
+      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    }catch(e){}
   }
-});
-
-// dès qu'il y a un geste utilisateur, si pending -> on ré-entre
-document.addEventListener("pointerdown", async ()=>{
-  if(fsLocked && fsRelockPending && !isFullscreen()){
-    fsRelockPending = false;
-    await enterFullscreen();
+  async function exitFullscreen(){
+    try{
+      if(document.exitFullscreen) await document.exitFullscreen();
+      else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+    }catch(e){}
   }
-}, true);
+  async function setFullscreenLocked(on){
+    fsLocked = !!on;
+    if(fsLocked){
+      await enterFullscreen();
+      toast("⛶ Plein écran verrouillé");
+    }else{
+      await exitFullscreen();
+      toast("⛶ Plein écran quitté");
+    }
+  }
+  fsBtn.addEventListener("click", async ()=>{
+    await setFullscreenLocked(!fsLocked);
+    closeMenu();
+  });
+  document.addEventListener("fullscreenchange", ()=>{
+    if(fsLocked && !isFullscreen()){
+      fsRelockPending = true;
+      toast("⛶ Tap pour revenir en plein écran");
+    }
+  });
+  document.addEventListener("pointerdown", async ()=>{
+    if(fsLocked && fsRelockPending && !isFullscreen()){
+      fsRelockPending = false;
+      await enterFullscreen();
+    }
+  }, true);
 
   // ===== Orientation helper =====
   const rotateOverlay = $("rotateOverlay");
@@ -1229,6 +1344,12 @@ document.addEventListener("pointerdown", async ()=>{
     gatePrenom.value = "";
     gateTaille.value = "";
     gatePoids.value = "";
+
+    // reset mots + commentaire global
+    if($("w1")) $("w1").value = "";
+    if($("w2")) $("w2").value = "";
+    if($("w3")) $("w3").value = "";
+    if($("globalComment")) $("globalComment").value = "";
 
     setProfileUI();
   }
@@ -1338,24 +1459,43 @@ document.addEventListener("pointerdown", async ()=>{
   BOLSTER_GROUPS.forEach(g => g.members.forEach(m => MEMBER_TO_GROUP.set(m, g.key)));
   function effectiveKeyForZone(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
   function effectiveDisplayName(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
-  function membersForKey(key){
-    const g = BOLSTER_GROUPS.find(x=>x.key===key);
-    return g ? g.members : [key];
-  }
   function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
 
-  // Criteria
-  const CRIT_SCALE = ["Inacceptable","Très insatisfait","Insatisfait","Acceptable","Satisfait","Très satisfait","Optimum"];
-  const CRITERIA = [
-    { id:"presence",   label:"Présence" },
-    { id:"durete",     label:"Dureté" },
-    { id:"symetrie",   label:"Symétrie" },
-    { id:"homogeneite",label:"Homogénéité" }
+  // ===== Criteria (NOUVELLE ÉCHELLE) =====
+  const CRIT_SCALE = [
+    "Beaucoup trop faible",
+    "Trop faible",
+    "Légèrement trop faible",
+    "Satisfaisante",
+    "Légèrement trop forte",
+    "Trop forte",
+    "Beaucoup trop forte"
   ];
-  const CRIT_OPTIONS = { presence:CRIT_SCALE, durete:CRIT_SCALE, symetrie:CRIT_SCALE, homogeneite:CRIT_SCALE };
+
+  const CRITERIA = [
+    { id:"presence",    label:"Présence" },
+    { id:"durete",      label:"Dureté" },
+    { id:"symetrie",    label:"Symétrie" },
+    { id:"homogeneite", label:"Homogénéité" }
+  ];
+
+  const CRIT_OPTIONS = {
+    presence: CRIT_SCALE,
+    durete: CRIT_SCALE,
+    symetrie: CRIT_SCALE,
+    homogeneite: CRIT_SCALE
+  };
+
+  // Mapping -> couleurs identiques via sliderTheme:
+  // Rouge 1/2, Orange 4, Jaune 6, Vert 8/9, Cyan 10
   const CRIT_TO_SCORE = {
-    "Inacceptable": 1, "Très insatisfait": 2, "Insatisfait": 4,
-    "Acceptable": 6, "Satisfait": 8, "Très satisfait": 9, "Optimum": 10
+    "Beaucoup trop faible": 1,
+    "Trop faible": 2,
+    "Légèrement trop faible": 4,
+    "Satisfaisante": 6,
+    "Légèrement trop forte": 8,
+    "Trop forte": 9,
+    "Beaucoup trop forte": 10
   };
   function critLabelToScore(label){ return CRIT_TO_SCORE[label] ?? null; }
 
@@ -1507,10 +1647,12 @@ document.addEventListener("pointerdown", async ()=>{
         return;
       }
 
+      // Mode "words" ou autre: rien à colorer
       hideZone(poly);
     });
   }
-  <!-- PARTIE 4/4 -->
+</script>
+<script>
   // ===== KIVIAT (avec animation + valeurs) =====
   const kiviatCanvas = $("kiviat");
   const kiviatMetaEl = $("kiviatMeta");
@@ -1748,6 +1890,9 @@ document.addEventListener("pointerdown", async ()=>{
     updateZoneVisuals();
     setProfileUI();
     requestRadarRedraw(true);
+
+    // si on est en mode mots, refresh cloud
+    if(mode === "words") renderWordCloud();
   }
 
   // ===== Criteria rendering =====
@@ -1766,7 +1911,7 @@ document.addEventListener("pointerdown", async ()=>{
     return CRITERIA.filter(c => (c.id !== "symetrie") ? true : isBolster);
   }
 
-  function renderCriteria(score){
+  function renderCriteria(){
     const listEl = $("criteriaList");
     const panel = $("criteriaPanel");
     const criteriaList = visibleCriteriaForActiveKey();
@@ -1787,7 +1932,7 @@ document.addEventListener("pointerdown", async ()=>{
       listEl.querySelectorAll(".criteriaBtn").forEach(btn=>{
         btn.addEventListener("click", ()=>{
           activeCritId = btn.dataset.crit;
-          renderCriteria($("slider").value);
+          renderCriteria();
         });
       });
 
@@ -1804,7 +1949,7 @@ document.addEventListener("pointerdown", async ()=>{
     `;
     listEl.querySelector(".criteriaBtn").addEventListener("click", ()=>{
       activeCritId = null;
-      renderCriteria($("slider").value);
+      renderCriteria();
     });
 
     panel.style.display = "block";
@@ -1819,7 +1964,7 @@ document.addEventListener("pointerdown", async ()=>{
 
     $("backToCriteriaBtn").onclick = ()=>{
       activeCritId = null;
-      renderCriteria($("slider").value);
+      renderCriteria();
     };
 
     document.querySelectorAll("#critOptions .chip").forEach(ch=>{
@@ -1827,7 +1972,7 @@ document.addEventListener("pointerdown", async ()=>{
         const opt = ch.dataset.opt;
         if(activeCriteria[activeCritId] === opt) delete activeCriteria[activeCritId];
         else activeCriteria[activeCritId] = opt;
-        renderCriteria($("slider").value);
+        renderCriteria();
       });
     });
   }
@@ -1851,7 +1996,7 @@ document.addEventListener("pointerdown", async ()=>{
     $("reasonText").value = existing?.comment || "";
 
     setCriteriaDefaultsFromExisting(existing);
-    renderCriteria(v);
+    renderCriteria();
 
     $("overlay").classList.add("show");
     $("sheet").classList.add("show");
@@ -1868,7 +2013,7 @@ document.addEventListener("pointerdown", async ()=>{
     $("sliderVal").textContent = v;
     applySliderUI(v);
     activeCritId = null;
-    renderCriteria(v);
+    renderCriteria();
   });
 
   $("saveBtn").addEventListener("click", ()=>{
@@ -2073,7 +2218,6 @@ document.addEventListener("pointerdown", async ()=>{
       </tr>
     `).join("");
 
-    // restore selected highlight
     if(selectedRowId !== null){
       const tr = document.querySelector(`tr[data-row="${selectedRowId}"]`);
       if(tr) tr.classList.add("selected");
@@ -2108,7 +2252,6 @@ document.addEventListener("pointerdown", async ()=>{
 
     $("peopleBody").querySelectorAll("tr").forEach(tr=>{
       tr.addEventListener("click", ()=>{
-        // highlight selection
         $("peopleBody").querySelectorAll("tr").forEach(x=>x.classList.remove("selected"));
         tr.classList.add("selected");
         selectedRowId = Number(tr.dataset.row);
@@ -2123,6 +2266,13 @@ document.addEventListener("pointerdown", async ()=>{
         $("taille").value = entry.taille || "";
         $("poids").value = entry.poids || "";
 
+        // ✅ restore global comment + words
+        if($("globalComment")) $("globalComment").value = entry.globalComment || "";
+        const ws = Array.isArray(entry.words) ? entry.words : [];
+        if($("w1")) $("w1").value = ws[0] || "";
+        if($("w2")) $("w2").value = ws[1] || "";
+        if($("w3")) $("w3").value = ws[2] || "";
+
         ratings = entry.ratings || {};
         greenClicked = rebuildGreenFromRatings(ratings);
 
@@ -2133,9 +2283,11 @@ document.addEventListener("pointerdown", async ()=>{
         toast("✅ Enregistrement chargé");
       });
     });
+
+    renderWordCloud();
   }
 
-  // ===== CSV export/import (léger) =====
+  // ===== CSV export/import =====
   function buildExportZoneKeys(){
     const zoneNames = Array.from(document.querySelectorAll(".zone")).map(z => z.dataset.zone);
     const keys = [];
@@ -2154,7 +2306,8 @@ document.addEventListener("pointerdown", async ()=>{
     const esc = (v)=>`"${String(v??"").replaceAll('"','""')}"`;
 
     const zoneKeys = buildExportZoneKeys();
-    const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale"];
+    const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale","Commentaire global","Mots (1-3)"];
+
     const perZoneHeaders = [];
     for(const key of zoneKeys){
       perZoneHeaders.push(
@@ -2171,7 +2324,9 @@ document.addEventListener("pointerdown", async ()=>{
     const lines = [allHeaders.map(esc).join(SEP)];
 
     for(const p of people){
-      const row = [p.ts, p.nom, p.prenom, p.taille, p.poids, p.globalAvg];
+      const words = Array.isArray(p.words) ? p.words.join(", ") : "";
+      const row = [p.ts, p.nom, p.prenom, p.taille, p.poids, p.globalAvg, (p.globalComment||""), words];
+
       for(const key of zoneKeys){
         const rz = getRatingByKey(p.ratings, key);
         const score = rz?.score ?? "";
@@ -2243,6 +2398,8 @@ document.addEventListener("pointerdown", async ()=>{
     const idxTaille = H.indexOf("taille");
     const idxPoids = H.indexOf("poids");
     const idxGlobal = H.indexOf("moyenne globale");
+    const idxGComm = H.indexOf("commentaire global");
+    const idxWords = H.indexOf("mots (1-3)");
 
     if(idxNom < 0 || idxPrenom < 0 || idxGlobal < 0){
       throw new Error("Header CSV non reconnu");
@@ -2259,6 +2416,10 @@ document.addEventListener("pointerdown", async ()=>{
       const taille = (idxTaille>=0 ? cols[idxTaille] : "") || "";
       const poids = (idxPoids>=0 ? cols[idxPoids] : "") || "";
       const globalAvg = cols[idxGlobal] || "";
+
+      const globalComment = (idxGComm>=0 ? (cols[idxGComm] || "") : "");
+      const wordsStr = (idxWords>=0 ? (cols[idxWords] || "") : "");
+      const words = wordsStr.split(",").map(x=>x.trim()).filter(Boolean).slice(0,3);
 
       const ratingsObj = {};
       zoneKeys.forEach(key=>{
@@ -2288,7 +2449,7 @@ document.addEventListener("pointerdown", async ()=>{
         };
       });
 
-      people.push({ ts, nom, prenom, taille, poids, globalAvg, ratings: ratingsObj });
+      people.push({ ts, nom, prenom, taille, poids, globalAvg, ratings: ratingsObj, globalComment, words });
     }
     return people;
   }
@@ -2315,6 +2476,84 @@ document.addEventListener("pointerdown", async ()=>{
     }
   });
 
+  // ===== Helpers commentaire global obligatoire =====
+  function uniqueZoneKeysCount(){
+    return buildExportZoneKeys().length;
+  }
+  function ratedKeysCount(){
+    const keys = buildExportZoneKeys();
+    let c = 0;
+    for(const k of keys){
+      const s = ratings?.[k]?.score;
+      if(Number.isFinite(Number(s))) c++;
+    }
+    return c;
+  }
+  function allZonesRated(){
+    return ratedKeysCount() >= uniqueZoneKeysCount();
+  }
+
+  function getThreeWords(){
+    const w1 = $("w1")?.value?.trim() || "";
+    const w2 = $("w2")?.value?.trim() || "";
+    const w3 = $("w3")?.value?.trim() || "";
+    return [w1,w2,w3].map(x=>x.replace(/\s+/g," ").trim()).filter(Boolean).slice(0,3);
+  }
+  function normalizeWord(w){
+    return String(w||"").trim().replace(/\s+/g," ").toLowerCase();
+  }
+
+  // ===== Word Cloud =====
+  function collectWordStats(){
+    const people = loadPeople();
+    const freq = new Map();
+
+    for(const p of people){
+      const arr = Array.isArray(p.words) ? p.words : [];
+      for(const raw of arr){
+        const w = normalizeWord(raw);
+        if(!w) continue;
+        freq.set(w, (freq.get(w) || 0) + 1);
+      }
+    }
+
+    return Array.from(freq.entries())
+      .map(([word,count])=>({word,count}))
+      .sort((a,b)=> b.count - a.count || a.word.localeCompare(b.word));
+  }
+
+  function renderWordCloud(){
+    const cloud = $("wordCloud");
+    const meta = $("wordCloudMeta");
+    if(!cloud || !meta) return;
+
+    const items = collectWordStats();
+    const peopleCount = loadPeople().length;
+
+    if(!items.length){
+      meta.textContent = `Aucun mot (0 personne)`;
+      cloud.innerHTML = `<div class="hint">Aucun mot enregistré. Ajoute 1–3 mots puis “Enregistrer”.</div>`;
+      return;
+    }
+
+    const max = Math.max(...items.map(x=>x.count));
+    const min = Math.min(...items.map(x=>x.count));
+
+    meta.textContent = `${items.length} mot(s) • ${peopleCount} personne(s)`;
+
+    const sizeFor = (c)=>{
+      if(max === min) return 22;
+      const t = (c - min) / (max - min);
+      return 14 + t * 26; // 14 → 40
+    };
+
+    cloud.innerHTML = items.slice(0,60).map(({word,count})=>{
+      const fs = sizeFor(count).toFixed(1);
+      const title = `${count} fois`;
+      return `<span class="wWord" style="font-size:${fs}px" title="${escapeHtml(title)}">${escapeHtml(word)}</span>`;
+    }).join("");
+  }
+
   // ===== Save + new person =====
   $("savePersonBtn").addEventListener("click", ()=>{
     const nom = $("nom").value.trim();
@@ -2331,11 +2570,24 @@ document.addEventListener("pointerdown", async ()=>{
     const a = avgGlobalComfort();
     if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
+    // ✅ commentaire global obligatoire si toutes zones notées
+    const mustComment = allZonesRated();
+    const globalComment = $("globalComment")?.value?.trim() || "";
+    if(mustComment && !globalComment){
+      toast("⚠️ Commentaire global obligatoire");
+      $("globalComment")?.focus();
+      return;
+    }
+
+    const words = getThreeWords();
+
     const entry = {
       ts: new Date().toLocaleString("fr-FR"),
       nom, prenom, taille, poids,
       globalAvg: a.toFixed(1),
-      ratings
+      ratings,
+      globalComment,
+      words
     };
 
     const people = loadPeople();
@@ -2351,6 +2603,12 @@ document.addEventListener("pointerdown", async ()=>{
     greenClicked = {};
     saveJson(GREEN_KEY, greenClicked);
     updateSummary();
+
+    // reset global inputs
+    if($("globalComment")) $("globalComment").value = "";
+    if($("w1")) $("w1").value = "";
+    if($("w2")) $("w2").value = "";
+    if($("w3")) $("w3").value = "";
 
     setNewPersonEnabled(true);
   });
@@ -2535,32 +2793,41 @@ document.addEventListener("pointerdown", async ()=>{
   const modeStephaneBtn = $("modeStephaneBtn");
   const modePresenceBtn = $("modePresenceBtn");
   const modeDureteBtn = $("modeDureteBtn");
+  const modeWordsBtn = $("modeWordsBtn");
   const modePill = $("modePill");
 
   function setMode(m){
     mode = m;
     saveJson(MODE_KEY, mode);
 
+    document.body.classList.toggle("wordMode", mode === "words");
+
     modeSujetBtn.classList.toggle("modeOn", mode === "sujet");
     modeStephaneBtn.classList.toggle("modeOn", mode === "stephane");
     modePresenceBtn.classList.toggle("modeOn", mode === "presence");
     modeDureteBtn.classList.toggle("modeOn", mode === "durete");
+    modeWordsBtn.classList.toggle("modeOn", mode === "words");
 
     modePill.textContent =
       mode === "sujet" ? "Sujet" :
       mode === "stephane" ? "Note" :
-      mode === "presence" ? "Présence" : "Dureté";
+      mode === "presence" ? "Présence" :
+      mode === "durete" ? "Dureté" :
+      "Mots";
 
     setSeatBackground(mode);
     closeSheet();
     updateZoneVisuals();
     requestRadarRedraw(true);
+
+    if(mode === "words") renderWordCloud();
   }
 
   modeSujetBtn.addEventListener("click", ()=> setMode("sujet"));
   modeStephaneBtn.addEventListener("click", ()=> setMode("stephane"));
   modePresenceBtn.addEventListener("click", ()=> setMode("presence"));
   modeDureteBtn.addEventListener("click", ()=> setMode("durete"));
+  modeWordsBtn.addEventListener("click", ()=> setMode("words"));
 
   // ===== Init =====
   applyAccent(accent);
@@ -2593,5 +2860,6 @@ document.addEventListener("pointerdown", async ()=>{
     img.src = candidates[0] + "?v=" + Date.now();
   })();
 </script>
+
 </body>
 </html>
