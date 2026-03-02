@@ -6,7 +6,6 @@
   <meta name="theme-color" content="#070a14" />
   <title>seat comf</title>
 
-  <!-- ✅ Police moderne -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
@@ -17,10 +16,8 @@
       --cardTop:rgba(255,255,255,.085);
       --cardBot:rgba(0,0,0,.14);
       --line:rgba(255,255,255,.11);
-
       --txt:#eef2ff; --muted:#a7b0d8;
 
-      /* ✅ Accent (modifiable) */
       --a1:#4f8cff; --a2:#7c3aed;
 
       --shadow: 0 18px 55px rgba(0,0,0,.40);
@@ -71,9 +68,7 @@
       object-fit:contain; display:block;
       filter: drop-shadow(0 10px 22px rgba(0,0,0,.40));
     }
-    @media (max-width:520px){
-      .logo{ height:34px; max-width:160px; }
-    }
+    @media (max-width:520px){ .logo{ height:34px; max-width:160px; } }
 
     .btn{
       border:1px solid rgba(255,255,255,.14);
@@ -95,11 +90,9 @@
     .btn.icon{display:inline-flex;gap:8px;align-items:center}
     .btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
 
-    /* ✅ Menu ⋯ */
     .menuWrap{ position:relative; }
     .menu{
-      position:absolute;
-      right:0; top: calc(100% + 10px);
+      position:absolute; right:0; top: calc(100% + 10px);
       width: 240px;
       background: rgba(17,25,50,.92);
       border:1px solid rgba(255,255,255,.14);
@@ -138,9 +131,7 @@
     }
     @media (max-width:980px){
       .grid{grid-template-columns:1fr;}
-      @media (orientation:landscape){
-        .grid{grid-template-columns: 1.15fr .85fr;}
-      }
+      @media (orientation:landscape){ .grid{grid-template-columns: 1.15fr .85fr;} }
     }
 
     .card{
@@ -172,7 +163,6 @@
       background: rgba(46, 204, 113, .10);
     }
 
-    /* ✅ champs global (fix inputs blancs) */
     .field{display:flex;flex-direction:column;gap:6px}
     .field label{font-size:.82rem;color:var(--muted);font-weight:900}
     .field input, .field select{
@@ -189,7 +179,6 @@
       box-shadow: 0 0 0 4px rgba(124,58,237,.18);
     }
 
-    /* ✅ Bannière testeur */
     .profileBar{
       display:flex; gap:10px; align-items:center; justify-content:space-between;
       padding:10px 12px;
@@ -304,7 +293,6 @@
     .val.s78, .val.s9 { border-color: rgba(46,204,113,.55); background: rgba(46,204,113,.14); }
     .val.s10        { border-color: rgba(0,229,255,.55); background: rgba(0,229,255,.14); }
 
-    /* ✅ Tableau plus moderne */
     .tableTitle{
       display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
       margin-top:6px;
@@ -326,7 +314,6 @@
     .collapse{display:none}
     .collapse.show{display:block}
 
-    /* ✅ Slider */
     .ratingSlider{
       width:100%;
       margin-top:10px;
@@ -377,7 +364,6 @@
       box-shadow: 0 10px 22px rgba(0,0,0,.35);
     }
 
-    /* ✅ Modales / overlays */
     .overlay{position:fixed; inset:0; background: rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:.18s; z-index:20}
     .overlay.show{opacity:1; pointer-events:auto}
 
@@ -413,7 +399,7 @@
       flex: 0 0 auto;
     }
 
-    .scoreRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+    .scoreRow{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px}
     .scoreBig{
       font-weight:950;font-size:1.4rem;
       background: linear-gradient(90deg,var(--a1),var(--a2));
@@ -421,6 +407,7 @@
       color:transparent;
     }
     .scale{color:var(--muted);font-size:.82rem;display:flex;justify-content:space-between;margin-top:4px}
+
     .sheetActions{display:flex;gap:10px;margin-top:14px}
     .sheetActions .btn{flex:1}
 
@@ -494,7 +481,6 @@
       transition:.2s; box-shadow: var(--shadow); max-width:92vw; font-weight:900;}
     .toast.show{opacity:1; transform: translateX(-50%) translateY(0)}
 
-    /* ✅ Rotate overlay */
     .rotateOverlay{
       position:fixed; inset:0; z-index:50;
       display:none;
@@ -512,7 +498,6 @@
       box-shadow: var(--shadow);
     }
 
-    /* ✅ Gate profil */
     .profileOverlay{
       position:fixed; inset:0; z-index:70;
       display:none;
@@ -537,7 +522,7 @@
     .profileActions .btn{flex:1}
     .devNote{font-size:.78rem; color:rgba(167,176,216,.85); margin-top:10px}
 
-    /* ✅ KIVIAT */
+    /* Kiviat */
     .kiviatWrap{ padding:12px; border-top: 1px solid rgba(255,255,255,.06); }
     .kiviatCard{
       border:1px solid rgba(255,255,255,.12);
@@ -575,7 +560,7 @@
       box-shadow: 0 0 0 5px rgba(255,255,255,.06);
     }
 
-    /* ✅ Captures modal */
+    /* Captures modal */
     .capOverlay{
       position:fixed; inset:0; z-index:90;
       background: rgba(0,0,0,.62);
@@ -621,7 +606,7 @@
       background: rgba(0,0,0,.20);
     }
 
-    /* ✅ Settings modal */
+    /* Settings modal */
     .modalOverlay{
       position:fixed; inset:0; z-index:80;
       background: rgba(0,0,0,.60);
@@ -675,22 +660,15 @@
     /* hidden inputs */
     .hiddenInputs{display:none;}
 
-    /* ===========================
-       ✅ AJOUTS : Word cloud + inputs
-       =========================== */
-
-    /* Mode mots : cacher seat, afficher cloud */
+    /* ========= Mode Mots (nuage désordonné) ========= */
     .wordMode .seatFrame { display:none; }
-    .wordMode .wordCloudFrame { display:flex; }
+    .wordMode .wordCloudFrame { display:block; }
 
     .wordCloudFrame{
       width:100%;
       border-top: 1px solid rgba(255,255,255,.06);
       display:none;
-      justify-content:center;
-      align-items:center;
       padding:14px;
-      min-height: min(72vh, 900px);
     }
     .wordCloudCard{
       width:100%;
@@ -698,27 +676,29 @@
       background: rgba(0,0,0,.12);
       border-radius: 18px;
       padding:14px;
+      overflow:hidden;
     }
     .wordCloudHead{
       display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
       margin-bottom:10px;
     }
-    .wordCloudHead b{font-size:1rem}
     .wordCloudMeta{ color: var(--muted); font-size:.82rem; font-weight:850; }
+
     .wordCloud{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px 12px;
-      padding: 10px;
+      position:relative;
+      width:100%;
+      height: min(68vh, 520px);
       border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
       background:
         radial-gradient(600px 420px at 40% 30%, rgba(79,140,255,.10), transparent 60%),
         radial-gradient(600px 420px at 70% 70%, rgba(124,58,237,.10), transparent 60%),
         rgba(0,0,0,.08);
-      min-height: 240px;
+      overflow:hidden;
     }
     .wWord{
+      position:absolute;
+      left:0; top:0;
       font-weight:950;
       letter-spacing:.2px;
       padding:6px 10px;
@@ -728,37 +708,56 @@
       color: rgba(238,242,255,.92);
       line-height: 1;
       user-select:none;
-      transform: translateZ(0);
+      white-space:nowrap;
+      transform: translate(-50%, -50%);
+      will-change: transform, left, top;
     }
 
-    .rightBox{
-      margin-top:12px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.12);
-      border-radius:18px;
+    /* ========= Modal commentaire global + 3 mots ========= */
+    .gcOverlay{
+      position:fixed; inset:0; z-index:95;
+      background: rgba(0,0,0,.62);
+      opacity:0; pointer-events:none;
+      transition:.18s;
+      display:flex; align-items:flex-end; justify-content:center;
+      padding: 12px 12px calc(14px + env(safe-area-inset-bottom));
+    }
+    .gcOverlay.show{opacity:1; pointer-events:auto}
+    .gcModal{
+      width:min(760px, 100%);
+      max-height: 86vh;
+      overflow:auto;
+      background: rgba(17,25,50,.95);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+    .gcHead{
+      position:sticky; top:0;
+      background: rgba(17,25,50,.95);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(255,255,255,.10);
       padding:12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
     }
-    .rightBox h3{margin:0 0 8px; font-size:.95rem}
-    .smallHint{color:var(--muted); font-size:.80rem; font-weight:850; margin-top:6px}
-
-    .wordsRow{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
-    @media (max-width:900px){ .wordsRow{grid-template-columns:1fr;} }
-
-    #globalComment{
+    .gcBody{padding:12px}
+    .gcGrid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;}
+    @media (max-width:700px){ .gcGrid{grid-template-columns:1fr;} }
+    #gcComment{
       width:100%;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(0,0,0,.18);
       color:var(--txt);
       border-radius:14px;
       padding:9px 10px;
-      min-height:64px;
+      min-height:88px;
       resize:vertical;
       outline:none;
+      margin-top:8px;
     }
-    #globalComment:focus{
-      border-color: rgba(124,58,237,.55);
-      box-shadow: 0 0 0 4px rgba(124,58,237,.18);
-    }
+    #gcComment:focus{border-color: rgba(124,58,237,.55); box-shadow: 0 0 0 4px rgba(124,58,237,.18);}
+    .gcActions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;}
+    .gcActions .btn{flex:1}
   </style>
 </head>
 <body>
@@ -768,7 +767,6 @@
       <img class="logo" id="logoImg" src="Forvia.png" alt="Forvia" loading="eager">
     </div>
 
-    <!-- ✅ Header clean + menu ⋯ -->
     <div class="row" style="gap:8px">
       <button class="btn" id="importBtn">Importer CSV</button>
       <input id="importFile" type="file" accept=".csv" style="display:none">
@@ -798,29 +796,17 @@
   </div>
 </div>
 
-<!-- ✅ GATE PROFIL -->
+<!-- Gate profil -->
 <div class="profileOverlay" id="profileOverlay">
   <div class="box">
     <b>Profil requis</b>
     <p>Renseigne <b>Nom</b>, <b>Prénom</b>, <b>Taille</b> et <b>Poids</b> pour accéder au test.</p>
 
     <div class="profileGrid">
-      <div class="field">
-        <label>Nom</label>
-        <input id="gateNom" placeholder="Ex: Dupont" autocomplete="off">
-      </div>
-      <div class="field">
-        <label>Prénom</label>
-        <input id="gatePrenom" placeholder="Ex: Amine" autocomplete="off">
-      </div>
-      <div class="field">
-        <label>Taille (cm)</label>
-        <input id="gateTaille" inputmode="numeric" placeholder="178" autocomplete="off">
-      </div>
-      <div class="field">
-        <label>Poids (kg)</label>
-        <input id="gatePoids" inputmode="numeric" placeholder="75" autocomplete="off">
-      </div>
+      <div class="field"><label>Nom</label><input id="gateNom" placeholder="Ex: Dupont" autocomplete="off"></div>
+      <div class="field"><label>Prénom</label><input id="gatePrenom" placeholder="Ex: Amine" autocomplete="off"></div>
+      <div class="field"><label>Taille (cm)</label><input id="gateTaille" inputmode="numeric" placeholder="178" autocomplete="off"></div>
+      <div class="field"><label>Poids (kg)</label><input id="gatePoids" inputmode="numeric" placeholder="75" autocomplete="off"></div>
     </div>
 
     <div class="profileActions">
@@ -830,6 +816,39 @@
 
     <div class="hint" id="gateHint" style="margin-top:10px; display:none">⚠️ Merci de remplir tous les champs correctement.</div>
     <div class="devNote">Accès dev = mot de passe du tableau.</div>
+  </div>
+</div>
+
+<!-- Modal commentaire global obligatoire -->
+<div class="gcOverlay" id="gcOverlay" aria-hidden="true">
+  <div class="gcModal" role="dialog" aria-modal="true" aria-label="Commentaire global">
+    <div class="gcHead">
+      <b>📝 Commentaire obligatoire</b>
+      <span class="pill" id="gcPill">Toutes les zones notées</span>
+    </div>
+    <div class="gcBody">
+      <div class="hint">
+        Pour enregistrer, tu dois écrire un <b>commentaire global</b>. Les 3 mots sont optionnels.
+      </div>
+
+      <label class="commentLabel" for="gcComment">Commentaire global *</label>
+      <textarea id="gcComment" placeholder="Écris ton commentaire global..."></textarea>
+
+      <div style="margin-top:12px">
+        <b style="font-size:.92rem">3 mots (optionnel)</b>
+        <div class="gcGrid" style="margin-top:8px">
+          <div class="field"><label>Mot 1</label><input id="gcW1" placeholder="Ex: ferme" autocomplete="off"></div>
+          <div class="field"><label>Mot 2</label><input id="gcW2" placeholder="Ex: enveloppant" autocomplete="off"></div>
+          <div class="field"><label>Mot 3</label><input id="gcW3" placeholder="Ex: stable" autocomplete="off"></div>
+        </div>
+        <div class="hint" style="margin-top:8px">Ces mots alimentent le mode <b>Mots</b>.</div>
+      </div>
+
+      <div class="gcActions">
+        <button class="btn ghost" id="gcCancelBtn" type="button">Annuler</button>
+        <button class="btn primary" id="gcSaveBtn" type="button">Valider & enregistrer</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -862,7 +881,10 @@
       <svg id="seatSvg" viewBox="0 0 270.933 406.4" preserveAspectRatio="xMidYMid meet">
         <image id="seatImg" href="seat.png" x="0" y="0" width="270.933" height="406.4" />
         <g id="zonesLayer">
-          <rect id="z_tete" class="zone" data-zone="Coussin de tête" x="110" y="8" width="50" height="32" rx="12" ry="12" />
+          <!-- ✅ CHANGÉ : Coussin de tête -> Appui tête -->
+          <rect id="z_tete" class="zone" data-zone="Appui tête" x="110" y="8" width="50" height="32" rx="12" ry="12" />
+
+          <!-- ZONES (identiques à ton code) -->
           <path id="z_dossier_bleu" class="zone" data-zone="Dossier haut (bleu)"
             d="m 82.248776,115.24582 4.226224,-1.30038 3.576032,-0.97528 3.413487,-0.65019 3.576034,-0.65019 5.282777,-0.73146 3.90113,-0.48764 3.08839,-0.65019 1.46293,-0.16254 h 1.2191 l 2.11311,-0.0813 0.81273,-0.16255 1.70675,-0.16254 2.03183,-0.24382 1.62547,-0.0813 1.86929,0.0813 1.78802,-0.0813 1.86929,-0.0813 h 2.27566 2.27566 l 2.85054,-0.0363 h 1.72408 l 1.6666,-0.0575 1.60913,-0.11494 3.39067,0.0575 6.55147,-0.0575 4.59753,0.45976 2.87345,0.22987 2.36951,0.41311 1.78802,1.13783 0.97528,1.13783 0.81274,0.81273 0.97528,1.78802 0.32509,0.65019 0.24383,0.97528 0.32509,1.2191 0.0813,0.97528 0.16255,0.97528 -0.16255,0.89401 v 0.73146 l -0.24382,0.73147 -0.32509,1.05655 -5.44533,12.02848 -17.55507,-0.89401 -7.31462,-0.0813 -6.7457,0.0813 -9.67154,0.16255 -18.53036,-0.16255 -4.388768,0.0813 -2.438204,0.3251 -2.113111,0.48764 -2.194385,0.65019 -1.056555,0.81273 -3.169666,-6.98952 -2.275658,-6.25806 -0.894008,-2.84457 0.08127,-1.05656 0.325096,-0.73146 0.325094,-0.65019 0.48764,-0.48764 0.812734,-0.81273 z" />
           <path id="z_dossier_rouge" class="zone" data-zone="Dossier milieu (rouge)"
@@ -895,7 +917,7 @@
       </svg>
     </div>
 
-    <!-- ✅ Word cloud frame (Mode Mots) -->
+    <!-- Nuage de mots -->
     <div class="wordCloudFrame" id="wordCloudFrame">
       <div class="wordCloudCard">
         <div class="wordCloudHead">
@@ -904,7 +926,7 @@
         </div>
         <div class="wordCloud" id="wordCloud"></div>
         <div class="hint" style="margin-top:10px">
-          Plus un mot est cité dans l’historique, plus il est grand.
+          Plus un mot est cité dans l’historique, plus il est grand. Placement désordonné (nuage).
         </div>
       </div>
     </div>
@@ -933,7 +955,6 @@
     </div>
   </section>
 
-  <!-- Colonne droite -->
   <aside class="card">
     <div class="p">
       <div class="row">
@@ -954,37 +975,8 @@
         </div>
       </div>
 
-      <!-- Inputs cachés -->
       <div class="hiddenInputs">
         <input id="nom"><input id="prenom"><input id="taille"><input id="poids">
-      </div>
-
-      <!-- ✅ 3 mots + commentaire global -->
-      <div class="rightBox">
-        <h3>3 mots pour décrire le siège</h3>
-        <div class="wordsRow">
-          <div class="field">
-            <label>Mot 1</label>
-            <input id="w1" placeholder="Ex: ferme" autocomplete="off">
-          </div>
-          <div class="field">
-            <label>Mot 2</label>
-            <input id="w2" placeholder="Ex: enveloppant" autocomplete="off">
-          </div>
-          <div class="field">
-            <label>Mot 3</label>
-            <input id="w3" placeholder="Ex: stable" autocomplete="off">
-          </div>
-        </div>
-        <div class="smallHint">Maximum 3 mots. Ils seront utilisés dans le mode “Mots”.</div>
-      </div>
-
-      <div class="rightBox">
-        <h3>Commentaire global</h3>
-        <div class="hint" id="globalCommentHint">
-          Obligatoire seulement quand <b>toutes les zones</b> sont notées.
-        </div>
-        <textarea id="globalComment" placeholder="Commentaire global (obligatoire si toutes les zones sont notées)"></textarea>
       </div>
 
       <div class="list" id="list"></div>
@@ -1011,10 +1003,9 @@
 
       <input id="slider" class="ratingSlider" type="range" min="1" max="10" step="1" value="7" />
 
+      <!-- ✅ Doublons supprimés (plus de 1 et 10 ici) -->
       <div class="scoreRow">
-        <div class="hint">1</div>
         <div class="scoreBig"><span id="sliderVal">7</span>/10</div>
-        <div class="hint">10</div>
       </div>
       <div class="scale"><span>1</span><span>5</span><span>10</span></div>
 
@@ -1083,7 +1074,7 @@
   </div>
 </div>
 
-<!-- SETTINGS modal -->
+<!-- Settings modal -->
 <div class="modalOverlay" id="settingsOverlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-label="Settings">
     <div class="modalHead">
@@ -1201,25 +1192,22 @@
     setTimeout(()=>t.classList.remove("show"), 1200);
   }
 
-  // ===== Keys =====
   const TABLE_PASSWORD = "1234"; // change ici
-  const RATINGS_KEY = "seat_ratings_current_final_v6";
-  const PEOPLE_KEY  = "seat_people_passes_final_v6";
-  const MODE_KEY = "seat_mode_v2";
-  const GREEN_KEY = "seat_green_clicked_v2";
+  const RATINGS_KEY = "seat_ratings_current_final_v7";
+  const PEOPLE_KEY  = "seat_people_passes_final_v7";
+  const MODE_KEY = "seat_mode_v3";
+  const GREEN_KEY = "seat_green_clicked_v3";
   const ZSTYLE_KEY = "seat_zone_style_v1";
   const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
   const ACCENT_KEY = "seat_accent_v1";
 
-  // ✅ reset notes à chaque refresh
+  // reset notes à chaque refresh
   localStorage.removeItem(RATINGS_KEY);
   localStorage.removeItem(GREEN_KEY);
 
-  // Images
   const IMG_SUJET = "seat.png";
   const IMG_STEPHANE = "Seat_o.png";
 
-  // ===== Accent theme =====
   const ACCENTS = {
     forvia: { a1:"#4f8cff", a2:"#7c3aed" },
     cyan:   { a1:"#22d3ee", a2:"#3b82f6" },
@@ -1235,51 +1223,31 @@
     saveJson(ACCENT_KEY, accent);
   }
 
-  // ===== Menu ⋯ =====
+  // Menu ⋯
   const moreBtn = $("moreBtn");
   const moreMenu = $("moreMenu");
   function closeMenu(){ moreMenu.classList.remove("show"); }
-  moreBtn.addEventListener("click", (e)=>{
-    e.stopPropagation();
-    moreMenu.classList.toggle("show");
-  });
+  moreBtn.addEventListener("click", (e)=>{ e.stopPropagation(); moreMenu.classList.toggle("show"); });
   document.addEventListener("click", closeMenu);
 
-  // ===== Fullscreen (verrouillé UX) =====
+  // Fullscreen verrouillé UX
   const fsBtn = $("fsBtn");
   let fsLocked = false;
   let fsRelockPending = false;
-
-  function isFullscreen(){
-    return !!(document.fullscreenElement || document.webkitFullscreenElement);
-  }
+  function isFullscreen(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); }
   async function enterFullscreen(){
     const el = document.documentElement;
-    try{
-      if(el.requestFullscreen) await el.requestFullscreen();
-      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-    }catch(e){}
+    try{ if(el.requestFullscreen) await el.requestFullscreen(); else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen(); }catch(e){}
   }
   async function exitFullscreen(){
-    try{
-      if(document.exitFullscreen) await document.exitFullscreen();
-      else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
-    }catch(e){}
+    try{ if(document.exitFullscreen) await document.exitFullscreen(); else if(document.webkitExitFullscreen) document.webkitExitFullscreen(); }catch(e){}
   }
   async function setFullscreenLocked(on){
     fsLocked = !!on;
-    if(fsLocked){
-      await enterFullscreen();
-      toast("⛶ Plein écran verrouillé");
-    }else{
-      await exitFullscreen();
-      toast("⛶ Plein écran quitté");
-    }
+    if(fsLocked){ await enterFullscreen(); toast("⛶ Plein écran verrouillé"); }
+    else{ await exitFullscreen(); toast("⛶ Plein écran quitté"); }
   }
-  fsBtn.addEventListener("click", async ()=>{
-    await setFullscreenLocked(!fsLocked);
-    closeMenu();
-  });
+  fsBtn.addEventListener("click", async ()=>{ await setFullscreenLocked(!fsLocked); closeMenu(); });
   document.addEventListener("fullscreenchange", ()=>{
     if(fsLocked && !isFullscreen()){
       fsRelockPending = true;
@@ -1293,7 +1261,7 @@
     }
   }, true);
 
-  // ===== Orientation helper =====
+  // Orientation helper
   const rotateOverlay = $("rotateOverlay");
   function checkOrientation(){
     const isMobile = window.matchMedia("(max-width: 980px)").matches;
@@ -1304,7 +1272,7 @@
   window.addEventListener("orientationchange", checkOrientation);
   checkOrientation();
 
-  // ===== Gate profil =====
+  // Gate profil
   const profileOverlay = $("profileOverlay");
   const gateNom = $("gateNom"), gatePrenom = $("gatePrenom"), gateTaille = $("gateTaille"), gatePoids = $("gatePoids");
   const gateContinueBtn = $("gateContinueBtn");
@@ -1335,22 +1303,8 @@
   }
 
   function clearProfileAll(){
-    $("nom").value = "";
-    $("prenom").value = "";
-    $("taille").value = "";
-    $("poids").value = "";
-
-    gateNom.value = "";
-    gatePrenom.value = "";
-    gateTaille.value = "";
-    gatePoids.value = "";
-
-    // reset mots + commentaire global
-    if($("w1")) $("w1").value = "";
-    if($("w2")) $("w2").value = "";
-    if($("w3")) $("w3").value = "";
-    if($("globalComment")) $("globalComment").value = "";
-
+    $("nom").value = ""; $("prenom").value = ""; $("taille").value = ""; $("poids").value = "";
+    gateNom.value = ""; gatePrenom.value = ""; gateTaille.value = ""; gatePoids.value = "";
     setProfileUI();
   }
 
@@ -1401,11 +1355,9 @@
       if(e.key === "Enter"){ e.preventDefault(); validateAndApplyProfile(); }
     });
   });
-
-  // show gate at start
   openProfileGate();
 
-  // ===== Collapsible table (mdp à chaque ouverture) =====
+  // Collapsible table (mdp à chaque ouverture)
   const tableCollapse = $("tableCollapse");
   const toggleTableBtn = $("toggleTableBtn");
   let tableShown = false;
@@ -1424,7 +1376,7 @@
   });
   setTableShown(false);
 
-  // ===== Modes / state =====
+  // State
   let mode = loadJson(MODE_KEY, "sujet");
   let ratings = {};
   let greenClicked = {};
@@ -1432,7 +1384,7 @@
   let activeCriteria = {};
   let activeCritId = null;
 
-  // ===== Nouvelle personne enable logic =====
+  // Nouvelle personne enable logic
   const newPersonBtn = $("newPersonBtn");
   let canStartNewPerson = false;
   function setNewPersonEnabled(on){
@@ -1461,7 +1413,7 @@
   function effectiveDisplayName(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
   function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
 
-  // ===== Criteria (NOUVELLE ÉCHELLE) =====
+  // ✅ Critères (nouvelle échelle)
   const CRIT_SCALE = [
     "Beaucoup trop faible",
     "Trop faible",
@@ -1486,8 +1438,6 @@
     homogeneite: CRIT_SCALE
   };
 
-  // Mapping -> couleurs identiques via sliderTheme:
-  // Rouge 1/2, Orange 4, Jaune 6, Vert 8/9, Cyan 10
   const CRIT_TO_SCORE = {
     "Beaucoup trop faible": 1,
     "Trop faible": 2,
@@ -1525,6 +1475,7 @@
     if(score === 10) return { cls:"s10", label:"Optimum" };
     return { cls:"", label:"" };
   }
+
   function sliderTheme(score){
     if(score === 1)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Inacceptable" };
     if(score === 2)  return { col:"rgba(231,76,60,1)", soft:"rgba(231,76,60,.14)", border:"rgba(231,76,60,.55)", word:"Très insatisfait" };
@@ -1614,7 +1565,6 @@
     document.querySelectorAll(".zone").forEach(poly=>{
       const zoneName = poly.dataset.zone;
 
-      // Sujet : gris
       if(mode === "sujet"){
         const gKey = effectiveKeyForZone(zoneName);
         const on = !!greenClicked[gKey];
@@ -1647,13 +1597,12 @@
         return;
       }
 
-      // Mode "words" ou autre: rien à colorer
       hideZone(poly);
     });
   }
 </script>
 <script>
-  // ===== KIVIAT (avec animation + valeurs) =====
+  // ===== KIVIAT =====
   const kiviatCanvas = $("kiviat");
   const kiviatMetaEl = $("kiviatMeta");
   let radarAnimReq = null;
@@ -1678,8 +1627,11 @@
       const d = critLabelToScore(getCritForZoneName(z,"durete"));
       if(Number.isFinite(d)) dur.push(d);
 
-      const h = critLabelToScore(getCritForZoneName(z,"homogeneite"));
-      if(Number.isFinite(h)) homo.push(h);
+      // ✅ Homogénéité ignorée pour Appui tête
+      if(effectiveKeyForZone(z) !== "Appui tête"){
+        const h = critLabelToScore(getCritForZoneName(z,"homogeneite"));
+        if(Number.isFinite(h)) homo.push(h);
+      }
 
       const key = effectiveKeyForZone(z);
       if(isBolsterKey(key)){
@@ -1710,6 +1662,7 @@
 
     radarT0 = performance.now();
     if(radarAnimReq) cancelAnimationFrame(radarAnimReq);
+
     const tick = (t)=>{
       const k = Math.min(1, (t - radarT0) / 240);
       const mix = radarTarget.map((x,i)=>{
@@ -1720,12 +1673,8 @@
         return { label:x.label, value: (1-k)*va + k*vb };
       });
       drawRadar(mix);
-      if(k < 1){
-        radarAnimReq = requestAnimationFrame(tick);
-      }else{
-        radarPrev = radarTarget.map(x=>({label:x.label, value:x.value}));
-        radarAnimReq = null;
-      }
+      if(k < 1) radarAnimReq = requestAnimationFrame(tick);
+      else{ radarPrev = radarTarget.map(x=>({label:x.label, value:x.value})); radarAnimReq = null; }
     };
     radarAnimReq = requestAnimationFrame(tick);
   }
@@ -1760,7 +1709,6 @@
     const strokeCol = "rgba(124,58,237,.88)";
     const dotCol = "rgba(255,255,255,.92)";
 
-    // rings
     ctx.lineWidth = 1;
     for(let r=1; r<=rings; r++){
       const rr = (R * r / rings);
@@ -1776,7 +1724,6 @@
       ctx.stroke();
     }
 
-    // axes + labels + value label
     ctx.font = "900 12px Inter, system-ui";
     ctx.fillStyle = textCol;
     for(let i=0; i<N; i++){
@@ -1784,11 +1731,8 @@
       const x2 = cx + R * Math.cos(a);
       const y2 = cy + R * Math.sin(a);
 
-      ctx.beginPath();
-      ctx.moveTo(cx,cy);
-      ctx.lineTo(x2,y2);
-      ctx.strokeStyle = axisCol;
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x2,y2);
+      ctx.strokeStyle = axisCol; ctx.stroke();
 
       const label = items[i].label;
       const val = items[i].value;
@@ -1803,14 +1747,12 @@
       const alignLeft = Math.cos(a) > 0.15;
       const alignRight = Math.cos(a) < -0.15;
       let tx = lx;
-      if(alignLeft) tx = lx;
-      else if(alignRight) tx = lx - tw;
-      else tx = lx - tw/2;
+      if(alignRight) tx = lx - tw;
+      else if(!alignLeft) tx = lx - tw/2;
 
       ctx.fillText(text, tx, ly + 4);
     }
 
-    // polygon
     const clamp01 = (v)=> Math.max(0, Math.min(1, v));
     const norm = (v)=> (v==null ? 0 : clamp01(v/10));
 
@@ -1823,25 +1765,18 @@
       if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
     }
     ctx.closePath();
-    ctx.fillStyle = softCol;
-    ctx.fill();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = strokeCol;
-    ctx.stroke();
+    ctx.fillStyle = softCol; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = strokeCol; ctx.stroke();
 
-    // points
     for(let i=0; i<N; i++){
       const a = (-Math.PI/2) + (i * 2*Math.PI/N);
       const rr = R * norm(items[i].value);
       const x = cx + rr * Math.cos(a);
       const y = cy + rr * Math.sin(a);
-      ctx.beginPath();
-      ctx.arc(x,y,4,0,Math.PI*2);
-      ctx.fillStyle = dotCol;
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2);
+      ctx.fillStyle = dotCol; ctx.fill();
     }
 
-    // center label
     const g = avgGlobalComfort();
     ctx.font = "950 14px Inter, system-ui";
     ctx.fillStyle = "rgba(238,242,255,.92)";
@@ -1891,7 +1826,6 @@
     setProfileUI();
     requestRadarRedraw(true);
 
-    // si on est en mode mots, refresh cloud
     if(mode === "words") renderWordCloud();
   }
 
@@ -1906,9 +1840,16 @@
       });
     }
   }
+
+  // ✅ Homogénéité retirée pour Appui tête
   function visibleCriteriaForActiveKey(){
     const isBolster = isBolsterKey(activeKey);
-    return CRITERIA.filter(c => (c.id !== "symetrie") ? true : isBolster);
+    const isHead = (activeKey === "Appui tête");
+    return CRITERIA.filter(c=>{
+      if(c.id === "symetrie") return isBolster;
+      if(c.id === "homogeneite" && isHead) return false;
+      return true;
+    });
   }
 
   function renderCriteria(){
@@ -1925,8 +1866,7 @@
           <div class="criteriaBtn" data-crit="${escapeHtml(c.id)}">
             <span>${escapeHtml(c.label)}</span>
             <span class="badgeMini">${escapeHtml(sel)}</span>
-          </div>
-        `;
+          </div>`;
       }).join("");
 
       listEl.querySelectorAll(".criteriaBtn").forEach(btn=>{
@@ -2061,7 +2001,7 @@
     return g;
   }
 
-  // ===== Captures modal helpers + download =====
+  // ===== Captures =====
   const capOverlay = $("capOverlay");
   const capCloseBtn = $("capCloseBtn");
   const capNote = $("capNote");
@@ -2195,7 +2135,7 @@
     updateSummary();
   }
 
-  // ===== Render table + selection =====
+  // ===== Table render + selection =====
   let selectedRowId = null;
   function renderPeople(){
     const people = loadPeople();
@@ -2266,13 +2206,6 @@
         $("taille").value = entry.taille || "";
         $("poids").value = entry.poids || "";
 
-        // ✅ restore global comment + words
-        if($("globalComment")) $("globalComment").value = entry.globalComment || "";
-        const ws = Array.isArray(entry.words) ? entry.words : [];
-        if($("w1")) $("w1").value = ws[0] || "";
-        if($("w2")) $("w2").value = ws[1] || "";
-        if($("w3")) $("w3").value = ws[2] || "";
-
         ratings = entry.ratings || {};
         greenClicked = rebuildGreenFromRatings(ratings);
 
@@ -2307,7 +2240,6 @@
 
     const zoneKeys = buildExportZoneKeys();
     const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale","Commentaire global","Mots (1-3)"];
-
     const perZoneHeaders = [];
     for(const key of zoneKeys){
       perZoneHeaders.push(
@@ -2476,10 +2408,60 @@
     }
   });
 
-  // ===== Helpers commentaire global obligatoire =====
-  function uniqueZoneKeysCount(){
-    return buildExportZoneKeys().length;
+  // ===== Modal commentaire obligatoire (quand toutes zones notées) =====
+  const gcOverlay = $("gcOverlay");
+  const gcComment = $("gcComment");
+  const gcW1 = $("gcW1"), gcW2 = $("gcW2"), gcW3 = $("gcW3");
+  const gcCancelBtn = $("gcCancelBtn");
+  const gcSaveBtn = $("gcSaveBtn");
+
+  let _pendingSavePayload = null;
+
+  function openGlobalCommentModal(payload){
+    _pendingSavePayload = payload;
+    gcComment.value = "";
+    gcW1.value = ""; gcW2.value = ""; gcW3.value = "";
+    gcOverlay.classList.add("show");
+    gcOverlay.setAttribute("aria-hidden","false");
+    setTimeout(()=> gcComment.focus(), 50);
   }
+  function closeGlobalCommentModal(){
+    gcOverlay.classList.remove("show");
+    gcOverlay.setAttribute("aria-hidden","true");
+    _pendingSavePayload = null;
+  }
+  gcCancelBtn.addEventListener("click", ()=>{ closeGlobalCommentModal(); toast("Enregistrement annulé"); });
+
+  function cleanWord(w){
+    return String(w||"").trim().replace(/\s+/g," ");
+  }
+  function normalizeWord(w){
+    return cleanWord(w).toLowerCase();
+  }
+  function getWordsFromModal(){
+    return [gcW1.value, gcW2.value, gcW3.value].map(cleanWord).filter(Boolean).slice(0,3);
+  }
+
+  gcSaveBtn.addEventListener("click", ()=>{
+    const comment = (gcComment.value || "").trim();
+    if(!comment){
+      toast("⚠️ Commentaire obligatoire");
+      gcComment.focus();
+      return;
+    }
+    if(!_pendingSavePayload) return;
+
+    const words = getWordsFromModal();
+    finalizeSavePerson({
+      ..._pendingSavePayload,
+      globalComment: comment,
+      words
+    });
+    closeGlobalCommentModal();
+  });
+
+  // Helpers “toutes zones notées”
+  function uniqueZoneKeysCount(){ return buildExportZoneKeys().length; }
   function ratedKeysCount(){
     const keys = buildExportZoneKeys();
     let c = 0;
@@ -2489,25 +2471,12 @@
     }
     return c;
   }
-  function allZonesRated(){
-    return ratedKeysCount() >= uniqueZoneKeysCount();
-  }
+  function allZonesRated(){ return ratedKeysCount() >= uniqueZoneKeysCount(); }
 
-  function getThreeWords(){
-    const w1 = $("w1")?.value?.trim() || "";
-    const w2 = $("w2")?.value?.trim() || "";
-    const w3 = $("w3")?.value?.trim() || "";
-    return [w1,w2,w3].map(x=>x.replace(/\s+/g," ").trim()).filter(Boolean).slice(0,3);
-  }
-  function normalizeWord(w){
-    return String(w||"").trim().replace(/\s+/g," ").toLowerCase();
-  }
-
-  // ===== Word Cloud =====
+  // ===== Word cloud (désordonné + anti-collision) =====
   function collectWordStats(){
     const people = loadPeople();
     const freq = new Map();
-
     for(const p of people){
       const arr = Array.isArray(p.words) ? p.words : [];
       for(const raw of arr){
@@ -2516,7 +2485,6 @@
         freq.set(w, (freq.get(w) || 0) + 1);
       }
     }
-
     return Array.from(freq.entries())
       .map(([word,count])=>({word,count}))
       .sort((a,b)=> b.count - a.count || a.word.localeCompare(b.word));
@@ -2530,31 +2498,128 @@
     const items = collectWordStats();
     const peopleCount = loadPeople().length;
 
+    cloud.innerHTML = "";
     if(!items.length){
       meta.textContent = `Aucun mot (0 personne)`;
-      cloud.innerHTML = `<div class="hint">Aucun mot enregistré. Ajoute 1–3 mots puis “Enregistrer”.</div>`;
+      cloud.innerHTML = `<div class="hint" style="padding:12px">Aucun mot enregistré. Après un test complet, la fenêtre te proposera 3 mots.</div>`;
       return;
     }
 
     const max = Math.max(...items.map(x=>x.count));
     const min = Math.min(...items.map(x=>x.count));
-
     meta.textContent = `${items.length} mot(s) • ${peopleCount} personne(s)`;
 
     const sizeFor = (c)=>{
       if(max === min) return 22;
       const t = (c - min) / (max - min);
-      return 14 + t * 26; // 14 → 40
+      return 14 + t * 30; // 14 → 44
     };
 
-    cloud.innerHTML = items.slice(0,60).map(({word,count})=>{
-      const fs = sizeFor(count).toFixed(1);
-      const title = `${count} fois`;
-      return `<span class="wWord" style="font-size:${fs}px" title="${escapeHtml(title)}">${escapeHtml(word)}</span>`;
-    }).join("");
+    // création des spans (on place ensuite)
+    const words = items.slice(0, 70).map(({word,count})=>{
+      const el = document.createElement("span");
+      el.className = "wWord";
+      el.textContent = word;
+      el.title = `${count} fois`;
+      el.style.fontSize = sizeFor(count).toFixed(1) + "px";
+      el.style.transform = `translate(-50%,-50%) rotate(${(Math.random()*18-9).toFixed(1)}deg)`;
+      cloud.appendChild(el);
+      return el;
+    });
+
+    // placement anti-collision simple
+    const rect = cloud.getBoundingClientRect();
+    const W = rect.width;
+    const H = rect.height;
+
+    const placed = [];
+    const pad = 10;
+
+    function intersects(a,b){
+      return !(a.x2 < b.x1 || a.x1 > b.x2 || a.y2 < b.y1 || a.y1 > b.y2);
+    }
+
+    function tryPlace(el){
+      const b = el.getBoundingClientRect();
+      const ew = b.width, eh = b.height;
+
+      // on limite la zone utile (marges)
+      const minX = pad + ew/2, maxX = Math.max(minX, W - pad - ew/2);
+      const minY = pad + eh/2, maxY = Math.max(minY, H - pad - eh/2);
+
+      // stratégie: essais random puis spirale
+      const tries = 220;
+      let cx = W/2, cy = H/2;
+
+      for(let i=0;i<tries;i++){
+        let x,y;
+        if(i < 140){
+          x = minX + Math.random()*(maxX-minX);
+          y = minY + Math.random()*(maxY-minY);
+        }else{
+          // spirale autour du centre
+          const t = (i-140) * 0.35;
+          x = cx + (t*6) * Math.cos(t);
+          y = cy + (t*6) * Math.sin(t);
+          x = Math.max(minX, Math.min(maxX, x));
+          y = Math.max(minY, Math.min(maxY, y));
+        }
+
+        const box = { x1:x-ew/2, y1:y-eh/2, x2:x+ew/2, y2:y+eh/2 };
+        let ok = true;
+        for(const p of placed){ if(intersects(box,p)){ ok=false; break; } }
+        if(ok){
+          placed.push(box);
+          el.style.left = x + "px";
+          el.style.top  = y + "px";
+          return true;
+        }
+      }
+
+      // fallback (accept overlap léger)
+      const x = minX + Math.random()*(maxX-minX);
+      const y = minY + Math.random()*(maxY-minY);
+      placed.push({ x1:x-10, y1:y-10, x2:x+10, y2:y+10 });
+      el.style.left = x + "px";
+      el.style.top  = y + "px";
+      el.style.opacity = "0.92";
+      return false;
+    }
+
+    // important: attendre layout
+    requestAnimationFrame(()=>{
+      words.forEach(w=> tryPlace(w));
+    });
   }
 
-  // ===== Save + new person =====
+  // ===== Save / New Person (avec modal obligatoire) =====
+  function loadPeopleSafe(){ return loadPeople(); }
+
+  function finalizeSavePerson({nom, prenom, taille, poids, globalAvg, ratingsObj, globalComment, words}){
+    const entry = {
+      ts: new Date().toLocaleString("fr-FR"),
+      nom, prenom, taille, poids,
+      globalAvg: String(globalAvg),
+      ratings: ratingsObj,
+      globalComment: globalComment || "",
+      words: Array.isArray(words) ? words : []
+    };
+
+    const people = loadPeopleSafe();
+    people.push(entry);
+    savePeople(people);
+
+    toast("✅ Enregistré");
+    renderPeople();
+
+    // reset notes only
+    ratings = {}; saveJson(RATINGS_KEY, ratings);
+    greenClicked = {}; saveJson(GREEN_KEY, greenClicked);
+    updateSummary();
+
+    setNewPersonEnabled(true);
+  }
+
   $("savePersonBtn").addEventListener("click", ()=>{
     const nom = $("nom").value.trim();
     const prenom = $("prenom").value.trim();
@@ -2570,47 +2635,20 @@
     const a = avgGlobalComfort();
     if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
 
-    // ✅ commentaire global obligatoire si toutes zones notées
-    const mustComment = allZonesRated();
-    const globalComment = $("globalComment")?.value?.trim() || "";
-    if(mustComment && !globalComment){
-      toast("⚠️ Commentaire global obligatoire");
-      $("globalComment")?.focus();
+    const payload = {
+      nom, prenom, taille, poids,
+      globalAvg: a.toFixed(1),
+      ratingsObj: ratings
+    };
+
+    // ✅ Si toutes zones notées => modal obligatoire
+    if(allZonesRated()){
+      openGlobalCommentModal(payload);
       return;
     }
 
-    const words = getThreeWords();
-
-    const entry = {
-      ts: new Date().toLocaleString("fr-FR"),
-      nom, prenom, taille, poids,
-      globalAvg: a.toFixed(1),
-      ratings,
-      globalComment,
-      words
-    };
-
-    const people = loadPeople();
-    people.push(entry);
-    savePeople(people);
-
-    toast("✅ Enregistré");
-    renderPeople();
-
-    // reset notes only
-    ratings = {};
-    saveJson(RATINGS_KEY, ratings);
-    greenClicked = {};
-    saveJson(GREEN_KEY, greenClicked);
-    updateSummary();
-
-    // reset global inputs
-    if($("globalComment")) $("globalComment").value = "";
-    if($("w1")) $("w1").value = "";
-    if($("w2")) $("w2").value = "";
-    if($("w3")) $("w3").value = "";
-
-    setNewPersonEnabled(true);
+    // sinon on autorise enregistrement direct (sans commentaire)
+    finalizeSavePerson({ ...payload, globalComment:"", words:[] });
   });
 
   $("newPersonBtn").addEventListener("click", ()=>{
@@ -2626,7 +2664,7 @@
     setNewPersonEnabled(false);
   });
 
-  // ===== Reset (menu item) =====
+  // Reset ALL
   function resetAll(){
     ratings = {}; saveJson(RATINGS_KEY, ratings);
     greenClicked = {}; saveJson(GREEN_KEY, greenClicked);
@@ -2640,9 +2678,11 @@
   }
   $("resetBtn").addEventListener("click", ()=>{ closeMenu(); if(confirm("Réinitialiser TOUT (notes + profil) ?")) resetAll(); });
 
-  // ===== Reset people (menu item) =====
+  // ✅ Vider tableau : mot de passe obligatoire
   $("resetPeopleBtn").addEventListener("click", ()=>{
     closeMenu();
+    const pw = prompt("Mot de passe ?");
+    if(pw !== TABLE_PASSWORD){ toast("❌ Mot de passe incorrect"); return; }
     if(confirm("Supprimer TOUT l'historique des personnes ?")){
       savePeople([]);
       selectedRowId = null;
@@ -2651,7 +2691,7 @@
     }
   });
 
-  // ===== Settings open/close =====
+  // Settings open/close
   const settingsOverlay = $("settingsOverlay");
   $("settingsBtn").addEventListener("click", ()=>{
     closeMenu();
@@ -2669,7 +2709,6 @@
     }
   });
 
-  // Reset settings
   $("resetSettingsBtn").addEventListener("click", ()=>{
     if(confirm("Reset settings (accent + transparence + style zones) ?")){
       applyAccent("forvia");
@@ -2688,14 +2727,13 @@
     }
   });
 
-  // Accent select
   const accentSelect = $("accentSelect");
   accentSelect.addEventListener("change", ()=>{
     applyAccent(accentSelect.value);
     requestRadarRedraw(true);
   });
 
-  // ===== Per-zone transforms =====
+  // Per-zone transforms
   const ZTUNE_KEY = "seat_zone_tune_map_v4";
   const DEFAULT_TUNE = {
     "z_tete": {dx:-2, dy:21, sc:1.000},
@@ -2788,7 +2826,7 @@
     catch{ toast("⚠️ Copie impossible"); }
   });
 
-  // ===== Modes buttons =====
+  // Modes buttons
   const modeSujetBtn = $("modeSujetBtn");
   const modeStephaneBtn = $("modeStephaneBtn");
   const modePresenceBtn = $("modePresenceBtn");
@@ -2812,8 +2850,7 @@
       mode === "sujet" ? "Sujet" :
       mode === "stephane" ? "Note" :
       mode === "presence" ? "Présence" :
-      mode === "durete" ? "Dureté" :
-      "Mots";
+      mode === "durete" ? "Dureté" : "Mots";
 
     setSeatBackground(mode);
     closeSheet();
@@ -2829,7 +2866,7 @@
   modeDureteBtn.addEventListener("click", ()=> setMode("durete"));
   modeWordsBtn.addEventListener("click", ()=> setMode("words"));
 
-  // ===== Init =====
+  // Init
   applyAccent(accent);
   $("accentSelect").value = accent;
 
@@ -2863,3 +2900,4 @@
 
 </body>
 </html>
+  
