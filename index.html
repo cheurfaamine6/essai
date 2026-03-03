@@ -2194,7 +2194,9 @@
     const people = loadPeople();
     people.push(entry);
     savePeople(people);
-
+    // ✅ Reset affichage testeur (rubrique en haut) après enregistrement
+    clearProfileAll();     // vide nom/prénom/taille/poids + met l'UI par défaut
+    setProfileUI();        // (sécurité) rafraîchit le chip
     toast("✅ Enregistré");
     renderPeople();
 
