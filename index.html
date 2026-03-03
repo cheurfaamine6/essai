@@ -1906,7 +1906,10 @@
     requestRadarRedraw(true);
 
     if(mode === "words") renderWordCloud();
-
+    // ✅ Griser/activer Enregistrer selon complétion
+    const canSave = allZonesRated();
+    $("savePersonBtn").disabled = !canSave;
+    $("savePersonBtn").style.opacity = canSave ? "1" : "0.55";
     // ✅ Auto modal commentaire dès que tout est noté (si pas encore saisi)
     if(allZonesRated() && !currentGlobalComment){
       if(!$("gcOverlay").classList.contains("show")){
@@ -2203,38 +2206,41 @@
   }
 
   $("savePersonBtn").addEventListener("click", ()=>{
-    const nom = $("nom").value.trim();
-    const prenom = $("prenom").value.trim();
-    const taille = $("taille").value.trim();
-    const poids = $("poids").value.trim();
+  const nom = $("nom").value.trim();
+  const prenom = $("prenom").value.trim();
+  const taille = $("taille").value.trim();
+  const poids = $("poids").value.trim();
 
-    if(!nom || !prenom || !taille || !poids){
-      toast("⚠️ Profil requis");
-      openProfileGate();
-      return;
-    }
+  if(!nom || !prenom || !taille || !poids){
+    toast("⚠️ Profil requis");
+    openProfileGate();
+    return;
+  }
 
-    const a = avgGlobalComfort();
-    if(!a){ toast("⚠️ Note au moins 1 zone"); return; }
+  // ✅ NOUVEAU : on refuse si toutes les zones ne sont pas notées
+  if(!allZonesRated()){
+    const done = ratedKeysCount();
+    const total = uniqueZoneKeysCount();
+    toast(`⚠️ Note toutes les zones (${done}/${total})`);
+    return;
+  }
 
-    const payload = {
-      nom, prenom, taille, poids,
-      globalAvg: a.toFixed(1),
-      ratingsObj: ratings
-    };
+  const a = avgGlobalComfort();
+  if(!a){ toast("⚠️ Note au moins 1 zone"); return; } // (sécurité)
 
-    // ✅ si toutes zones notées => commentaire obligatoire
-    if(allZonesRated()){
-      if(currentGlobalComment){
-        finalizeSavePerson({ ...payload, globalComment: currentGlobalComment, words: currentWords });
-        return;
-      }
-      openGlobalCommentModal(payload);
-      return;
-    }
+  const payload = {
+    nom, prenom, taille, poids,
+    globalAvg: a.toFixed(1),
+    ratingsObj: ratings
+  };
 
-    finalizeSavePerson({ ...payload, globalComment:"", words:[] });
-  });
+  // ✅ Comme toutes les zones sont notées, commentaire obligatoire (déjà ton comportement)
+  if(currentGlobalComment){
+    finalizeSavePerson({ ...payload, globalComment: currentGlobalComment, words: currentWords });
+    return;
+  }
+  openGlobalCommentModal(payload);
+});
 
   $("newPersonBtn").addEventListener("click", ()=>{
     if(!canStartNewPerson){ toast("⚠️ Enregistre ou réinitialise d'abord"); return; }
