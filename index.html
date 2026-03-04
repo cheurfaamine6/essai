@@ -45,31 +45,152 @@
 }
 
 /* ===== THEME LIGHT ===== */
+/* =========================
+   THEME LIGHT — PRO
+   ========================= */
+:root{ color-scheme: dark; }          /* par défaut (mode basique) */
+
 body.light{
   color-scheme: light;
 
-  /* Background */
-  --bg0:#f6f7fb;
-  --bg1:#e9ecf7;
+  /* Fond premium (doux, pas blanc agressif) */
+  --bg0:#f7f8fc;
+  --bg1:#eef2ff;
 
-  /* Cards */
-  --cardTop:rgba(0,0,0,.04);
-  --cardBot:rgba(0,0,0,.02);
+  /* Cartes "glass" léger -> blanc propre */
+  --cardTop: rgba(255,255,255,.92);
+  --cardBot: rgba(255,255,255,.86);
 
-  /* Lines */
-  --line:rgba(0,0,0,.10);
+  /* Bordures fines et élégantes */
+  --line: rgba(15,23,42,.10);
 
-  /* Text */
-  --txt:#0b1020;
-  --muted:#39436a;
+  /* Texte */
+  --txt:#0f172a;      /* slate-900 */
+  --muted:#475569;    /* slate-600 */
 
-  /* Shadows */
-  --shadow: 0 18px 55px rgba(0,0,0,.14);
-  --shadow2: 0 26px 80px rgba(0,0,0,.18);
+  /* Ombres soft (pas gris sale) */
+  --shadow: 0 18px 55px rgba(15,23,42,.10);
+  --shadow2: 0 26px 80px rgba(15,23,42,.14);
 
-  /* Zones (un peu plus lisibles en clair) */
+  /* Zones (un peu plus propres en clair) */
   --zone-fill: rgba(79,140,255,.10);
-  --zone-stroke: rgba(79,140,255,.55);
+  --zone-stroke: rgba(79,140,255,.45);
+}
+
+/* Fond général (on override le background du body en clair) */
+body.light{
+  background:
+    radial-gradient(900px 520px at 15% -10%, rgba(124,58,237,.16), transparent 60%),
+    radial-gradient(900px 520px at 85% -10%, rgba(79,140,255,.14), transparent 60%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+}
+
+/* Header clean */
+body.light header{
+  background: rgba(247,248,252,.72);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(15,23,42,.10);
+}
+
+/* Menu ⋯ / modals en blanc premium */
+body.light .menu,
+body.light .modal,
+body.light .sheetCard,
+body.light .capModal,
+body.light .profileOverlay .box,
+body.light .gcModal{
+  background: rgba(255,255,255,.90);
+  border-color: rgba(15,23,42,.12);
+  box-shadow: 0 18px 55px rgba(15,23,42,.12);
+}
+
+/* Boutons : look "SaaS" */
+body.light .btn{
+  border: 1px solid rgba(15,23,42,.14);
+  background: rgba(255,255,255,.78);
+  color: var(--txt);
+}
+body.light .btn:hover{
+  border-color: rgba(15,23,42,.22);
+  background: rgba(255,255,255,.92);
+}
+body.light .btn.ghost{
+  background: transparent;
+}
+body.light .btn.primary{
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(79,140,255,.18);
+}
+
+/* Pills */
+body.light .pill{
+  border-color: rgba(15,23,42,.12);
+  background: rgba(15,23,42,.04);
+  color: rgba(15,23,42,.72);
+}
+body.light .pill.good{
+  border-color: rgba(34,197,94,.26);
+  background: rgba(34,197,94,.10);
+  color: #166534;
+}
+
+/* Inputs/textarea : blanc + focus accent */
+body.light .field input,
+body.light .field select,
+body.light textarea,
+body.light #gcComment{
+  background: rgba(255,255,255,.92);
+  border: 1px solid rgba(15,23,42,.14);
+  color: var(--txt);
+}
+body.light .field input::placeholder,
+body.light textarea::placeholder{
+  color: rgba(71,85,105,.60);
+}
+body.light .field input:focus,
+body.light .field select:focus,
+body.light textarea:focus,
+body.light #gcComment:focus{
+  border-color: rgba(79,140,255,.55);
+  box-shadow: 0 0 0 4px rgba(79,140,255,.18);
+}
+
+/* Liste résumé : cards plus nettes */
+body.light .item{
+  border-color: rgba(15,23,42,.10);
+  background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.82));
+  box-shadow: 0 10px 30px rgba(15,23,42,.08);
+}
+
+/* Tables : header clair + hover propre */
+body.light th{
+  background: rgba(255,255,255,.92);
+  border-bottom: 1px solid rgba(15,23,42,.10);
+}
+body.light td{
+  border-bottom: 1px solid rgba(15,23,42,.08);
+}
+body.light tbody tr:hover{
+  background: rgba(79,140,255,.08);
+}
+body.light tbody tr.selected{
+  outline: 2px solid rgba(79,140,255,.22);
+  background: rgba(79,140,255,.07);
+}
+
+/* Nuage de mots : fond plus clean */
+body.light .wordCloud,
+body.light .kiviatCanvas{
+  background:
+    radial-gradient(600px 420px at 40% 30%, rgba(79,140,255,.10), transparent 60%),
+    radial-gradient(600px 420px at 70% 70%, rgba(124,58,237,.10), transparent 60%),
+    rgba(255,255,255,.70);
+  border-color: rgba(15,23,42,.10);
+}
+body.light .wWord{
+  background: rgba(255,255,255,.80);
+  border-color: rgba(15,23,42,.12);
+  color: rgba(15,23,42,.88);
 }
 
 /* En clair, certains backgrounds translucides doivent devenir “clairs” */
@@ -1280,6 +1401,13 @@ function applyTheme(theme){
   document.body.classList.toggle("light", isLight);
   localStorage.setItem(THEME_KEY, theme);
   toast(isLight ? "🌞 Mode clair" : "🌙 Mode basique");
+  if(isLight){
+  document.documentElement.style.setProperty("--a1", "#2563eb"); // blue-600
+  document.documentElement.style.setProperty("--a2", "#7c3aed"); // violet-600
+ }else{
+  // revenir à l'accent choisi
+  applyAccent(accent);
+}
 }
 
 function loadTheme(){
