@@ -1898,84 +1898,7 @@ if(themeBtn){
 </script>
   <script>
   // ===== KIVIAT =====
-  // ===== KIVIAT =====
-const kiviatCanvas = $("kiviat");
-// ===== ZOOM REGION (ASSISE / DOSSIER) + RESET FIABLE =====
-const seatSvg = document.getElementById("seatSvg");
-const ORIG_VIEWBOX = seatSvg?.getAttribute("viewBox") || "0 0 270.933 406.4";
-
-let _zoomAnim = null;
-
-function parseVB(vbStr){
-  const a = String(vbStr).trim().split(/\s+/).map(Number);
-  return { x:a[0], y:a[1], w:a[2], h:a[3] };
-}
-function setVB(vb){
-  if(!seatSvg) return;
-  seatSvg.setAttribute("viewBox", `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
-}
-function getVB(){
-  return parseVB(seatSvg?.getAttribute("viewBox") || ORIG_VIEWBOX);
-}
-
-function animateVB(from, to, ms=260){
-  if(!seatSvg) return;
-  if(_zoomAnim) cancelAnimationFrame(_zoomAnim);
-
-  const t0 = performance.now();
-  const tick = (t)=>{
-    const k = Math.min(1, (t - t0)/ms);
-    const e = 1 - Math.pow(1-k, 3); // easeOutCubic
-
-    setVB({
-      x: from.x + (to.x - from.x)*e,
-      y: from.y + (to.y - from.y)*e,
-      w: from.w + (to.w - from.w)*e,
-      h: from.h + (to.h - from.h)*e
-    });
-
-    if(k < 1) _zoomAnim = requestAnimationFrame(tick);
-    else _zoomAnim = null;
-  };
-  _zoomAnim = requestAnimationFrame(tick);
-}
-
-function resetZoom(){
-  animateVB(getVB(), parseVB(ORIG_VIEWBOX), 220);
-}
-
-/* Définis 2 régions propres (dans le repère du viewBox d'origine) */
-const ZOOM_REGIONS = {
-  // Dossier : plutôt le haut du siège
-  dossier: { x: 35, y: 0,   w: 200, h: 250 },
-
-  // Assise : partie basse
-  assise:  { x: 35, y: 205, w: 200, h: 205 }
-};
-
-/* Détermine si une zone appartient au dossier ou à l'assise */
-function seatPartFromZoneName(zoneName){
-  const z = String(zoneName || "").toLowerCase();
-
-  // ASSISE
-  if(z.includes("assise") || z.includes("bas gauche") || z.includes("bas droit") || z.includes("bande magenta")) return "assise";
-
-  // DOSSIER
-  if(z.includes("dossier") || z.includes("appui tête") || z.includes("zone centrale") || z.includes("bande jaune") || z.includes("flanc")) return "dossier";
-
-  // fallback
-  return "dossier";
-}
-
-function zoomToSeatPart(part){
-  const target = ZOOM_REGIONS[part] || ZOOM_REGIONS.dossier;
-  animateVB(getVB(), target, 260);
-}
-
-function zoomForZone(zoneName){
-  const part = seatPartFromZoneName(zoneName);
-  zoomToSeatPart(part);
-}
+  const kiviatCanvas = $("kiviat");
   const kiviatMetaEl = $("kiviatMeta");
   let radarAnimReq = null;
   let radarPrev = null;
@@ -2306,7 +2229,6 @@ function zoomForZone(zoneName){
     $("sheetZone").textContent = effectiveDisplayName(zoneName);
 
     document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
-    resetZoom();
     if(el) el.classList.add("active");
 
     const existing = ratings[activeKey];
@@ -2324,15 +2246,12 @@ function zoomForZone(zoneName){
 
     $("overlay").classList.add("show");
     $("sheet").classList.add("show");
-    zoomForZone(zoneName);
   }
 
   function closeSheet(){
     $("overlay").classList.remove("show");
     $("sheet").classList.remove("show");
-    zoomForZone(zoneName); // ✅ zoom dossier/assise selon la zone
     document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
-    resetZoom();
   }
 
   $("slider").addEventListener("input", ()=>{
