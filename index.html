@@ -1898,7 +1898,81 @@ if(themeBtn){
 </script>
   <script>
   // ===== KIVIAT =====
-  const kiviatCanvas = $("kiviat");
+  // ===== KIVIAT =====
+const kiviatCanvas = $("kiviat");
+/* ✅ COLLE ICI LE BLOC ZOOM COMPLET */
+const seatSvg = document.getElementById("seatSvg");
+let _vb0 = null;
+let _zoomAnim = null;
+
+function getViewBoxObj(svg){
+  const vb = svg.viewBox.baseVal;
+  return { x: vb.x, y: vb.y, w: vb.width, h: vb.height };
+}
+function setViewBoxObj(svg, vb){
+  svg.setAttribute("viewBox", `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+}
+function animateViewBox(svg, from, to, ms = 260){
+  if(_zoomAnim) cancelAnimationFrame(_zoomAnim);
+  const t0 = performance.now();
+  const tick = (t)=>{
+    const k = Math.min(1, (t - t0) / ms);
+    const e = 1 - Math.pow(1 - k, 3);
+    const vb = {
+      x: from.x + (to.x - from.x) * e,
+      y: from.y + (to.y - from.y) * e,
+      w: from.w + (to.w - from.w) * e,
+      h: from.h + (to.h - from.h) * e,
+    };
+    setViewBoxObj(svg, vb);
+    if(k < 1) _zoomAnim = requestAnimationFrame(tick);
+    else _zoomAnim = null;
+  };
+  _zoomAnim = requestAnimationFrame(tick);
+}
+function getBBoxInSvgCoords(el){
+  const bb = el.getBBox();
+  const m = el.getCTM();
+  if(!m) return bb;
+
+  const pts = [
+    {x: bb.x, y: bb.y},
+    {x: bb.x + bb.width, y: bb.y},
+    {x: bb.x + bb.width, y: bb.y + bb.height},
+    {x: bb.x, y: bb.y + bb.height},
+  ].map(p => ({
+    x: m.a*p.x + m.c*p.y + m.e,
+    y: m.b*p.x + m.d*p.y + m.f
+  }));
+
+  const xs = pts.map(p=>p.x), ys = pts.map(p=>p.y);
+  const x1 = Math.min(...xs), x2 = Math.max(...xs);
+  const y1 = Math.min(...ys), y2 = Math.max(...ys);
+  return { x: x1, y: y1, width: x2-x1, height: y2-y1 };
+}
+function zoomToZone(el, padding = 26){
+  if(!seatSvg || !el) return;
+  if(!_vb0) _vb0 = getViewBoxObj(seatSvg);
+
+  const b = getBBoxInSvgCoords(el);
+  const target = {
+    x: b.x - padding,
+    y: b.y - padding,
+    w: b.width + padding*2,
+    h: b.height + padding*2
+  };
+
+  target.w = Math.max(target.w, 120);
+  target.h = Math.max(target.h, 140);
+
+  animateViewBox(seatSvg, getViewBoxObj(seatSvg), target, 260);
+}
+function resetZoom(){
+  if(!seatSvg) return;
+  if(!_vb0) _vb0 = getViewBoxObj(seatSvg);
+  animateViewBox(seatSvg, getViewBoxObj(seatSvg), _vb0, 220);
+}
+/* ✅ FIN DU BLOC ZOOM */
   const kiviatMetaEl = $("kiviatMeta");
   let radarAnimReq = null;
   let radarPrev = null;
@@ -2229,6 +2303,7 @@ if(themeBtn){
     $("sheetZone").textContent = effectiveDisplayName(zoneName);
 
     document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
+    resetZoom();
     if(el) el.classList.add("active");
 
     const existing = ratings[activeKey];
@@ -2246,6 +2321,7 @@ if(themeBtn){
 
     $("overlay").classList.add("show");
     $("sheet").classList.add("show");
+    if(el) zoomToZone(el, 26);
   }
 
   function closeSheet(){
