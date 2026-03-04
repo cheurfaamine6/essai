@@ -39,6 +39,72 @@
       --settings-panel-alpha: .12;
       --settings-table-alpha: .10;
     }
+    /* ===== THEME (dark par défaut) ===== */
+:root{
+  color-scheme: dark;
+}
+
+/* ===== THEME LIGHT ===== */
+body.light{
+  color-scheme: light;
+
+  /* Background */
+  --bg0:#f6f7fb;
+  --bg1:#e9ecf7;
+
+  /* Cards */
+  --cardTop:rgba(0,0,0,.04);
+  --cardBot:rgba(0,0,0,.02);
+
+  /* Lines */
+  --line:rgba(0,0,0,.10);
+
+  /* Text */
+  --txt:#0b1020;
+  --muted:#39436a;
+
+  /* Shadows */
+  --shadow: 0 18px 55px rgba(0,0,0,.14);
+  --shadow2: 0 26px 80px rgba(0,0,0,.18);
+
+  /* Zones (un peu plus lisibles en clair) */
+  --zone-fill: rgba(79,140,255,.10);
+  --zone-stroke: rgba(79,140,255,.55);
+}
+
+/* En clair, certains backgrounds translucides doivent devenir “clairs” */
+body.light header{
+  background: rgba(246,247,251,.68);
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+
+body.light .menu{
+  background: rgba(255,255,255,.92);
+  border-color: rgba(0,0,0,.12);
+}
+
+body.light .modal,
+body.light .sheetCard,
+body.light .capModal,
+body.light .profileOverlay .box,
+body.light .gcModal{
+  background: rgba(255,255,255,.92);
+  border-color: rgba(0,0,0,.12);
+}
+
+body.light .pill{
+  border-color: rgba(0,0,0,.12);
+  background: rgba(0,0,0,.04);
+}
+
+body.light .field input,
+body.light .field select,
+body.light textarea{
+  background: rgba(0,0,0,.04);
+  border-color: rgba(0,0,0,.12);
+  color: var(--txt);
+}
+body.light .field input::placeholder{ color: rgba(57,67,106,.65); }
 
     *{box-sizing:border-box}
     body{
@@ -781,6 +847,7 @@
           <button class="mi" id="fsBtn"><span>⛶ Plein écran</span><small>toggle</small></button>
           <button class="mi" id="resetBtn"><span>↺ Réinitialiser</span><small>tout</small></button>
           <button class="mi" id="resetPeopleBtn"><span>🧹 Vider tableau</span><small>historique</small></button>
+          <button class="mi" id="themeBtn"><span>🌗 Thème</span><small>clair/basique</small></button>
         </div>
       </div>
     </div>
@@ -1207,6 +1274,18 @@
     t.classList.add("show");
     setTimeout(()=>t.classList.remove("show"), 1200);
   }
+  // ===== THEME dark/light =====
+function applyTheme(theme){
+  const isLight = theme === "light";
+  document.body.classList.toggle("light", isLight);
+  localStorage.setItem(THEME_KEY, theme);
+  toast(isLight ? "🌞 Mode clair" : "🌙 Mode basique");
+}
+
+function loadTheme(){
+  const t = localStorage.getItem(THEME_KEY) || "dark";
+  applyTheme(t);
+}
 
   const TABLE_PASSWORD = "1234"; // change ici
   const RATINGS_KEY = "seat_ratings_current_final_v7";
@@ -1216,6 +1295,7 @@
   const ZSTYLE_KEY = "seat_zone_style_v1";
   const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
   const ACCENT_KEY = "seat_accent_v1";
+  const THEME_KEY = "seat_theme_v1"; // "dark" | "light"
 
   // ✅ commentaire global courant (avant enregistrement)
   const CURRENT_GC_KEY = "seat_current_global_comment_v1";
@@ -1248,6 +1328,15 @@
   function closeMenu(){ moreMenu.classList.remove("show"); }
   moreBtn.addEventListener("click", (e)=>{ e.stopPropagation(); moreMenu.classList.toggle("show"); });
   document.addEventListener("click", closeMenu);
+  // Theme button (menu ⋯)
+const themeBtn = $("themeBtn");
+if(themeBtn){
+  themeBtn.addEventListener("click", ()=>{
+    closeMenu();
+    const cur = localStorage.getItem(THEME_KEY) || "dark";
+    applyTheme(cur === "light" ? "dark" : "light");
+  });
+}
 
   // Fullscreen
   const fsBtn = $("fsBtn");
@@ -2969,6 +3058,7 @@
 
   // ===== INIT =====
   applyAccent(accent);
+  loadTheme();                
   $("accentSelect").value = accent;
 
   applyUiAlpha(uiAlpha);
