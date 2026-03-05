@@ -13,13 +13,29 @@
   <style>
     /* ✅ Transitions fluides du panneau critères */
 #criteriaPanel{
-  display:block;             /* important: on ne joue plus avec display:none */
+  display:block;
   overflow:hidden;
   max-height:0;
   opacity:0;
-  transform: translateY(-6px);
-  transition: max-height .22s ease, opacity .18s ease, transform .18s ease;
+  transform: translateY(-8px);
+
+  transition:
+    max-height .42s cubic-bezier(.2,.8,.2,1),
+    opacity   .32s cubic-bezier(.2,.8,.2,1),
+    transform .32s cubic-bezier(.2,.8,.2,1);
+
   will-change: max-height, opacity, transform;
+}
+
+#criteriaPanel.open{
+  max-height:520px;
+  opacity:1;
+  transform: translateY(0);
+}
+
+#criteriaPanel.fading{
+  opacity:0;
+  transform: translateY(-8px);
 }
 
 #criteriaPanel.open{
@@ -2393,7 +2409,7 @@ function switchCritSmooth(toId){
       panel.classList.remove("fading");
       if(toId) panel.classList.add("open");
     });
-  }, 160);
+  }, 320);
 }
   function renderCriteria(){
     const listEl = $("criteriaList");
