@@ -1041,6 +1041,8 @@ body.light .field input::placeholder{ color: rgba(57,67,106,.65); }
     .gcActions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;}
     .gcActions .btn{flex:1}
   </style>
+  </head>
+  <body>
   <header>
   <div class="wrap top">
     <div class="brand">
@@ -3417,7 +3419,28 @@ renderLegendScale();
     try{ await navigator.clipboard.writeText(lines); toast("✅ Config copiée"); }
     catch{ toast("⚠️ Copie impossible"); }
   });
+// ===== Modes / setMode (OBLIGATOIRE) =====
+const modePill = $("modePill");
 
+function setMode(m){
+  mode = m;
+  saveJson(MODE_KEY, mode);
+
+  document.body.classList.toggle("wordMode", mode === "words");
+
+  modePill.textContent =
+    mode === "sujet" ? "Sujet" :
+    mode === "stephane" ? "Note" :
+    mode === "presence" ? "Présence" :
+    mode === "durete" ? "Dureté" : "Mots";
+
+  setSeatBackground(mode);
+  closeSheet();
+  updateZoneVisuals();
+  requestRadarRedraw(true);
+
+  if(mode === "words") renderWordCloud();
+}
  // ===== Modes menu (nouveau bouton) =====
 const modesBtn = $("modesBtn");
 const modesMenu = $("modesMenu");
@@ -3481,10 +3504,7 @@ modesMenu?.querySelectorAll(".mi").forEach(btn=>{
     };
     img.src = candidates[0] + "?v=" + Date.now();
   })();
+    
 </script>
-
 </body>
 </html>
-  
-</head>
-<body>
