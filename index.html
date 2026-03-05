@@ -1256,17 +1256,14 @@ body.light .field input::placeholder{ color: rgba(57,67,106,.65); }
       <div class="zoneMeta" id="sheetMeta">Choisis une note et enregistre.</div>
 
       <div class="sheetScoreHeader">
-        <div class="hint">Glisser</div>
-        <div class="scoreChip">
-          <span class="dot"></span>
-          <span class="label" id="scoreWord">Satisfait</span>
-        </div>
-      </div>
+  <div class="scoreChip">
+    <span class="dot"></span>
+    <span class="label" id="scoreWord">Satisfait</span>
+  </div>
+</div>
 
       <!-- ✅ Picker pro (sans jauge) -->
-<div class="scoreRow">
-  <div class="scoreBig"><span id="sliderVal">7</span>/10</div>
-</div>
+
 <div class="legendScale" id="legendScale"></div>
 
 <div class="hint" style="margin-top:8px">
@@ -1881,7 +1878,7 @@ function renderLegendScale(){
       if(!Number.isFinite(s)) return;
 
       selectedScore = s;
-      $("sliderVal").textContent = String(s);
+
       applySliderUI(s);
       renderLegendScale();
 
@@ -2432,7 +2429,7 @@ $("sliderVal").textContent = v;
 applySliderUI(v);
 renderLegendScale();
 
-    $("sheetMeta").textContent = existing?.score ? `Note : ${existing.score}/10` : `Choisis 1 à 10`;
+    $("sheetMeta").textContent = "";
     $("reasonText").value = existing?.comment || "";
 
     setCriteriaDefaultsFromExisting(existing);
