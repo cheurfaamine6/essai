@@ -11,6 +11,43 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
+    /* ✅ Échelle couleurs + mots (sous la jauge) */
+.legendScale{
+  margin-top:10px;
+  display:grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap:8px;
+}
+@media (max-width:520px){
+  .legendScale{ grid-template-columns: repeat(3, 1fr); }
+}
+.legendItem{
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  border-radius:14px;
+  padding:8px 8px;
+  text-align:center;
+  font-weight:950;
+  user-select:none;
+}
+.legendSwatch{
+  height:10px;
+  border-radius:999px;
+  margin-bottom:6px;
+  border:1px solid rgba(255,255,255,.16);
+}
+.legendText{
+  font-size:.74rem;
+  line-height:1.15;
+  color: rgba(238,242,255,.90);
+}
+body.light .legendItem{
+  border-color: rgba(15,23,42,.12);
+  background: rgba(255,255,255,.70);
+}
+body.light .legendText{
+  color: rgba(15,23,42,.82);
+}
     :root{
       --bg0:#070a14; --bg1:#0b1020;
       --cardTop:rgba(255,255,255,.085);
@@ -1212,6 +1249,8 @@ body.light .field input::placeholder{ color: rgba(57,67,106,.65); }
         <div class="scoreBig"><span id="sliderVal">7</span>/10</div>
       </div>
       <div class="scale"><span>1</span><span>5</span><span>10</span></div>
+      <!-- ✅ Légende couleurs + mots -->
+      <div class="legendScale" id="legendScale"></div>
 
       <div class="reasonBox">
         <div class="reasonTitle">Critères</div>
@@ -1781,6 +1820,39 @@ if(themeBtn){
     if(score === 10) return { col:"rgba(0,229,255,1)", soft:"rgba(0,229,255,.14)", border:"rgba(0,229,255,.55)", word:"Optimum" };
     return { col:"rgba(124,58,237,1)", soft:"rgba(124,58,237,.14)", border:"rgba(124,58,237,.55)", word:"—" };
   }
+  // ✅ Échelle couleurs + mots sous la jauge
+function scoreWordFor(s){
+  return sliderTheme(Number(s)).word;
+}
+function scoreColorFor(s){
+  return sliderTheme(Number(s)).col;
+}
+
+function renderLegendScale(){
+  const host = $("legendScale");
+  if(!host) return;
+
+  // On affiche 7 paliers "visuels" (correspondent à tes mots)
+  const steps = [
+    { score:1,  label: scoreWordFor(1)  },  // Inacceptable
+    { score:2,  label: scoreWordFor(2)  },  // Très insatisfait
+    { score:3,  label: scoreWordFor(3)  },  // Insatisfait
+    { score:5,  label: scoreWordFor(5)  },  // Acceptable
+    { score:7,  label: scoreWordFor(7)  },  // Satisfait
+    { score:9,  label: scoreWordFor(9)  },  // Très satisfait
+    { score:10, label: scoreWordFor(10) }   // Optimum
+  ];
+
+  host.innerHTML = steps.map(s=>{
+    const col = scoreColorFor(s.score);
+    return `
+      <div class="legendItem" title="Score repère: ${s.score}/10">
+        <div class="legendSwatch" style="background:${col}"></div>
+        <div class="legendText">${escapeHtml(s.label)}</div>
+      </div>
+    `;
+  }).join("");
+}
 
   function rgbaWithAlpha(rgbaStr, alpha){
     const m = String(rgbaStr).match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i);
@@ -3263,6 +3335,7 @@ function zoomForZone(zoneName){
   modeWordsBtn.addEventListener("click", ()=> setMode("words"));
 
   // ===== INIT =====
+  renderLegendScale();
   applyAccent(accent);
   loadTheme();                
   $("accentSelect").value = accent;
