@@ -11,6 +11,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
+    /* ✅ Transitions fluides du panneau critères */
+#criteriaPanel{
+  display:block;             /* important: on ne joue plus avec display:none */
+  overflow:hidden;
+  max-height:0;
+  opacity:0;
+  transform: translateY(-6px);
+  transition: max-height .22s ease, opacity .18s ease, transform .18s ease;
+  will-change: max-height, opacity, transform;
+}
+
+#criteriaPanel.open{
+  max-height:420px;          /* suffisamment grand pour contenir les chips */
+  opacity:1;
+  transform: translateY(0);
+}
+
+/* petite transition lors d'un switch de critère */
+#criteriaPanel.fading{
+  opacity:0;
+  transform: translateY(-6px);
+}
     /* ✅ Échelle couleurs + mots (sous la jauge) */
 .legendScale{
   margin-top:10px;
@@ -1274,7 +1296,7 @@ body.light .field input::placeholder{ color: rgba(57,67,106,.65); }
         <div class="reasonTitle">Critères</div>
         <div id="criteriaList"></div>
 
-        <div id="criteriaPanel" style="display:none">
+        <div id="criteriaPanel">
           <div class="critHead">
             <b id="critTitle">Critère</b>
             <div class="row" style="gap:8px">
@@ -2347,7 +2369,32 @@ function zoomForZone(zoneName){
       return true;
     });
   }
+function nextCritId(){
+  const list = visibleCriteriaForActiveKey();
+  const i = list.findIndex(c => c.id === activeCritId);
+  return (i >= 0 && i < list.length - 1) ? list[i+1].id : null;
+}
 
+function switchCritSmooth(toId){
+  const panel = $("criteriaPanel");
+  if(!panel){ activeCritId = toId; renderCriteria(); return; }
+
+  // ferme visuellement
+  panel.classList.add("fading");
+  panel.classList.remove("open");
+
+  // après un petit délai, on change le contenu puis on rouvre
+  setTimeout(()=>{
+    activeCritId = toId;      // peut être null (=> fermeture complète)
+    renderCriteria();
+
+    // rouvre si toId existe
+    requestAnimationFrame(()=>{
+      panel.classList.remove("fading");
+      if(toId) panel.classList.add("open");
+    });
+  }, 160);
+}
   function renderCriteria(){
     const listEl = $("criteriaList");
     const panel = $("criteriaPanel");
@@ -2372,7 +2419,8 @@ function zoomForZone(zoneName){
         });
       });
 
-      panel.style.display = "none";
+     panel.classList.remove("open");
+panel.classList.remove("fading");
       return;
     }
 
@@ -2388,7 +2436,8 @@ function zoomForZone(zoneName){
       renderCriteria();
     });
 
-    panel.style.display = "block";
+    panel.classList.add("open");
+panel.classList.remove("fading");
     $("critTitle").textContent = crit ? crit.label : "Critère";
     $("critSelected").textContent = activeCriteria[activeCritId] || "—";
 
@@ -2403,27 +2452,24 @@ function zoomForZone(zoneName){
       renderCriteria();
     };
 
-    document.querySelectorAll("#critOptions .chip").forEach(ch=>{
+   document.querySelectorAll("#critOptions .chip").forEach(ch=>{
   ch.addEventListener("click", ()=>{
     const opt = ch.dataset.opt;
-
     const wasSame = (activeCriteria[activeCritId] === opt);
 
     // toggle (comme avant)
     if(wasSame) delete activeCriteria[activeCritId];
     else activeCriteria[activeCritId] = opt;
 
-    // ✅ AUTO: si on vient de choisir une valeur de "presence",
-    // on bascule sur "durete" directement (seulement si on a bien sélectionné, pas supprimé)
-    if(activeCritId === "presence" && !wasSame){
-      activeCritId = "durete";
-      renderCriteria();
+    // ✅ si on a VRAIMENT sélectionné une valeur (pas supprimé), avancer
+    if(!wasSame){
+      const nxt = nextCritId();     // critère suivant visible
+      if(nxt) switchCritSmooth(nxt);
+      else switchCritSmooth(null);  // plus rien => ferme panneau => prêt à enregistrer
       return;
     }
 
-    // (optionnel) si tu veux aussi revenir à la liste après avoir choisi dureté :
-    // if(activeCritId === "durete" && !wasSame){ activeCritId = null; }
-
+    // si on a "décoché", on reste sur le même critère
     renderCriteria();
   });
 });
