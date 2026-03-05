@@ -3138,21 +3138,21 @@ function zoomForZone(zoneName){
   // ===== Per-zone transforms (tuning) =====
   const ZTUNE_KEY = "seat_zone_tune_map_v4";
   const DEFAULT_TUNE = {
-    "z_tete": {dx:-2, dy:21, sc:1.000},
-    "z_dossier_bleu": {dx:11, dy:3, sc:1.000},
-    "z_dossier_rouge": {dx:12, dy:5, sc:1.000},
-    "z_central_gris": {dx:15, dy:5, sc:1.000},
-    "z_jaune": {dx:13, dy:2, sc:1.000},
-    "z_magenta": {dx:15, dy:4, sc:1.000},
-    "z_assise_vert": {dx:15, dy:4, sc:1.000},
-    "z_bas_gauche_vert": {dx:11, dy:4, sc:1.000},
-    "z_flanc_gauche_vert": {dx:11, dy:5, sc:1.000},
-    "z_flanc_gauche_noir": {dx:11, dy:5, sc:1.000},
-    "z_flanc_droit_violet": {dx:12, dy:4, sc:1.000},
-    "z_flanc_droit_orange": {dx:12, dy:5, sc:1.000},
-    "z_bas_droit_blanc": {dx:17, dy:4, sc:1.000},
-    "z_bas_droit_cyan": {dx:18, dy:5, sc:1.000},
-    "z_bas_gauche_orange": {dx:11, dy:4, sc:1.000}
+    "z_tete": {dx:4, dy:39, sc:1.000},
+    "z_dossier_bleu": {dx:19, dy:21, sc:1.000},
+    "z_dossier_rouge": {dx:19, dy:23, sc:1.000},
+    "z_central_gris": {dx:22, dy:20, sc:1.000},
+    "z_jaune": {dx:20, dy:21, scg:1.000},
+    "z_magenta": {dx:21, dy:23, sc:1.000},
+    "z_assise_vert": {dx:23, dy:22, sc:1.000},
+    "z_bas_gauche_vert": {dx:19, dy:23, sc:1.000},
+    "z_flanc_gauche_vert": {dx:18, dy:23, sc:1.000},
+    "z_flanc_gauche_noir": {dx:18, dy:23, sc:1.000},
+    "z_flanc_droit_violet": {dx:25, dy:26, sc:1.000},
+    "z_flanc_droit_orange": {dx:21, dy:22, sc:1.000},
+    "z_bas_droit_blanc": {dx:24, dy:22, sc:1.000},
+    "z_bas_droit_cyan": {dx:24, dy:21, sc:1.000},
+    "z_bas_gauche_orange": {dx:19, dy:22, sc:1.000}
   };
 
   let zoneTune = loadJson(ZTUNE_KEY, null);
