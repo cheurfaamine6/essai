@@ -1148,16 +1148,23 @@ body.light .field input::placeholder{ color: rgba(57,67,106,.65); }
     </div>
 
     <div class="p row">
-      <div class="row" style="gap:8px">
-        <button class="btn small" id="modeSujetBtn">Sujet</button>
-        <button class="btn small" id="modeStephaneBtn">Note</button>
-        <button class="btn small" id="modePresenceBtn">Présence</button>
-        <button class="btn small" id="modeDureteBtn">Dureté</button>
-        <button class="btn small" id="modeWordsBtn">Mots</button>
-        <span class="pill" id="modePill">Mode —</span>
+  <div class="row" style="gap:8px">
+    <div class="menuWrap" id="modesWrap">
+      <button class="btn small icon" id="modesBtn" type="button" title="Modes"> Modes</button>
+      <div class="menu" id="modesMenu" style="left:0; right:auto;">
+        <button class="mi" data-mode="sujet"><span> Sujet</span><small>cliquer pour activer</small></button>
+        <button class="mi" data-mode="stephane"><span> Note</span><small>affichage score</small></button>
+        <button class="mi" data-mode="presence"><span> Présence</span><small>critère</small></button>
+        <button class="mi" data-mode="durete"><span> Dureté</span><small>critère</small></button>
+        <button class="mi" data-mode="words"><span> Mots</span><small>nuage</small></button>
       </div>
-      <div class="pill good" id="globalPill">Confort global —</div>
     </div>
+
+    <span class="pill" id="modePill">Mode —</span>
+  </div>
+
+  <div class="pill good" id="globalPill">Confort global —</div>
+</div>
 
     <div class="seatFrame">
       <svg id="seatSvg" viewBox="0 0 270.933 406.4" preserveAspectRatio="xMidYMid meet">
@@ -3411,39 +3418,33 @@ renderLegendScale();
     catch{ toast("⚠️ Copie impossible"); }
   });
 
-  // ===== Modes buttons =====
-  const modeSujetBtn = $("modeSujetBtn");
-  const modeStephaneBtn = $("modeStephaneBtn");
-  const modePresenceBtn = $("modePresenceBtn");
-  const modeDureteBtn = $("modeDureteBtn");
-  const modeWordsBtn = $("modeWordsBtn");
-  const modePill = $("modePill");
+ // ===== Modes menu (nouveau bouton) =====
+const modesBtn = $("modesBtn");
+const modesMenu = $("modesMenu");
 
-  function setMode(m){
-    mode = m;
-    saveJson(MODE_KEY, mode);
+function closeModesMenu(){ modesMenu?.classList.remove("show"); }
 
-    document.body.classList.toggle("wordMode", mode === "words");
+modesBtn?.addEventListener("click", (e)=>{
+  e.stopPropagation();
+  modesMenu.classList.toggle("show");
+});
 
-    modePill.textContent =
-      mode === "sujet" ? "Sujet" :
-      mode === "stephane" ? "Note" :
-      mode === "presence" ? "Présence" :
-      mode === "durete" ? "Dureté" : "Mots";
+// fermer quand on clique ailleurs
+document.addEventListener("click", (e)=>{
+  // si clic hors du wrap
+  const wrap = $("modesWrap");
+  if(!wrap) return;
+  if(!wrap.contains(e.target)) closeModesMenu();
+});
 
-    setSeatBackground(mode);
-    closeSheet();
-    updateZoneVisuals();
-    requestRadarRedraw(true);
-
-    if(mode === "words") renderWordCloud();
-  }
-
-  modeSujetBtn.addEventListener("click", ()=> setMode("sujet"));
-  modeStephaneBtn.addEventListener("click", ()=> setMode("stephane"));
-  modePresenceBtn.addEventListener("click", ()=> setMode("presence"));
-  modeDureteBtn.addEventListener("click", ()=> setMode("durete"));
-  modeWordsBtn.addEventListener("click", ()=> setMode("words"));
+// clic sur item
+modesMenu?.querySelectorAll(".mi").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const m = btn.getAttribute("data-mode");
+    closeModesMenu();
+    if(m) setMode(m);
+  });
+});
 
   // ===== INIT =====
   renderLegendScale();
