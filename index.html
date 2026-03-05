@@ -2404,13 +2404,29 @@ function zoomForZone(zoneName){
     };
 
     document.querySelectorAll("#critOptions .chip").forEach(ch=>{
-      ch.addEventListener("click", ()=>{
-        const opt = ch.dataset.opt;
-        if(activeCriteria[activeCritId] === opt) delete activeCriteria[activeCritId];
-        else activeCriteria[activeCritId] = opt;
-        renderCriteria();
-      });
-    });
+  ch.addEventListener("click", ()=>{
+    const opt = ch.dataset.opt;
+
+    const wasSame = (activeCriteria[activeCritId] === opt);
+
+    // toggle (comme avant)
+    if(wasSame) delete activeCriteria[activeCritId];
+    else activeCriteria[activeCritId] = opt;
+
+    // ✅ AUTO: si on vient de choisir une valeur de "presence",
+    // on bascule sur "durete" directement (seulement si on a bien sélectionné, pas supprimé)
+    if(activeCritId === "presence" && !wasSame){
+      activeCritId = "durete";
+      renderCriteria();
+      return;
+    }
+
+    // (optionnel) si tu veux aussi revenir à la liste après avoir choisi dureté :
+    // if(activeCritId === "durete" && !wasSame){ activeCritId = null; }
+
+    renderCriteria();
+  });
+});
   }
 
   // ===== Sheet open/close =====
