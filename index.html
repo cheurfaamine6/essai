@@ -18,6 +18,7 @@
   grid-template-columns: repeat(7, 1fr);
   gap:8px;
 }
+    
 @media (max-width:520px){
   .legendScale{ grid-template-columns: repeat(3, 1fr); }
 }
@@ -76,6 +77,25 @@ body.light .legendText{
       --settings-panel-alpha: .12;
       --settings-table-alpha: .10;
     }
+    /* ✅ Légende cliquable + état sélection */
+.legendItem{
+  cursor:pointer;
+  transition: transform .12s ease, border-color .12s ease, background .12s ease;
+}
+.legendItem:hover{
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,.22);
+}
+.legendItem.selected{
+  border-color: rgba(255,255,255,.42);
+  box-shadow: 0 0 0 4px rgba(124,58,237,.16);
+}
+body.light .legendItem:hover{
+  border-color: rgba(15,23,42,.22);
+}
+body.light .legendItem.selected{
+  box-shadow: 0 0 0 4px rgba(79,140,255,.16);
+}
     /* ===== THEME (dark par défaut) ===== */
 :root{
   color-scheme: dark;
@@ -1243,14 +1263,15 @@ body.light .field input::placeholder{ color: rgba(57,67,106,.65); }
         </div>
       </div>
 
-      <input id="slider" class="ratingSlider" type="range" min="1" max="10" step="1" value="7" />
+      <!-- ✅ Picker pro (sans jauge) -->
+<div class="scoreRow">
+  <div class="scoreBig"><span id="sliderVal">7</span>/10</div>
+</div>
+<div class="legendScale" id="legendScale"></div>
 
-      <div class="scoreRow">
-        <div class="scoreBig"><span id="sliderVal">7</span>/10</div>
-      </div>
-      <div class="scale"><span>1</span><span>5</span><span>10</span></div>
-      <!-- ✅ Légende couleurs + mots -->
-      <div class="legendScale" id="legendScale"></div>
+<div class="hint" style="margin-top:8px">
+  Clique sur une couleur pour choisir ta note.
+</div>
 
       <div class="reasonBox">
         <div class="reasonTitle">Critères</div>
@@ -1702,7 +1723,7 @@ if(themeBtn){
   let activeKey = null;
   let activeCriteria = {};
   let activeCritId = null;
-
+  let selectedScore = 7; // ✅ score choisi via la légende (remplace la jauge)
   // Nouvelle personne enable logic
   const newPersonBtn = $("newPersonBtn");
   let canStartNewPerson = false;
@@ -1832,26 +1853,50 @@ function renderLegendScale(){
   const host = $("legendScale");
   if(!host) return;
 
-  // On affiche 7 paliers "visuels" (correspondent à tes mots)
   const steps = [
-    { score:1,  label: scoreWordFor(1)  },  // Inacceptable
-    { score:2,  label: scoreWordFor(2)  },  // Très insatisfait
-    { score:3,  label: scoreWordFor(3)  },  // Insatisfait
-    { score:5,  label: scoreWordFor(5)  },  // Acceptable
-    { score:7,  label: scoreWordFor(7)  },  // Satisfait
-    { score:9,  label: scoreWordFor(9)  },  // Très satisfait
-    { score:10, label: scoreWordFor(10) }   // Optimum
+    { score:1,  label: sliderTheme(1).word  },
+    { score:2,  label: sliderTheme(2).word  },
+    { score:3,  label: sliderTheme(3).word  },
+    { score:5,  label: sliderTheme(5).word  },
+    { score:7,  label: sliderTheme(7).word  },
+    { score:9,  label: sliderTheme(9).word  },
+    { score:10, label: sliderTheme(10).word }
   ];
 
   host.innerHTML = steps.map(s=>{
-    const col = scoreColorFor(s.score);
+    const col = sliderTheme(s.score).col;
+    const isSel = Number(selectedScore) === Number(s.score);
     return `
-      <div class="legendItem" title="Score repère: ${s.score}/10">
+      <div class="legendItem ${isSel ? "selected" : ""}" data-score="${s.score}" role="button" tabindex="0"
+           title="Choisir ${s.score}/10">
         <div class="legendSwatch" style="background:${col}"></div>
         <div class="legendText">${escapeHtml(s.label)}</div>
       </div>
     `;
   }).join("");
+
+  host.querySelectorAll(".legendItem").forEach(item=>{
+    const pick = ()=>{
+      const s = Number(item.dataset.score);
+      if(!Number.isFinite(s)) return;
+
+      selectedScore = s;
+      $("sliderVal").textContent = String(s);
+      applySliderUI(s);
+      renderLegendScale();
+
+      activeCritId = null;
+      renderCriteria();
+    };
+
+    item.addEventListener("click", pick);
+    item.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        pick();
+      }
+    });
+  });
 }
 
   function rgbaWithAlpha(rgbaStr, alpha){
@@ -2382,9 +2427,10 @@ function zoomForZone(zoneName){
     const existing = ratings[activeKey];
     const v = existing?.score ? Number(existing.score) : 7;
 
-    $("slider").value = v;
-    $("sliderVal").textContent = v;
-    applySliderUI(v);
+selectedScore = v;
+$("sliderVal").textContent = v;
+applySliderUI(v);
+renderLegendScale();
 
     $("sheetMeta").textContent = existing?.score ? `Note : ${existing.score}/10` : `Choisis 1 à 10`;
     $("reasonText").value = existing?.comment || "";
@@ -2403,15 +2449,6 @@ function zoomForZone(zoneName){
     document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
     resetZoom();
   }
-
-  $("slider").addEventListener("input", ()=>{
-    const v = Number($("slider").value);
-    $("sliderVal").textContent = v;
-    applySliderUI(v);
-    activeCritId = null;
-    renderCriteria();
-  });
-
   $("saveBtn").addEventListener("click", ()=>{
     if(!activeKey) return;
 
@@ -2423,8 +2460,7 @@ function zoomForZone(zoneName){
       return;
     }
 
-    const score = Number($("slider").value);
-
+    const score = Number(selectedScore);
     ratings[activeKey] = { score, criteria: activeCriteria, comment: $("reasonText").value.trim() };
     saveJson(RATINGS_KEY, ratings);
 
@@ -3343,6 +3379,8 @@ function zoomForZone(zoneName){
   applyUiAlpha(uiAlpha);
   applyZoneStyle(zStyle);
   applySliderUI(7);
+  selectedScore = 7;
+  renderLegendScale();
 
   applyAll();
   loadZoneToUI(zoneSelect.value);
