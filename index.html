@@ -2177,7 +2177,29 @@ function seatPartFromZoneName(zoneName){
   // fallback
   return "dossier";
 }
+function getUniqueKeysByPart(part){
+  const seen = new Set();
+  const keys = [];
 
+  getZones().forEach(zoneName=>{
+    if(seatPartFromZoneName(zoneName) !== part) return;
+    const key = effectiveKeyForZone(zoneName);
+    if(seen.has(key)) return;
+    seen.add(key);
+    keys.push(key);
+  });
+
+  return keys;
+}
+
+function isPartFullyRated(part){
+  const keys = getUniqueKeysByPart(part);
+  return keys.every(key => Number.isFinite(Number(ratings?.[key]?.score)));
+}
+
+function isDossierFullyRated(){
+  return isPartFullyRated("dossier");
+}
 function zoomToSeatPart(part){
   const target = ZOOM_REGIONS[part] || ZOOM_REGIONS.dossier;
   animateVB(getVB(), target, 260);
@@ -2630,27 +2652,28 @@ renderLegendScale();
 document.querySelectorAll(".zone").forEach(el=>{
   el.addEventListener("click", (e)=>{
     e.stopPropagation();
-    if(mode === "sujet"){
-      openSheet(el.dataset.zone, el); // ⬅️ on ouvre juste la fenêtre de note
+
+    if(mode !== "sujet"){
+      toast("Mode affichage");
       return;
     }
-    toast("Mode affichage");
+
+    const zoneName = el.dataset.zone;
+    const part = seatPartFromZoneName(zoneName);
+
+    // ✅ L'assise est bloquée tant que le dossier n'est pas fini
+    if(part === "assise" && !isDossierFullyRated()){
+      toast("Veuillez finir de noter le dossier.");
+      return;
+    }
+
+    const gKey = effectiveKeyForZone(zoneName);
+    greenClicked[gKey] = true;
+    saveJson(GREEN_KEY, greenClicked);
+    updateZoneVisuals();
+    openSheet(zoneName, el);
   });
 });
-    document.querySelectorAll(".zone").forEach(el=>{
-    el.addEventListener("click", (e)=>{
-      e.stopPropagation();
-      if(mode === "sujet"){
-        const gKey = effectiveKeyForZone(el.dataset.zone);
-        greenClicked[gKey] = true;
-        saveJson(GREEN_KEY, greenClicked);
-        updateZoneVisuals();
-        openSheet(el.dataset.zone, el);
-        return;
-      }
-      toast("Mode affichage");
-    });
-  });
 
   // ===== People store =====
   function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
