@@ -1796,6 +1796,34 @@ if(themeBtn){
   function effectiveKeyForZone(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
   function effectiveDisplayName(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
   function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
+  // ===== ZONES -> Couleur + Index CSV =====
+const ZONE_META = {
+  "Appui tête":               { code:"I",  col:"rgba(59,130,246,1)" },   // bleu
+  "Dossier haut (bleu)":      { code:"G2", col:"rgba(59,130,246,1)" },   // bleu
+  "Dossier milieu (rouge)":   { code:"G1", col:"rgba(239,68,68,1)" },    // rouge
+  "Zone centrale (gris clair)":{ code:"F", col:"rgba(148,163,184,1)" },  // gris
+  "Bande jaune":              { code:"E",  col:"rgba(250,204,21,1)" },   // jaune
+  "Bande magenta":            { code:"A",  col:"rgba(217,70,239,1)" },   // magenta
+  "Assise bas (vert)":        { code:"B",  col:"rgba(34,197,94,1)" },    // vert
+
+  // Groupes G+D (déjà dans ton code)
+  "Bolsters haut dossier (G+D)": { code:"H",   col:"rgba(124,45,18,1)" },   // bordeaux
+  "Bolsters bas dossier (G+D)":  { code:"D",   col:"rgba(30,58,138,1)" },   // bleu marine
+  "Bolsters bas assise (G+D)":   { code:"Cap", col:"rgba(249,115,22,1)" },  // orange
+  "Bolsters haut assise (G+D)":  { code:"Cav", col:"rgba(37,99,235,1)" }    // bleu
+};
+
+const CODE_TO_KEY = Object.fromEntries(Object.entries(ZONE_META).map(([k,v]) => [v.code, k]));
+
+function zoneCodeByKey(key){
+  return (ZONE_META[key]?.code) || key; // fallback
+}
+function zoneColorByKey(key){
+  return (ZONE_META[key]?.col) || "rgba(190,200,220,1)";
+}
+function zoneCodeByZoneName(zoneName){
+  return zoneCodeByKey(effectiveKeyForZone(zoneName));
+}
 
   // ✅ Critères
   const CRIT_SCALE = [
@@ -2025,9 +2053,9 @@ function renderLegendScale(){
         const gKey = effectiveKeyForZone(zoneName);
         const on = !!greenClicked[gKey];
         if(!on){ hideZone(poly); return; }
-        const grey = "rgba(190,200,220,1)";
-        poly.style.fill = rgbaWithAlpha(grey, Math.max(0.08, fillA));
-        poly.style.stroke = rgbaWithAlpha(grey, Math.max(0.35, strokeA));
+        const base = zoneColorByKey(gKey); // <-- couleur selon zone/groupe
+        poly.style.fill = rgbaWithAlpha(base, Math.max(0.08, fillA));
+        poly.style.stroke = rgbaWithAlpha(base, Math.max(0.35, strokeA));
         poly.style.strokeWidth = String(strokeWn);
         return;
       }
@@ -3006,16 +3034,16 @@ renderLegendScale();
     const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale","Commentaire global","Mots (1-3)"];
     const perZoneHeaders = [];
     for(const key of zoneKeys){
-      perZoneHeaders.push(
-        `${key} - Score`,
-        `${key} - Présence`,
-        `${key} - Dureté`,
-        `${key} - Symétrie`,
-        `${key} - Homogénéité`,
-        `${key} - Commentaire`
+    const z = zoneCodeByKey(key);
+    perZoneHeaders.push(
+    `${z} - Score`,
+    `${z} - Présence`,
+    `${z} - Dureté`,
+    `${z} - Symétrie`,
+    `${z} - Homogénéité`,
+    `${z} - Commentaire`
       );
     }
-
     const allHeaders = [...headers, ...perZoneHeaders];
     const lines = [allHeaders.map(esc).join(SEP)];
 
@@ -3068,16 +3096,23 @@ renderLegendScale();
   }
   function normalizeHeader(h){ return String(h||"").trim().toLowerCase().replaceAll("\ufeff",""); }
   function buildZoneKeysFromHeaders(headers){
-    const keys = []; const seen = new Set();
-    headers.forEach(h=>{
-      const m = String(h).match(/^(.*)\s-\sScore$/i);
-      if(m){
-        const key = m[1].trim();
-        if(key && !seen.has(key)){ seen.add(key); keys.push(key); }
-      }
-    });
-    return keys;
-  }
+  const keys = [];
+  const seen = new Set();
+  headers.forEach(h=>{
+    const m = String(h).match(/^(.*)\s-\sScore$/i);
+    if(!m) return;
+
+    const code = m[1].trim();
+    const key = CODE_TO_KEY[code]; // <-- transforme "A" -> "Bande magenta" etc
+    if(!key) return;
+
+    if(!seen.has(key)){
+      seen.add(key);
+      keys.push(key);
+    }
+  });
+  return keys;
+}
 
   function importCsvToPeople(csvText){
     const text = String(csvText || "").replace(/\r\n/g,"\n").replace(/\r/g,"\n").trim();
@@ -3119,12 +3154,15 @@ renderLegendScale();
 
       const ratingsObj = {};
       zoneKeys.forEach(key=>{
-        const idxScore = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Score`));
-        const idxPres  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Présence`));
-        const idxDur   = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Dureté`));
-        const idxSym   = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Symétrie`));
-        const idxHomo  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Homogénéité`));
-        const idxComm  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Commentaire`));
+  const z = zoneCodeByKey(key);
+
+  const idxScore = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${z} - Score`));
+  const idxPres  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${z} - Présence`));
+  const idxDur   = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${z} - Dureté`));
+  const idxSym   = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${z} - Symétrie`));
+  const idxHomo  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${z} - Homogénéité`));
+  const idxComm  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${z} - Commentaire`));
+
 
         const scoreStr = idxScore>=0 ? cols[idxScore] : "";
         const scoreNum = Number(scoreStr);
