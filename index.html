@@ -2807,35 +2807,48 @@ renderLegendScale();
   }
 
   function closeSheet(){
-    $("overlay").classList.remove("show");
-    $("sheet").classList.remove("show");
-    document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
-    resetZoom();
+  $("overlay").classList.remove("show");
+  $("sheet").classList.remove("show");
+  document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
+  resetZoom();
+
+  setTimeout(()=>{
+    checkSectionComfortPrompts();
+  }, 60);
+}
+ $("saveBtn").addEventListener("click", ()=>{
+  if(!activeKey) return;
+
+  // ✅ Présence & Dureté obligatoires
+  if(!activeCriteria?.presence || !activeCriteria?.durete){
+    toast("⚠️ Présence et Dureté obligatoires");
+    activeCritId = (!activeCriteria?.presence) ? "presence" : "durete";
+    renderCriteria();
+    return;
   }
-  $("saveBtn").addEventListener("click", ()=>{
-    if(!activeKey) return;
 
-    // ✅ Présence & Dureté obligatoires
-    if(!activeCriteria?.presence || !activeCriteria?.durete){
-      toast("⚠️ Présence et Dureté obligatoires");
-      activeCritId = (!activeCriteria?.presence) ? "presence" : "durete";
-      renderCriteria();
-      return;
-    }
+  const score = Number(selectedScore);
+  ratings[activeKey] = {
+    score,
+    criteria: activeCriteria,
+    comment: $("reasonText").value.trim()
+  };
+  saveJson(RATINGS_KEY, ratings);
 
-    const score = Number(selectedScore);
-    ratings[activeKey] = { score, criteria: activeCriteria, comment: $("reasonText").value.trim() };
-    saveJson(RATINGS_KEY, ratings);
+  if(mode === "sujet" && activeKey){
+    greenClicked[activeKey] = true;
+    saveJson(GREEN_KEY, greenClicked);
+  }
 
-    if(mode === "sujet" && activeKey){
-      greenClicked[activeKey] = true;
-      saveJson(GREEN_KEY, greenClicked);
-    }
+  closeSheet();          // ✅ fermer d'abord
+  updateSummary();       // ✅ recalcul ensuite
+  toast("Note enregistrée");
 
-    updateSummary();
-    toast("Note enregistrée");
-    closeSheet();
-  });
+  // ✅ puis vérifier l'ouverture de la popup dossier/assise
+  setTimeout(()=>{
+    checkSectionComfortPrompts();
+  }, 80);
+});
 
   $("overlay").addEventListener("click", closeSheet);
   $("closeBtn").addEventListener("click", closeSheet);
