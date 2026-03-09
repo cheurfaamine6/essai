@@ -1126,6 +1126,44 @@ body.light .field input::placeholder{ color: rgba(57,67,106,.65); }
     </div>
   </div>
 </div>
+    <!-- Modal confort global section -->
+<div class="gcOverlay" id="sectionComfortOverlay" aria-hidden="true">
+  <div class="gcModal" role="dialog" aria-modal="true" aria-label="Confort global section">
+    <div class="gcHead">
+      <b id="sectionComfortTitle">Confort global</b>
+      <span class="pill" id="sectionComfortPill">Section</span>
+    </div>
+
+    <div class="gcBody">
+      <div class="hint">
+        Donne une <b>note globale</b> pour cette partie, puis ajoute un commentaire si besoin.
+      </div>
+
+      <label class="commentLabel" for="sectionComfortScore">Note globale *</label>
+      <select id="sectionComfortScore" class="field" style="width:100%; margin-top:8px; padding:10px 12px; border-radius:14px;">
+        <option value="">Choisir une note</option>
+        <option value="1">1 - Inacceptable</option>
+        <option value="2">2 - Très insatisfait</option>
+        <option value="3">3 - Insatisfait</option>
+        <option value="4">4 - Insatisfait</option>
+        <option value="5">5 - Acceptable</option>
+        <option value="6">6 - Acceptable</option>
+        <option value="7">7 - Satisfait</option>
+        <option value="8">8 - Satisfait</option>
+        <option value="9">9 - Très satisfait</option>
+        <option value="10">10 - Optimum</option>
+      </select>
+
+      <label class="commentLabel" for="sectionComfortComment">Commentaire</label>
+      <textarea id="sectionComfortComment" placeholder="Commentaire optionnel..."></textarea>
+
+      <div class="gcActions">
+        <button class="btn ghost" id="sectionComfortCancelBtn" type="button">Annuler</button>
+        <button class="btn primary" id="sectionComfortSaveBtn" type="button">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- Modal commentaire global obligatoire -->
 <div class="gcOverlay" id="gcOverlay" aria-hidden="true">
   <div class="gcModal" role="dialog" aria-modal="true" aria-label="Commentaire global">
@@ -1552,6 +1590,7 @@ function loadTheme(){
   const SET_UI_ALPHA_KEY = "seat_settings_ui_alpha_v1";
   const ACCENT_KEY = "seat_accent_v1";
   const THEME_KEY = "seat_theme_v1"; // "dark" | "light"
+  const SECTION_COMFORT_KEY = "seat_section_comfort_v1";
 
   // ✅ commentaire global courant (avant enregistrement)
   const CURRENT_GC_KEY = "seat_current_global_comment_v1";
@@ -1642,6 +1681,15 @@ if(themeBtn){
   const gateContinueBtn = $("gateContinueBtn");
   const gateDevBtn = $("gateDevBtn");
   const gateHint = $("gateHint");
+  const sectionComfortOverlay = $("sectionComfortOverlay");
+const sectionComfortTitle = $("sectionComfortTitle");
+const sectionComfortPill = $("sectionComfortPill");
+const sectionComfortScore = $("sectionComfortScore");
+const sectionComfortComment = $("sectionComfortComment");
+const sectionComfortCancelBtn = $("sectionComfortCancelBtn");
+const sectionComfortSaveBtn = $("sectionComfortSaveBtn");
+
+let currentSectionComfortPart = null;
 const guideOverlay = $("guideOverlay");
 const guideCloseBtn = $("guideCloseBtn");
 const guideOkBtn = $("guideOkBtn");
@@ -1703,6 +1751,53 @@ guideOverlay?.addEventListener("click", (e)=>{
     setTimeout(()=> gateNom.focus(), 50);
   }
   function closeProfileGate(){ profileOverlay.classList.remove("show"); }
+  function openSectionComfortModal(part){
+  currentSectionComfortPart = part;
+
+  const label = part === "dossier" ? "dossier" : "assise";
+  sectionComfortTitle.textContent = `Confort global ${label}`;
+  sectionComfortPill.textContent = label.charAt(0).toUpperCase() + label.slice(1);
+
+  sectionComfortScore.value = sectionComfort?.[part]?.score || "";
+  sectionComfortComment.value = sectionComfort?.[part]?.comment || "";
+
+  sectionComfortOverlay.classList.add("show");
+  sectionComfortOverlay.setAttribute("aria-hidden", "false");
+}
+
+function closeSectionComfortModal(){
+  sectionComfortOverlay.classList.remove("show");
+  sectionComfortOverlay.setAttribute("aria-hidden", "true");
+  currentSectionComfortPart = null;
+}
+
+sectionComfortCancelBtn?.addEventListener("click", closeSectionComfortModal);
+
+sectionComfortSaveBtn?.addEventListener("click", ()=>{
+  if(!currentSectionComfortPart) return;
+
+  const score = sectionComfortScore.value;
+  const comment = sectionComfortComment.value.trim();
+
+  if(!score){
+    toast("⚠️ Note globale obligatoire");
+    sectionComfortScore.focus();
+    return;
+  }
+
+  sectionComfort[currentSectionComfortPart] = {
+    score: String(score),
+    comment
+  };
+  saveSectionComfort();
+  closeSectionComfortModal();
+  toast(`✅ Confort global ${currentSectionComfortPart} enregistré`);
+  updateSummary();
+});
+
+sectionComfortOverlay?.addEventListener("click", (e)=>{
+  if(e.target === sectionComfortOverlay) closeSectionComfortModal();
+});
 
   function validateAndApplyProfile(){
     const nom = gateNom.value.trim();
@@ -1765,7 +1860,22 @@ guideOverlay?.addEventListener("click", (e)=>{
   // ===== Commentaire global courant =====
   let currentGlobalComment = loadJson(CURRENT_GC_KEY, "");
   let currentWords = loadJson(CURRENT_GC_KEY + "_words", []);
+  let sectionComfort = loadJson(SECTION_COMFORT_KEY, {
+  dossier: { score:"", comment:"" },
+  assise: { score:"", comment:"" }
+});
 
+function saveSectionComfort(){
+  saveJson(SECTION_COMFORT_KEY, sectionComfort);
+}
+
+function clearSectionComfort(){
+  sectionComfort = {
+    dossier: { score:"", comment:"" },
+    assise: { score:"", comment:"" }
+  };
+  saveSectionComfort();
+}
   function saveCurrentGlobalFeedback(comment, words){
     currentGlobalComment = String(comment || "").trim();
     currentWords = Array.isArray(words) ? words.slice(0,3) : [];
@@ -2246,6 +2356,14 @@ function isPartFullyRated(part){
 function isDossierFullyRated(){
   return isPartFullyRated("dossier");
 }
+ function isAssiseFullyRated(){
+  return isPartFullyRated("assise");
+}
+
+function hasSectionComfort(part){
+  const s = sectionComfort?.[part]?.score;
+  return Number.isFinite(Number(s)) && Number(s) >= 1 && Number(s) <= 10;
+}   
 function zoomToSeatPart(part){
   const target = ZOOM_REGIONS[part] || ZOOM_REGIONS.dossier;
   animateVB(getVB(), target, 260);
@@ -2440,6 +2558,23 @@ function zoomForZone(zoneName){
   window.addEventListener("resize", ()=> requestRadarRedraw(false));
 
   // ===== Summary list =====
+  function checkSectionComfortPrompts(){
+  const isSheetOpen = $("sheet")?.classList.contains("show");
+  const isGlobalCommentOpen = $("gcOverlay")?.classList.contains("show");
+  const isSectionOpen = $("sectionComfortOverlay")?.classList.contains("show");
+
+  if(isSheetOpen || isGlobalCommentOpen || isSectionOpen) return;
+
+  if(isDossierFullyRated() && !hasSectionComfort("dossier")){
+    openSectionComfortModal("dossier");
+    return;
+  }
+
+  if(isAssiseFullyRated() && !hasSectionComfort("assise")){
+    openSectionComfortModal("assise");
+    return;
+  }
+}  
   function updateSummary(){
   const zones = getZones();
   const scoredCount = zones.map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n)).length;
@@ -2490,20 +2625,30 @@ function zoomForZone(zoneName){
   }).join("");
 
   updateZoneVisuals();
-  setProfileUI();
-  requestRadarRedraw(true);
+setProfileUI();
+requestRadarRedraw(true);
 
-  if(mode === "words") renderWordCloud();
+if(mode === "words") renderWordCloud();
 
-  const canSave = allZonesRated();
-  $("savePersonBtn").disabled = !canSave;
-  $("savePersonBtn").style.opacity = canSave ? "1" : "0.55";
+const canSave = allZonesRated();
+$("savePersonBtn").disabled = !canSave;
+$("savePersonBtn").style.opacity = canSave ? "1" : "0.55";
 
-  if(allZonesRated() && !currentGlobalComment){
-    if(!$("gcOverlay").classList.contains("show")){
-      openGlobalCommentModal(null);
-    }
+checkSectionComfortPrompts();
+
+if(
+  allZonesRated() &&
+  hasSectionComfort("dossier") &&
+  hasSectionComfort("assise") &&
+  !currentGlobalComment
+){
+  if(
+    !$("gcOverlay").classList.contains("show") &&
+    !$("sectionComfortOverlay").classList.contains("show")
+  ){
+    openGlobalCommentModal(null);
   }
+}
 }
 
   // ===== Criteria rendering =====
@@ -2815,13 +2960,14 @@ document.querySelectorAll(".zone").forEach(el=>{
   // ===== Save / New Person =====
   function finalizeSavePerson({nom, prenom, taille, poids, globalAvg, ratingsObj, globalComment, words}){
     const entry = {
-      ts: new Date().toLocaleString("fr-FR"),
-      nom, prenom, taille, poids,
-      globalAvg: String(globalAvg),
-      ratings: ratingsObj,
-      globalComment: globalComment || "",
-      words: Array.isArray(words) ? words : []
-    };
+  ts: new Date().toLocaleString("fr-FR"),
+  nom, prenom, taille, poids,
+  globalAvg: String(globalAvg),
+  ratings: ratingsObj,
+  sectionComfort: sectionComfort,
+  globalComment: globalComment || "",
+  words: Array.isArray(words) ? words : []
+};
 
     const people = loadPeople();
     people.push(entry);
@@ -2835,6 +2981,7 @@ document.querySelectorAll(".zone").forEach(el=>{
     ratings = {}; saveJson(RATINGS_KEY, ratings);
     greenClicked = {}; saveJson(GREEN_KEY, greenClicked);
     clearCurrentGlobalFeedback();
+    clearSectionComfort();
     updateSummary();
     setNewPersonEnabled(true);
   }
@@ -2858,7 +3005,18 @@ document.querySelectorAll(".zone").forEach(el=>{
     toast(`⚠️ Note toutes les zones (${done}/${total})`);
     return;
   }
+    
+if(!hasSectionComfort("dossier")){
+  toast("⚠️ Notez le confort global du dossier");
+  openSectionComfortModal("dossier");
+  return;
+}
 
+if(!hasSectionComfort("assise")){
+  toast("⚠️ Notez le confort global de l’assise");
+  openSectionComfortModal("assise");
+  return;
+}
   const a = avgGlobalComfort();
   if(!a){ toast("⚠️ Note au moins 1 zone"); return; } // (sécurité)
 
@@ -2881,6 +3039,7 @@ document.querySelectorAll(".zone").forEach(el=>{
     ratings = {}; saveJson(RATINGS_KEY, ratings);
     greenClicked = {}; saveJson(GREEN_KEY, greenClicked);
     clearCurrentGlobalFeedback();
+    clearSectionComfort();
     closeSheet();
     updateSummary();
     clearProfileAll();
@@ -2892,6 +3051,7 @@ document.querySelectorAll(".zone").forEach(el=>{
     ratings = {}; saveJson(RATINGS_KEY, ratings);
     greenClicked = {}; saveJson(GREEN_KEY, greenClicked);
     clearCurrentGlobalFeedback();
+    clearSectionComfort();
     closeSheet();
     clearProfileAll();
     updateSummary();
