@@ -1818,19 +1818,19 @@ function effectiveDisplayName(zoneName){
 }  function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
   // ===== ZONES -> Couleur + Index CSV =====
 const ZONE_META = {
-  "Appui tête":               { code:"I",  col:"rgba(59,130,246,1)" },   // bleu
-  "Dossier haut (bleu)":      { code:"G2", col:"rgba(59,130,246,1)" },   // bleu
-  "Dossier milieu (rouge)":   { code:"G1", col:"rgba(239,68,68,1)" },    // rouge
-  "Zone centrale (gris clair)":{ code:"F", col:"rgba(148,163,184,1)" },  // gris
-  "Bande jaune":              { code:"E",  col:"rgba(250,204,21,1)" },   // jaune
-  "Bande magenta":            { code:"A",  col:"rgba(217,70,239,1)" },   // magenta
-  "Assise bas (vert)":        { code:"B",  col:"rgba(34,197,94,1)" },    // vert
+  "Appui tête":                  { code:"I",   col:"rgba(59,130,246,1)" },   // bleu
+  "Dossier haut (bleu)":         { code:"G2",  col:"rgba(59,130,246,1)" },   // bleu
+  "Dossier milieu (rouge)":      { code:"G1",  col:"rgba(239,68,68,1)" },    // rouge
+  "Zone centrale (gris clair)":  { code:"F",   col:"rgba(148,163,184,1)" },  // gris
+  "Bande jaune":                 { code:"E",   col:"rgba(250,204,21,1)" },   // jaune
+  "Bande magenta":               { code:"A",   col:"rgba(217,70,239,1)" },   // magenta
+  "Assise bas (vert)":           { code:"B",   col:"rgba(34,197,94,1)" },    // vert
 
-  // Groupes G+D (déjà dans ton code)
-  "Bolsters haut dossier (G+D)": { code:"H",   col:"rgba(124,45,18,1)" },   // bordeaux
-  "Bolsters bas dossier (G+D)":  { code:"D",   col:"rgba(30,58,138,1)" },   // bleu marine
-  "Bolsters bas assise (G+D)":   { code:"Cap", col:"rgba(249,115,22,1)" },  // orange
-  "Bolsters haut assise (G+D)":  { code:"Cav", col:"rgba(37,99,235,1)" }    // bleu
+  // bolsters groupés
+  "Bolsters haut dossier (G+D)": { code:"H",   col:"rgba(128,0,32,1)" },     // bordeaux
+  "Bolsters bas dossier (G+D)":  { code:"D",   col:"rgba(30,58,138,1)" },    // bleu marine
+  "Bolsters bas assise (G+D)":   { code:"Cap", col:"rgba(249,115,22,1)" },   // orange
+  "Bolsters haut assise (G+D)":  { code:"Cav", col:"rgba(37,99,235,1)" }     // bleu
 };
 
 const CODE_TO_KEY = Object.fromEntries(Object.entries(ZONE_META).map(([k,v]) => [v.code, k]));
