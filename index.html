@@ -11,6 +11,82 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
+    /* ✅ Transitions fluides du panneau critères */
+#criteriaPanel{
+  display:block;
+  overflow:hidden;
+  max-height:0;
+  opacity:0;
+  transform: translateY(-8px);
+
+  transition:
+    max-height .42s cubic-bezier(.2,.8,.2,1),
+    opacity   .32s cubic-bezier(.2,.8,.2,1),
+    transform .32s cubic-bezier(.2,.8,.2,1);
+
+  will-change: max-height, opacity, transform;
+}
+
+#criteriaPanel.open{
+  max-height:520px;
+  opacity:1;
+  transform: translateY(0);
+}
+
+#criteriaPanel.fading{
+  opacity:0;
+  transform: translateY(-8px);
+}
+
+#criteriaPanel.open{
+  max-height:420px;          /* suffisamment grand pour contenir les chips */
+  opacity:1;
+  transform: translateY(0);
+}
+
+/* petite transition lors d'un switch de critère */
+#criteriaPanel.fading{
+  opacity:0;
+  transform: translateY(-6px);
+}
+    /* ✅ Échelle couleurs + mots (sous la jauge) */
+.legendScale{
+  margin-top:10px;
+  display:grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap:8px;
+}
+    
+@media (max-width:520px){
+  .legendScale{ grid-template-columns: repeat(3, 1fr); }
+}
+.legendItem{
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  border-radius:14px;
+  padding:8px 8px;
+  text-align:center;
+  font-weight:950;
+  user-select:none;
+}
+.legendSwatch{
+  height:10px;
+  border-radius:999px;
+  margin-bottom:6px;
+  border:1px solid rgba(255,255,255,.16);
+}
+.legendText{
+  font-size:.74rem;
+  line-height:1.15;
+  color: rgba(238,242,255,.90);
+}
+body.light .legendItem{
+  border-color: rgba(15,23,42,.12);
+  background: rgba(255,255,255,.70);
+}
+body.light .legendText{
+  color: rgba(15,23,42,.82);
+}
     :root{
       --bg0:#070a14; --bg1:#0b1020;
       --cardTop:rgba(255,255,255,.085);
@@ -39,6 +115,25 @@
       --settings-panel-alpha: .12;
       --settings-table-alpha: .10;
     }
+    /* ✅ Légende cliquable + état sélection */
+.legendItem{
+  cursor:pointer;
+  transition: transform .12s ease, border-color .12s ease, background .12s ease;
+}
+.legendItem:hover{
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,.22);
+}
+.legendItem.selected{
+  border-color: rgba(255,255,255,.42);
+  box-shadow: 0 0 0 4px rgba(124,58,237,.16);
+}
+body.light .legendItem:hover{
+  border-color: rgba(15,23,42,.22);
+}
+body.light .legendItem.selected{
+  box-shadow: 0 0 0 4px rgba(79,140,255,.16);
+}
     /* ===== THEME (dark par défaut) ===== */
 :root{
   color-scheme: dark;
@@ -946,6 +1041,8 @@ body.light .field input::placeholder{ color: rgba(57,67,106,.65); }
     .gcActions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;}
     .gcActions .btn{flex:1}
   </style>
+  </head>
+  <body>
   <header>
   <div class="wrap top">
     <div class="brand">
@@ -1053,16 +1150,23 @@ body.light .field input::placeholder{ color: rgba(57,67,106,.65); }
     </div>
 
     <div class="p row">
-      <div class="row" style="gap:8px">
-        <button class="btn small" id="modeSujetBtn">Sujet</button>
-        <button class="btn small" id="modeStephaneBtn">Note</button>
-        <button class="btn small" id="modePresenceBtn">Présence</button>
-        <button class="btn small" id="modeDureteBtn">Dureté</button>
-        <button class="btn small" id="modeWordsBtn">Mots</button>
-        <span class="pill" id="modePill">Mode —</span>
+  <div class="row" style="gap:8px">
+    <div class="menuWrap" id="modesWrap">
+      <button class="btn small icon" id="modesBtn" type="button" title="Modes"> Modes</button>
+      <div class="menu" id="modesMenu" style="left:0; right:auto;">
+        <button class="mi" data-mode="sujet"><span> Sujet</span><small>cliquer pour activer</small></button>
+        <button class="mi" data-mode="stephane"><span> Note</span><small>affichage score</small></button>
+        <button class="mi" data-mode="presence"><span> Présence</span><small>critère</small></button>
+        <button class="mi" data-mode="durete"><span> Dureté</span><small>critère</small></button>
+        <button class="mi" data-mode="words"><span> Mots</span><small>nuage</small></button>
       </div>
-      <div class="pill good" id="globalPill">Confort global —</div>
     </div>
+
+    <span class="pill" id="modePill">Mode —</span>
+  </div>
+
+  <div class="pill good" id="globalPill">Confort global —</div>
+</div>
 
     <div class="seatFrame">
       <svg id="seatSvg" viewBox="0 0 270.933 406.4" preserveAspectRatio="xMidYMid meet">
@@ -1198,26 +1302,26 @@ body.light .field input::placeholder{ color: rgba(57,67,106,.65); }
       <div class="zoneTitle" id="sheetZone">Zone</div>
       <div class="zoneMeta" id="sheetMeta">Choisis une note et enregistre.</div>
 
-      <div class="sheetScoreHeader">
-        <div class="hint">Glisser</div>
-        <div class="scoreChip">
-          <span class="dot"></span>
-          <span class="label" id="scoreWord">Satisfait</span>
-        </div>
-      </div>
+    <div class="sheetScoreHeader">
+     <div class="scoreChip">
+     <span class="dot"></span>
+     <span class="label" id="scoreWord">Satisfait</span>
+    </div>
+    </div>
 
-      <input id="slider" class="ratingSlider" type="range" min="1" max="10" step="1" value="7" />
+      <!-- ✅ Picker pro (sans jauge) -->
 
-      <div class="scoreRow">
-        <div class="scoreBig"><span id="sliderVal">7</span>/10</div>
-      </div>
-      <div class="scale"><span>1</span><span>5</span><span>10</span></div>
+<div class="legendScale" id="legendScale"></div>
+<span id="sliderVal" style="display:none">7</span>
+<div class="hint" style="margin-top:8px">
+  Clique sur une couleur pour choisir ta note.
+</div>
 
       <div class="reasonBox">
         <div class="reasonTitle">Critères</div>
         <div id="criteriaList"></div>
 
-        <div id="criteriaPanel" style="display:none">
+        <div id="criteriaPanel">
           <div class="critHead">
             <b id="critTitle">Critère</b>
             <div class="row" style="gap:8px">
@@ -1663,7 +1767,7 @@ if(themeBtn){
   let activeKey = null;
   let activeCriteria = {};
   let activeCritId = null;
-
+  let selectedScore = 7; // ✅ score choisi via la légende (remplace la jauge)
   // Nouvelle personne enable logic
   const newPersonBtn = $("newPersonBtn");
   let canStartNewPerson = false;
@@ -1690,8 +1794,56 @@ if(themeBtn){
   const MEMBER_TO_GROUP = new Map();
   BOLSTER_GROUPS.forEach(g => g.members.forEach(m => MEMBER_TO_GROUP.set(m, g.key)));
   function effectiveKeyForZone(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
-  function effectiveDisplayName(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
-  function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
+  // ===== Libellés affichés (UI) =====
+const DISPLAY_ZONE_NAME = {
+  "Flanc gauche (noir)": "Flanc gauche (bleu marine)",
+  "Flanc droit (orange)": "Flanc droit (bleu marine)",
+
+  // si tu veux aussi renommer les autres :
+  // "Bas droit (blanc)": "Bas droit (orange) — Cap",
+  // "Bas droit (cyan)": "Bas droit (bleu) — Cav",
+  // "Bas gauche (orange)": "Bas gauche (orange) — Cap",
+  // "Bas gauche (vert)": "Bas gauche (bleu) — Cav",
+};
+
+function displayNameOf(zoneName){
+  return DISPLAY_ZONE_NAME[zoneName] || zoneName;
+}
+function effectiveDisplayName(zoneName){
+  // nom affiché de base
+  const pretty = displayNameOf(zoneName);
+
+  // si la zone appartient à un groupe bolster, on affiche le nom du groupe
+  return MEMBER_TO_GROUP.get(zoneName) || pretty;
+}  function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
+  // ===== ZONES -> Couleur + Index CSV =====
+const ZONE_META = {
+  "Appui tête":               { code:"I",  col:"rgba(59,130,246,1)" },   // bleu
+  "Dossier haut (bleu)":      { code:"G2", col:"rgba(59,130,246,1)" },   // bleu
+  "Dossier milieu (rouge)":   { code:"G1", col:"rgba(239,68,68,1)" },    // rouge
+  "Zone centrale (gris clair)":{ code:"F", col:"rgba(148,163,184,1)" },  // gris
+  "Bande jaune":              { code:"E",  col:"rgba(250,204,21,1)" },   // jaune
+  "Bande magenta":            { code:"A",  col:"rgba(217,70,239,1)" },   // magenta
+  "Assise bas (vert)":        { code:"B",  col:"rgba(34,197,94,1)" },    // vert
+
+  // Groupes G+D (déjà dans ton code)
+  "Bolsters haut dossier (G+D)": { code:"H",   col:"rgba(124,45,18,1)" },   // bordeaux
+  "Bolsters bas dossier (G+D)":  { code:"D",   col:"rgba(30,58,138,1)" },   // bleu marine
+  "Bolsters bas assise (G+D)":   { code:"Cap", col:"rgba(249,115,22,1)" },  // orange
+  "Bolsters haut assise (G+D)":  { code:"Cav", col:"rgba(37,99,235,1)" }    // bleu
+};
+
+const CODE_TO_KEY = Object.fromEntries(Object.entries(ZONE_META).map(([k,v]) => [v.code, k]));
+
+function zoneCodeByKey(key){
+  return (ZONE_META[key]?.code) || key; // fallback
+}
+function zoneColorByKey(key){
+  return (ZONE_META[key]?.col) || "rgba(190,200,220,1)";
+}
+function zoneCodeByZoneName(zoneName){
+  return zoneCodeByKey(effectiveKeyForZone(zoneName));
+}
 
   // ✅ Critères
   const CRIT_SCALE = [
@@ -1781,6 +1933,63 @@ if(themeBtn){
     if(score === 10) return { col:"rgba(0,229,255,1)", soft:"rgba(0,229,255,.14)", border:"rgba(0,229,255,.55)", word:"Optimum" };
     return { col:"rgba(124,58,237,1)", soft:"rgba(124,58,237,.14)", border:"rgba(124,58,237,.55)", word:"—" };
   }
+  // ✅ Échelle couleurs + mots sous la jauge
+function scoreWordFor(s){
+  return sliderTheme(Number(s)).word;
+}
+function scoreColorFor(s){
+  return sliderTheme(Number(s)).col;
+}
+
+function renderLegendScale(){
+  const host = $("legendScale");
+  if(!host) return;
+
+  const steps = [
+    { score:1,  label: sliderTheme(1).word  },
+    { score:2,  label: sliderTheme(2).word  },
+    { score:3,  label: sliderTheme(3).word  },
+    { score:5,  label: sliderTheme(5).word  },
+    { score:7,  label: sliderTheme(7).word  },
+    { score:9,  label: sliderTheme(9).word  },
+    { score:10, label: sliderTheme(10).word }
+  ];
+
+  host.innerHTML = steps.map(s=>{
+    const col = sliderTheme(s.score).col;
+    const isSel = Number(selectedScore) === Number(s.score);
+    return `
+      <div class="legendItem ${isSel ? "selected" : ""}" data-score="${s.score}" role="button" tabindex="0"
+           title="Choisir ${s.score}/10">
+        <div class="legendSwatch" style="background:${col}"></div>
+        <div class="legendText">${escapeHtml(s.label)}</div>
+      </div>
+    `;
+  }).join("");
+
+  host.querySelectorAll(".legendItem").forEach(item=>{
+    const pick = ()=>{
+      const s = Number(item.dataset.score);
+      if(!Number.isFinite(s)) return;
+
+      selectedScore = s;
+
+      applySliderUI(s);
+      renderLegendScale();
+
+      activeCritId = null;
+      renderCriteria();
+    };
+
+    item.addEventListener("click", pick);
+    item.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        pick();
+      }
+    });
+  });
+}
 
   function rgbaWithAlpha(rgbaStr, alpha){
     const m = String(rgbaStr).match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i);
@@ -1864,9 +2073,9 @@ if(themeBtn){
         const gKey = effectiveKeyForZone(zoneName);
         const on = !!greenClicked[gKey];
         if(!on){ hideZone(poly); return; }
-        const grey = "rgba(190,200,220,1)";
-        poly.style.fill = rgbaWithAlpha(grey, Math.max(0.08, fillA));
-        poly.style.stroke = rgbaWithAlpha(grey, Math.max(0.35, strokeA));
+        const base = zoneColorByKey(gKey); // <-- couleur selon zone/groupe
+        poly.style.fill = rgbaWithAlpha(base, Math.max(0.08, fillA));
+        poly.style.stroke = rgbaWithAlpha(base, Math.max(0.35, strokeA));
         poly.style.strokeWidth = String(strokeWn);
         return;
       }
@@ -2182,7 +2391,7 @@ function zoomForZone(zoneName){
       return `
         <div class="item">
           <div style="flex:1; min-width:180px">
-            <b>${escapeHtml(z)}</b>
+            <b>${escapeHtml(effectiveDisplayName(z))}</b>
             <div class="sub">${sub}</div>
             <div class="bar"><i class="${meta.cls}" style="width:${pct}%"></i></div>
             <div class="scoreLabel">${score !== null ? meta.label : ""}</div>
@@ -2233,7 +2442,32 @@ function zoomForZone(zoneName){
       return true;
     });
   }
+function nextCritId(){
+  const list = visibleCriteriaForActiveKey();
+  const i = list.findIndex(c => c.id === activeCritId);
+  return (i >= 0 && i < list.length - 1) ? list[i+1].id : null;
+}
 
+function switchCritSmooth(toId){
+  const panel = $("criteriaPanel");
+  if(!panel){ activeCritId = toId; renderCriteria(); return; }
+
+  // ferme visuellement
+  panel.classList.add("fading");
+  panel.classList.remove("open");
+
+  // après un petit délai, on change le contenu puis on rouvre
+  setTimeout(()=>{
+    activeCritId = toId;      // peut être null (=> fermeture complète)
+    renderCriteria();
+
+    // rouvre si toId existe
+    requestAnimationFrame(()=>{
+      panel.classList.remove("fading");
+      if(toId) panel.classList.add("open");
+    });
+  }, 320);
+}
   function renderCriteria(){
     const listEl = $("criteriaList");
     const panel = $("criteriaPanel");
@@ -2258,7 +2492,8 @@ function zoomForZone(zoneName){
         });
       });
 
-      panel.style.display = "none";
+     panel.classList.remove("open");
+panel.classList.remove("fading");
       return;
     }
 
@@ -2274,7 +2509,8 @@ function zoomForZone(zoneName){
       renderCriteria();
     });
 
-    panel.style.display = "block";
+    panel.classList.add("open");
+panel.classList.remove("fading");
     $("critTitle").textContent = crit ? crit.label : "Critère";
     $("critSelected").textContent = activeCriteria[activeCritId] || "—";
 
@@ -2289,14 +2525,27 @@ function zoomForZone(zoneName){
       renderCriteria();
     };
 
-    document.querySelectorAll("#critOptions .chip").forEach(ch=>{
-      ch.addEventListener("click", ()=>{
-        const opt = ch.dataset.opt;
-        if(activeCriteria[activeCritId] === opt) delete activeCriteria[activeCritId];
-        else activeCriteria[activeCritId] = opt;
-        renderCriteria();
-      });
-    });
+   document.querySelectorAll("#critOptions .chip").forEach(ch=>{
+  ch.addEventListener("click", ()=>{
+    const opt = ch.dataset.opt;
+    const wasSame = (activeCriteria[activeCritId] === opt);
+
+    // toggle (comme avant)
+    if(wasSame) delete activeCriteria[activeCritId];
+    else activeCriteria[activeCritId] = opt;
+
+    // ✅ si on a VRAIMENT sélectionné une valeur (pas supprimé), avancer
+    if(!wasSame){
+      const nxt = nextCritId();     // critère suivant visible
+      if(nxt) switchCritSmooth(nxt);
+      else switchCritSmooth(null);  // plus rien => ferme panneau => prêt à enregistrer
+      return;
+    }
+
+    // si on a "décoché", on reste sur le même critère
+    renderCriteria();
+  });
+});
   }
 
   // ===== Sheet open/close =====
@@ -2310,11 +2559,12 @@ function zoomForZone(zoneName){
     const existing = ratings[activeKey];
     const v = existing?.score ? Number(existing.score) : 7;
 
-    $("slider").value = v;
-    $("sliderVal").textContent = v;
-    applySliderUI(v);
+selectedScore = v;
+$("sliderVal").textContent = v;
+applySliderUI(v);
+renderLegendScale();
 
-    $("sheetMeta").textContent = existing?.score ? `Note : ${existing.score}/10` : `Choisis 1 à 10`;
+    $("sheetMeta").textContent = "";
     $("reasonText").value = existing?.comment || "";
 
     setCriteriaDefaultsFromExisting(existing);
@@ -2331,15 +2581,6 @@ function zoomForZone(zoneName){
     document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
     resetZoom();
   }
-
-  $("slider").addEventListener("input", ()=>{
-    const v = Number($("slider").value);
-    $("sliderVal").textContent = v;
-    applySliderUI(v);
-    activeCritId = null;
-    renderCriteria();
-  });
-
   $("saveBtn").addEventListener("click", ()=>{
     if(!activeKey) return;
 
@@ -2351,8 +2592,7 @@ function zoomForZone(zoneName){
       return;
     }
 
-    const score = Number($("slider").value);
-
+    const score = Number(selectedScore);
     ratings[activeKey] = { score, criteria: activeCriteria, comment: $("reasonText").value.trim() };
     saveJson(RATINGS_KEY, ratings);
 
@@ -2369,7 +2609,17 @@ function zoomForZone(zoneName){
   $("overlay").addEventListener("click", closeSheet);
   $("closeBtn").addEventListener("click", closeSheet);
 
-  document.querySelectorAll(".zone").forEach(el=>{
+document.querySelectorAll(".zone").forEach(el=>{
+  el.addEventListener("click", (e)=>{
+    e.stopPropagation();
+    if(mode === "sujet"){
+      openSheet(el.dataset.zone, el); // ⬅️ on ouvre juste la fenêtre de note
+      return;
+    }
+    toast("Mode affichage");
+  });
+});
+    document.querySelectorAll(".zone").forEach(el=>{
     el.addEventListener("click", (e)=>{
       e.stopPropagation();
       if(mode === "sujet"){
@@ -2814,16 +3064,16 @@ function zoomForZone(zoneName){
     const headers = ["Date","Nom","Prénom","Taille","Poids","Moyenne globale","Commentaire global","Mots (1-3)"];
     const perZoneHeaders = [];
     for(const key of zoneKeys){
-      perZoneHeaders.push(
-        `${key} - Score`,
-        `${key} - Présence`,
-        `${key} - Dureté`,
-        `${key} - Symétrie`,
-        `${key} - Homogénéité`,
-        `${key} - Commentaire`
+    const z = zoneCodeByKey(key);
+    perZoneHeaders.push(
+    `${z} - Score`,
+    `${z} - Présence`,
+    `${z} - Dureté`,
+    `${z} - Symétrie`,
+    `${z} - Homogénéité`,
+    `${z} - Commentaire`
       );
     }
-
     const allHeaders = [...headers, ...perZoneHeaders];
     const lines = [allHeaders.map(esc).join(SEP)];
 
@@ -2876,16 +3126,23 @@ function zoomForZone(zoneName){
   }
   function normalizeHeader(h){ return String(h||"").trim().toLowerCase().replaceAll("\ufeff",""); }
   function buildZoneKeysFromHeaders(headers){
-    const keys = []; const seen = new Set();
-    headers.forEach(h=>{
-      const m = String(h).match(/^(.*)\s-\sScore$/i);
-      if(m){
-        const key = m[1].trim();
-        if(key && !seen.has(key)){ seen.add(key); keys.push(key); }
-      }
-    });
-    return keys;
-  }
+  const keys = [];
+  const seen = new Set();
+  headers.forEach(h=>{
+    const m = String(h).match(/^(.*)\s-\sScore$/i);
+    if(!m) return;
+
+    const code = m[1].trim();
+    const key = CODE_TO_KEY[code]; // <-- transforme "A" -> "Bande magenta" etc
+    if(!key) return;
+
+    if(!seen.has(key)){
+      seen.add(key);
+      keys.push(key);
+    }
+  });
+  return keys;
+}
 
   function importCsvToPeople(csvText){
     const text = String(csvText || "").replace(/\r\n/g,"\n").replace(/\r/g,"\n").trim();
@@ -2927,12 +3184,15 @@ function zoomForZone(zoneName){
 
       const ratingsObj = {};
       zoneKeys.forEach(key=>{
-        const idxScore = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Score`));
-        const idxPres  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Présence`));
-        const idxDur   = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Dureté`));
-        const idxSym   = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Symétrie`));
-        const idxHomo  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Homogénéité`));
-        const idxComm  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${key} - Commentaire`));
+  const z = zoneCodeByKey(key);
+
+  const idxScore = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${z} - Score`));
+  const idxPres  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${z} - Présence`));
+  const idxDur   = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${z} - Dureté`));
+  const idxSym   = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${z} - Symétrie`));
+  const idxHomo  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${z} - Homogénéité`));
+  const idxComm  = headers.findIndex(h=> normalizeHeader(h) === normalizeHeader(`${z} - Commentaire`));
+
 
         const scoreStr = idxScore>=0 ? cols[idxScore] : "";
         const scoreNum = Number(scoreStr);
@@ -3227,42 +3487,58 @@ function zoomForZone(zoneName){
     try{ await navigator.clipboard.writeText(lines); toast("✅ Config copiée"); }
     catch{ toast("⚠️ Copie impossible"); }
   });
+// ===== Modes / setMode (OBLIGATOIRE) =====
+const modePill = $("modePill");
 
-  // ===== Modes buttons =====
-  const modeSujetBtn = $("modeSujetBtn");
-  const modeStephaneBtn = $("modeStephaneBtn");
-  const modePresenceBtn = $("modePresenceBtn");
-  const modeDureteBtn = $("modeDureteBtn");
-  const modeWordsBtn = $("modeWordsBtn");
-  const modePill = $("modePill");
+function setMode(m){
+  mode = m;
+  saveJson(MODE_KEY, mode);
 
-  function setMode(m){
-    mode = m;
-    saveJson(MODE_KEY, mode);
+  document.body.classList.toggle("wordMode", mode === "words");
 
-    document.body.classList.toggle("wordMode", mode === "words");
+  modePill.textContent =
+    mode === "sujet" ? "Sujet" :
+    mode === "stephane" ? "Note" :
+    mode === "presence" ? "Présence" :
+    mode === "durete" ? "Dureté" : "Mots";
 
-    modePill.textContent =
-      mode === "sujet" ? "Sujet" :
-      mode === "stephane" ? "Note" :
-      mode === "presence" ? "Présence" :
-      mode === "durete" ? "Dureté" : "Mots";
+  setSeatBackground(mode);
+  closeSheet();
+  updateZoneVisuals();
+  requestRadarRedraw(true);
 
-    setSeatBackground(mode);
-    closeSheet();
-    updateZoneVisuals();
-    requestRadarRedraw(true);
+  if(mode === "words") renderWordCloud();
+}
+ // ===== Modes menu (nouveau bouton) =====
+const modesBtn = $("modesBtn");
+const modesMenu = $("modesMenu");
 
-    if(mode === "words") renderWordCloud();
-  }
+function closeModesMenu(){ modesMenu?.classList.remove("show"); }
 
-  modeSujetBtn.addEventListener("click", ()=> setMode("sujet"));
-  modeStephaneBtn.addEventListener("click", ()=> setMode("stephane"));
-  modePresenceBtn.addEventListener("click", ()=> setMode("presence"));
-  modeDureteBtn.addEventListener("click", ()=> setMode("durete"));
-  modeWordsBtn.addEventListener("click", ()=> setMode("words"));
+modesBtn?.addEventListener("click", (e)=>{
+  e.stopPropagation();
+  modesMenu.classList.toggle("show");
+});
+
+// fermer quand on clique ailleurs
+document.addEventListener("click", (e)=>{
+  // si clic hors du wrap
+  const wrap = $("modesWrap");
+  if(!wrap) return;
+  if(!wrap.contains(e.target)) closeModesMenu();
+});
+
+// clic sur item
+modesMenu?.querySelectorAll(".mi").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const m = btn.getAttribute("data-mode");
+    closeModesMenu();
+    if(m) setMode(m);
+  });
+});
 
   // ===== INIT =====
+  renderLegendScale();
   applyAccent(accent);
   loadTheme();                
   $("accentSelect").value = accent;
@@ -3270,6 +3546,8 @@ function zoomForZone(zoneName){
   applyUiAlpha(uiAlpha);
   applyZoneStyle(zStyle);
   applySliderUI(7);
+  selectedScore = 7;
+  renderLegendScale();
 
   applyAll();
   loadZoneToUI(zoneSelect.value);
@@ -3294,10 +3572,7 @@ function zoomForZone(zoneName){
     };
     img.src = candidates[0] + "?v=" + Date.now();
   })();
+    
 </script>
-
 </body>
 </html>
-  
-</head>
-<body>
