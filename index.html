@@ -1101,7 +1101,31 @@ body.light .field input::placeholder{ color: rgba(57,67,106,.65); }
     <div class="devNote">Accès dev = mot de passe du tableau.</div>
   </div>
 </div>
+<!-- Popup manuel / consigne -->
+<div class="modalOverlay" id="guideOverlay" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Guide utilisateur" style="width:min(680px, 100%)">
+    <div class="modalHead">
+      <b>📘 Guide d’utilisation</b>
+      <button class="btn small" id="guideCloseBtn" type="button">Compris</button>
+    </div>
 
+    <div class="modalBody">
+      <div class="section" style="margin-bottom:0">
+        <p style="margin-top:0; font-weight:900; font-size:1rem;">
+          Cliquez sur les zones colorées du dossier afin de les noter, puis sur celles de l’assise.
+        </p>
+
+        <div class="hint" style="margin-top:10px">
+          Commencez par le <b>dossier</b>. Une fois toutes les zones du dossier notées, vous pourrez noter <b>l’assise</b>.
+        </div>
+
+        <div class="row" style="margin-top:16px; justify-content:flex-end">
+          <button class="btn primary" id="guideOkBtn" type="button">Commencer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- Modal commentaire global obligatoire -->
 <div class="gcOverlay" id="gcOverlay" aria-hidden="true">
   <div class="gcModal" role="dialog" aria-modal="true" aria-label="Commentaire global">
@@ -1618,7 +1642,28 @@ if(themeBtn){
   const gateContinueBtn = $("gateContinueBtn");
   const gateDevBtn = $("gateDevBtn");
   const gateHint = $("gateHint");
+const guideOverlay = $("guideOverlay");
+const guideCloseBtn = $("guideCloseBtn");
+const guideOkBtn = $("guideOkBtn");
 
+function openGuideModal(){
+  if(!guideOverlay) return;
+  guideOverlay.classList.add("show");
+  guideOverlay.setAttribute("aria-hidden", "false");
+}
+
+function closeGuideModal(){
+  if(!guideOverlay) return;
+  guideOverlay.classList.remove("show");
+  guideOverlay.setAttribute("aria-hidden", "true");
+}
+
+guideCloseBtn?.addEventListener("click", closeGuideModal);
+guideOkBtn?.addEventListener("click", closeGuideModal);
+
+guideOverlay?.addEventListener("click", (e)=>{
+  if(e.target === guideOverlay) closeGuideModal();
+});
   function isValidNumberStr(s){
     const v = Number(String(s).trim().replace(",", "."));
     return Number.isFinite(v) && v > 0;
@@ -1680,6 +1725,7 @@ if(themeBtn){
     setProfileUI();
     closeProfileGate();
     toast("✅ Profil validé");
+    openGuideModal();
     return true;
   }
 
