@@ -1794,8 +1794,28 @@ if(themeBtn){
   const MEMBER_TO_GROUP = new Map();
   BOLSTER_GROUPS.forEach(g => g.members.forEach(m => MEMBER_TO_GROUP.set(m, g.key)));
   function effectiveKeyForZone(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
-  function effectiveDisplayName(zoneName){ return MEMBER_TO_GROUP.get(zoneName) || zoneName; }
-  function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
+  // ===== Libellés affichés (UI) =====
+const DISPLAY_ZONE_NAME = {
+  "Flanc gauche (noir)": "Flanc gauche (bleu marine)",
+  "Flanc droit (orange)": "Flanc droit (bleu marine)",
+
+  // si tu veux aussi renommer les autres :
+  // "Bas droit (blanc)": "Bas droit (orange) — Cap",
+  // "Bas droit (cyan)": "Bas droit (bleu) — Cav",
+  // "Bas gauche (orange)": "Bas gauche (orange) — Cap",
+  // "Bas gauche (vert)": "Bas gauche (bleu) — Cav",
+};
+
+function displayNameOf(zoneName){
+  return DISPLAY_ZONE_NAME[zoneName] || zoneName;
+}
+function effectiveDisplayName(zoneName){
+  // nom affiché de base
+  const pretty = displayNameOf(zoneName);
+
+  // si la zone appartient à un groupe bolster, on affiche le nom du groupe
+  return MEMBER_TO_GROUP.get(zoneName) || pretty;
+}  function isBolsterKey(key){ return BOLSTER_GROUPS.some(g => g.key === key); }
   // ===== ZONES -> Couleur + Index CSV =====
 const ZONE_META = {
   "Appui tête":               { code:"I",  col:"rgba(59,130,246,1)" },   // bleu
@@ -2371,7 +2391,7 @@ function zoomForZone(zoneName){
       return `
         <div class="item">
           <div style="flex:1; min-width:180px">
-            <b>${escapeHtml(z)}</b>
+            <b>${escapeHtml(effectiveDisplayName(z))}</b>
             <div class="sub">${sub}</div>
             <div class="bar"><i class="${meta.cls}" style="width:${pct}%"></i></div>
             <div class="scoreLabel">${score !== null ? meta.label : ""}</div>
