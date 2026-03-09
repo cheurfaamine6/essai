@@ -2070,15 +2070,18 @@ function renderLegendScale(){
       const zoneName = poly.dataset.zone;
 
       if(mode === "sujet"){
-        const gKey = effectiveKeyForZone(zoneName);
-        const on = !!greenClicked[gKey];
-        if(!on){ hideZone(poly); return; }
-        const base = zoneColorByKey(gKey); // <-- couleur selon zone/groupe
-        poly.style.fill = rgbaWithAlpha(base, Math.max(0.08, fillA));
-        poly.style.stroke = rgbaWithAlpha(base, Math.max(0.35, strokeA));
-        poly.style.strokeWidth = String(strokeWn);
-        return;
-      }
+  const gKey = effectiveKeyForZone(zoneName);
+  const on = !!greenClicked[gKey];
+  if(!on){ hideZone(poly); return; }
+
+  // gris fixe en mode sujet
+  const base = "rgba(156,163,175,1)"; // gris
+
+  poly.style.fill = rgbaWithAlpha(base, Math.max(0.18, fillA));
+  poly.style.stroke = rgbaWithAlpha(base, Math.max(0.55, strokeA));
+  poly.style.strokeWidth = String(strokeWn);
+  return;
+}
 
       if(mode === "stephane"){
         const score = getScoreForZoneName(zoneName);
