@@ -2373,55 +2373,70 @@ function zoomForZone(zoneName){
 
   // ===== Summary list =====
   function updateSummary(){
-    const zones = getZones();
-    const scoredCount = zones.map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n)).length;
-    $("countPill").textContent = `${scoredCount} zone(s) notée(s)`;
+  const zones = getZones();
+  const scoredCount = zones.map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n)).length;
+  $("countPill").textContent = `${scoredCount} zone(s) notée(s)`;
 
-    const a = avgGlobalComfort();
-    $("globalPill").textContent = a ? `Confort global ${a.toFixed(1)}/10` : "Confort global —";
-    $("avgPill").textContent = a ? `Moyenne globale ${a.toFixed(1)}/10` : "Moyenne globale —";
+  const a = avgGlobalComfort();
+  $("globalPill").textContent = a ? `Confort global ${a.toFixed(1)}/10` : "Confort global —";
+  $("avgPill").textContent = a ? `Moyenne globale ${a.toFixed(1)}/10` : "Moyenne globale —";
 
-    $("list").innerHTML = zones.map(z=>{
-      const v = getScoreForZoneName(z);
-      const group = MEMBER_TO_GROUP.get(z);
-      const sub = group ? `Groupe: ${escapeHtml(group)}` : (v ? "Noté" : "Non noté");
+  const seen = new Set();
+  const summaryEntries = [];
 
-      const score = Number.isFinite(v) ? Number(v) : null;
-      const pct = score !== null ? Math.max(0, Math.min(100, (score/10)*100)) : 0;
-      const meta = score !== null ? scoreMeta(score) : {cls:"", label:""};
-      const scoreText = score !== null ? `${score}/10` : "—";
+  zones.forEach(z=>{
+    const key = effectiveKeyForZone(z);
+    if(seen.has(key)) return;
+    seen.add(key);
 
-      return `
-        <div class="item">
-          <div style="flex:1; min-width:180px">
-            <b>${escapeHtml(effectiveDisplayName(z))}</b>
-            <div class="sub">${sub}</div>
-            <div class="bar"><i class="${meta.cls}" style="width:${pct}%"></i></div>
-            <div class="scoreLabel">${score !== null ? meta.label : ""}</div>
-          </div>
-          <div class="val ${meta.cls}">
-            <div>${scoreText}</div>
-            <small>${score !== null ? meta.label.toUpperCase() : ""}</small>
-          </div>
-        </div>`;
-    }).join("");
+    summaryEntries.push({
+      key,
+      zoneName: z,
+      label: effectiveDisplayName(z)
+    });
+  });
 
-    updateZoneVisuals();
-    setProfileUI();
-    requestRadarRedraw(true);
+  $("list").innerHTML = summaryEntries.map(entry=>{
+    const v = ratings[entry.key]?.score;
+    const score = Number.isFinite(Number(v)) ? Number(v) : null;
+    const pct = score !== null ? Math.max(0, Math.min(100, (score/10)*100)) : 0;
+    const meta = score !== null ? scoreMeta(score) : {cls:"", label:""};
+    const scoreText = score !== null ? `${score}/10` : "—";
 
-    if(mode === "words") renderWordCloud();
-    // ✅ Griser/activer Enregistrer selon complétion
-    const canSave = allZonesRated();
-    $("savePersonBtn").disabled = !canSave;
-    $("savePersonBtn").style.opacity = canSave ? "1" : "0.55";
-    // ✅ Auto modal commentaire dès que tout est noté (si pas encore saisi)
-    if(allZonesRated() && !currentGlobalComment){
-      if(!$("gcOverlay").classList.contains("show")){
-        openGlobalCommentModal(null);
-      }
+    const labelColor = zoneColorByKey(entry.key);
+    const sub = `Code: ${escapeHtml(zoneCodeByKey(entry.key))}`;
+
+    return `
+      <div class="item">
+        <div style="flex:1; min-width:180px">
+          <b style="color:${labelColor}">${escapeHtml(entry.label)}</b>
+          <div class="sub">${sub}</div>
+          <div class="bar"><i class="${meta.cls}" style="width:${pct}%"></i></div>
+          <div class="scoreLabel">${score !== null ? meta.label : ""}</div>
+        </div>
+        <div class="val ${meta.cls}">
+          <div>${scoreText}</div>
+          <small>${score !== null ? meta.label.toUpperCase() : ""}</small>
+        </div>
+      </div>`;
+  }).join("");
+
+  updateZoneVisuals();
+  setProfileUI();
+  requestRadarRedraw(true);
+
+  if(mode === "words") renderWordCloud();
+
+  const canSave = allZonesRated();
+  $("savePersonBtn").disabled = !canSave;
+  $("savePersonBtn").style.opacity = canSave ? "1" : "0.55";
+
+  if(allZonesRated() && !currentGlobalComment){
+    if(!$("gcOverlay").classList.contains("show")){
+      openGlobalCommentModal(null);
     }
   }
+}
 
   // ===== Criteria rendering =====
   function setCriteriaDefaultsFromExisting(existing){
