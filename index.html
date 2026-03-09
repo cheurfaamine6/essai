@@ -1768,6 +1768,7 @@ if(themeBtn){
   let activeCriteria = {};
   let activeCritId = null;
   let selectedScore = 7; // ✅ score choisi via la légende (remplace la jauge)
+  let selectedGrayZone = null; // zone grisée en mode note
   // Nouvelle personne enable logic
   const newPersonBtn = $("newPersonBtn");
   let canStartNewPerson = false;
@@ -2081,14 +2082,25 @@ function renderLegendScale(){
       }
 
       if(mode === "stephane"){
-        const score = getScoreForZoneName(zoneName);
-        if(!Number.isFinite(score)){ hideZone(poly); return; }
-        const theme = sliderTheme(Number(score));
-        poly.style.fill = rgbaWithAlpha(theme.col, fillA);
-        poly.style.stroke = rgbaWithAlpha(theme.col, strokeA);
-        poly.style.strokeWidth = String(strokeWn);
-        return;
-      }
+  const score = getScoreForZoneName(zoneName);
+  if(!Number.isFinite(score)){ hideZone(poly); return; }
+
+  const key = effectiveKeyForZone(zoneName);
+
+  // ✅ Si la zone cliquée en mode note doit être grisée
+  if(selectedGrayZone && key === selectedGrayZone){
+    poly.style.fill = "rgba(140,140,140,0.35)";
+    poly.style.stroke = "rgba(120,120,120,0.95)";
+    poly.style.strokeWidth = String(strokeWn);
+    return;
+  }
+
+  const theme = sliderTheme(Number(score));
+  poly.style.fill = rgbaWithAlpha(theme.col, fillA);
+  poly.style.stroke = rgbaWithAlpha(theme.col, strokeA);
+  poly.style.strokeWidth = String(strokeWn);
+  return;
+}
 
       if(mode === "presence" || mode === "durete"){
         const label = getCritForZoneName(zoneName, mode);
@@ -2608,31 +2620,29 @@ renderLegendScale();
 
   $("overlay").addEventListener("click", closeSheet);
   $("closeBtn").addEventListener("click", closeSheet);
-
 document.querySelectorAll(".zone").forEach(el=>{
   el.addEventListener("click", (e)=>{
     e.stopPropagation();
+
     if(mode === "sujet"){
-      openSheet(el.dataset.zone, el); // ⬅️ on ouvre juste la fenêtre de note
+      const gKey = effectiveKeyForZone(el.dataset.zone);
+      greenClicked[gKey] = true;
+      saveJson(GREEN_KEY, greenClicked);
+      updateZoneVisuals();
+      openSheet(el.dataset.zone, el);
       return;
     }
+
+    if(mode === "stephane"){
+      selectedGrayZone = effectiveKeyForZone(el.dataset.zone);
+      updateZoneVisuals();
+      return;
+    }
+
     toast("Mode affichage");
   });
 });
-    document.querySelectorAll(".zone").forEach(el=>{
-    el.addEventListener("click", (e)=>{
-      e.stopPropagation();
-      if(mode === "sujet"){
-        const gKey = effectiveKeyForZone(el.dataset.zone);
-        greenClicked[gKey] = true;
-        saveJson(GREEN_KEY, greenClicked);
-        updateZoneVisuals();
-        openSheet(el.dataset.zone, el);
-        return;
-      }
-      toast("Mode affichage");
-    });
-  });
+
 
   // ===== People store =====
   function loadPeople(){ return loadJson(PEOPLE_KEY, []); }
@@ -3493,6 +3503,7 @@ const modePill = $("modePill");
 function setMode(m){
   mode = m;
   saveJson(MODE_KEY, mode);
+  selectedGrayZone = null;
 
   document.body.classList.toggle("wordMode", mode === "words");
 
