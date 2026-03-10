@@ -1113,6 +1113,21 @@ body.light .scScoreBtn.active{
   border-color: rgba(79,140,255,.45);
   box-shadow: 0 0 0 4px rgba(79,140,255,.14);
 }
+    .scChip{
+  min-width: 132px;
+  text-align:center;
+}
+.scChip .sNum{
+  display:block;
+  font-size:.88rem;
+  font-weight:950;
+}
+.scChip .sTxt{
+  display:block;
+  font-size:.72rem;
+  opacity:.9;
+  margin-top:2px;
+}
   </style>
   </head>
   <body>
@@ -1212,14 +1227,13 @@ body.light .scScoreBtn.active{
 
     <div class="modalBody">
       <label class="commentLabel">Note globale *</label>
-      <div class="scScoreGrid" id="sectionComfortScoreGrid"></div>
+      <div class="chips" id="sectionComfortScoreGrid"></div>
 
       <label class="commentLabel" for="sectionComfortComment" style="margin-top:14px">Commentaire</label>
       <textarea id="sectionComfortComment" placeholder="Commentaire optionnel..."></textarea>
 
       <div class="gcActions">
-        <button class="btn ghost" id="sectionComfortCancelBtn" type="button">Annuler</button>
-        <button class="btn primary" id="sectionComfortSaveBtn" type="button">Valider</button>
+      <button class="btn primary" id="sectionComfortSaveBtn" type="button">Valider</button>
       </div>
     </div>
   </div>
@@ -1238,7 +1252,7 @@ body.light .scScoreBtn.active{
       </div>
 <div style="margin-top:14px">
   <b style="font-size:.92rem">Note globale du siège *</b>
-  <div class="scScoreGrid" id="globalSeatScoreGrid" style="margin-top:8px"></div>
+  <div class="chips" id="globalSeatScoreGrid" style="margin-top:8px"></div>
 </div>
       <label class="commentLabel" for="gcComment">Commentaire global *</label>
       <textarea id="gcComment" placeholder="Écris ton commentaire global..."></textarea>
@@ -1254,7 +1268,6 @@ body.light .scScoreBtn.active{
       </div>
 
       <div class="gcActions">
-        <button class="btn ghost" id="gcCancelBtn" type="button">Annuler</button>
         <button class="btn primary" id="gcSaveBtn" type="button">Valider</button>
       </div>
     </div>
@@ -1829,16 +1842,16 @@ function renderSectionComfortScoreGrid(selected=""){
   sectionComfortScoreGrid.innerHTML = scores.map(s=>{
     const active = String(selected) === String(s);
     return `
-      <button type="button" class="scScoreBtn ${active ? "active" : ""}" data-score="${s}">
-        <span class="n">${s}/10</span>
-        <span class="t">${escapeHtml(sectionScoreLabel(s))}</span>
-      </button>
+      <div class="chip scChip ${active ? "on" : ""}" data-score="${s}">
+        <span class="sNum">${s}/10</span>
+        <span class="sTxt">${escapeHtml(sectionScoreLabel(s))}</span>
+      </div>
     `;
   }).join("");
 
-  sectionComfortScoreGrid.querySelectorAll(".scScoreBtn").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      currentSectionComfortScore = btn.dataset.score;
+  sectionComfortScoreGrid.querySelectorAll(".scChip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      currentSectionComfortScore = chip.dataset.score;
       renderSectionComfortScoreGrid(currentSectionComfortScore);
     });
   });
@@ -1864,7 +1877,7 @@ function closeSectionComfortModal(){
   currentSectionComfortPart = null;
 }
 
-sectionComfortCancelBtn?.addEventListener("click", closeSectionComfortModal);
+
 
 sectionComfortSaveBtn?.addEventListener("click", ()=>{
   if(!currentSectionComfortPart) return;
@@ -1888,9 +1901,6 @@ sectionComfortSaveBtn?.addEventListener("click", ()=>{
   updateSummary();
 });
 
-sectionComfortOverlay?.addEventListener("click", (e)=>{
-  if(e.target === sectionComfortOverlay) closeSectionComfortModal();
-});
 
   function validateAndApplyProfile(){
     const nom = gateNom.value.trim();
@@ -3017,32 +3027,29 @@ let currentGlobalSeatScore = loadJson(CURRENT_GC_KEY + "_score", "");
     gcOverlay.setAttribute("aria-hidden","true");
     _pendingSavePayload = null;
   }
-  gcCancelBtn.addEventListener("click", ()=>{
-    closeGlobalCommentModal();
-    toast("Modifiable avant enregistrement");
-  });
+  
 
   function cleanWord(w){ return String(w||"").trim().replace(/\s+/g," "); }
   function getWordsFromModal(){
     return [gcW1.value, gcW2.value, gcW3.value].map(cleanWord).filter(Boolean).slice(0,3);
   }
-    function renderGlobalSeatScoreGrid(selected=""){
+  function renderGlobalSeatScoreGrid(selected=""){
   if(!globalSeatScoreGrid) return;
 
   const scores = [1,2,3,4,5,6,7,8,9,10];
   globalSeatScoreGrid.innerHTML = scores.map(s=>{
     const active = String(selected) === String(s);
     return `
-      <button type="button" class="scScoreBtn ${active ? "active" : ""}" data-score="${s}">
-        <span class="n">${s}/10</span>
-        <span class="t">${escapeHtml(sectionScoreLabel(s))}</span>
-      </button>
+      <div class="chip scChip ${active ? "on" : ""}" data-score="${s}">
+        <span class="sNum">${s}/10</span>
+        <span class="sTxt">${escapeHtml(sectionScoreLabel(s))}</span>
+      </div>
     `;
   }).join("");
 
-  globalSeatScoreGrid.querySelectorAll(".scScoreBtn").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      currentGlobalSeatScore = btn.dataset.score;
+  globalSeatScoreGrid.querySelectorAll(".scChip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      currentGlobalSeatScore = chip.dataset.score;
       renderGlobalSeatScoreGrid(currentGlobalSeatScore);
     });
   });
