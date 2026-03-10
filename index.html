@@ -1199,11 +1199,10 @@ body.light .scScoreBtn.active{
     </div>
   </div>
 </div>
-    <!-- Modal confort global section -->
-<!-- Modal confort global section -->
+ <!-- Modal confort global section -->
 <div class="modalOverlay" id="sectionComfortOverlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-label="Confort global section" style="width:min(760px,100%)">
-    <div class="gcHead">
+    <div class="modalHead">
       <div>
         <b id="sectionComfortTitle">Confort global</b>
         <div class="scIntro">Donne une note globale à cette partie du siège.</div>
@@ -1211,7 +1210,7 @@ body.light .scScoreBtn.active{
       <span class="scBadge" id="sectionComfortPill">Section</span>
     </div>
 
-    <div class="gcBody">
+    <div class="modalBody">
       <label class="commentLabel">Note globale *</label>
       <div class="scScoreGrid" id="sectionComfortScoreGrid"></div>
 
@@ -1226,37 +1225,6 @@ body.light .scScoreBtn.active{
   </div>
 </div>
 
-    <div class="gcBody">
-      <div class="hint">
-        Donne une <b>note globale</b> pour cette partie, puis ajoute un commentaire si besoin.
-      </div>
-
-      <label class="commentLabel" for="sectionComfortScore">Note globale *</label>
-      <select id="sectionComfortScore" class="field" style="width:100%; margin-top:8px; padding:10px 12px; border-radius:14px;">
-        <option value="">Choisir une note</option>
-        <option value="1">1 - Inacceptable</option>
-        <option value="2">2 - Très insatisfait</option>
-        <option value="3">3 - Insatisfait</option>
-        <option value="4">4 - Insatisfait</option>
-        <option value="5">5 - Acceptable</option>
-        <option value="6">6 - Acceptable</option>
-        <option value="7">7 - Satisfait</option>
-        <option value="8">8 - Satisfait</option>
-        <option value="9">9 - Très satisfait</option>
-        <option value="10">10 - Optimum</option>
-      </select>
-
-      <label class="commentLabel" for="sectionComfortComment">Commentaire</label>
-      <textarea id="sectionComfortComment" placeholder="Commentaire optionnel..."></textarea>
-
-      <div class="gcActions">
-        <button class="btn ghost" id="sectionComfortCancelBtn" type="button">Annuler</button>
-        <button class="btn primary" id="sectionComfortSaveBtn" type="button">Valider</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Modal commentaire global obligatoire -->
 <div class="gcOverlay" id="gcOverlay" aria-hidden="true">
   <div class="gcModal" role="dialog" aria-modal="true" aria-label="Commentaire global">
     <div class="gcHead">
@@ -1788,6 +1756,7 @@ const sectionComfortCancelBtn = $("sectionComfortCancelBtn");
 const sectionComfortSaveBtn = $("sectionComfortSaveBtn");
 
 let currentSectionComfortPart = null;
+let currentSectionComfortScore = "";
 const guideOverlay = $("guideOverlay");
 const guideCloseBtn = $("guideCloseBtn");
 const guideOkBtn = $("guideOkBtn");
@@ -1905,7 +1874,7 @@ sectionComfortSaveBtn?.addEventListener("click", ()=>{
 
   if(!score){
     toast("⚠️ Note globale obligatoire");
-    sectionComfortScore.focus();
+     sectionComfortComment.focus();
     return;
   }
 
