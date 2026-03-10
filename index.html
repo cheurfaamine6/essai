@@ -1201,8 +1201,8 @@ body.light .scScoreBtn.active{
 </div>
     <!-- Modal confort global section -->
 <!-- Modal confort global section -->
-<div class="gcOverlay" id="sectionComfortOverlay" aria-hidden="true">
-  <div class="gcModal" role="dialog" aria-modal="true" aria-label="Confort global section">
+<div class="modalOverlay" id="sectionComfortOverlay" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Confort global section" style="width:min(760px,100%)">
     <div class="gcHead">
       <div>
         <b id="sectionComfortTitle">Confort global</b>
@@ -2694,23 +2694,25 @@ function zoomForZone(zoneName){
   window.addEventListener("resize", ()=> requestRadarRedraw(false));
 
   // ===== Summary list =====
-  function checkSectionComfortPrompts(){
+ function checkSectionComfortPrompts(){
   const isSheetOpen = $("sheet")?.classList.contains("show");
   const isGlobalCommentOpen = $("gcOverlay")?.classList.contains("show");
   const isSectionOpen = $("sectionComfortOverlay")?.classList.contains("show");
 
   if(isSheetOpen || isGlobalCommentOpen || isSectionOpen) return;
 
+  // dossier fini -> popup dossier
   if(isDossierFullyRated() && !hasSectionComfort("dossier")){
     openSectionComfortModal("dossier");
     return;
   }
 
+  // assise finie -> popup assise
   if(isAssiseFullyRated() && !hasSectionComfort("assise")){
     openSectionComfortModal("assise");
     return;
   }
-}  
+}
   function updateSummary(){
   const zones = getZones();
   const scoredCount = zones.map(z=>getScoreForZoneName(z)).filter(n=>Number.isFinite(n)).length;
@@ -2947,15 +2949,10 @@ renderLegendScale();
   $("sheet").classList.remove("show");
   document.querySelectorAll(".zone").forEach(p=>p.classList.remove("active"));
   resetZoom();
-
-  setTimeout(()=>{
-    checkSectionComfortPrompts();
-  }, 60);
 }
- $("saveBtn").addEventListener("click", ()=>{
+$("saveBtn").addEventListener("click", ()=>{
   if(!activeKey) return;
 
-  // ✅ Présence & Dureté obligatoires
   if(!activeCriteria?.presence || !activeCriteria?.durete){
     toast("⚠️ Présence et Dureté obligatoires");
     activeCritId = (!activeCriteria?.presence) ? "presence" : "durete";
@@ -2964,6 +2961,7 @@ renderLegendScale();
   }
 
   const score = Number(selectedScore);
+
   ratings[activeKey] = {
     score,
     criteria: activeCriteria,
@@ -2976,14 +2974,13 @@ renderLegendScale();
     saveJson(GREEN_KEY, greenClicked);
   }
 
-  closeSheet();          // ✅ fermer d'abord
-  updateSummary();       // ✅ recalcul ensuite
+  closeSheet();
+  updateSummary();
   toast("Note enregistrée");
 
-  // ✅ puis vérifier l'ouverture de la popup dossier/assise
   setTimeout(()=>{
     checkSectionComfortPrompts();
-  }, 80);
+  }, 120);
 });
 
   $("overlay").addEventListener("click", closeSheet);
