@@ -1113,53 +1113,16 @@ body.light .scScoreBtn.active{
   border-color: rgba(79,140,255,.45);
   box-shadow: 0 0 0 4px rgba(79,140,255,.14);
 }
- .scChip{
-  border:1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.06);
-  color: var(--txt);
-  border-radius:999px;
-  padding:10px 12px;
-  font-weight:900;
-  cursor:pointer;
-  user-select:none;
-  transition:.12s;
+   .scChip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
   text-align:center;
-  min-width:120px;
+  min-height:40px;
+  min-width:160px;
+  padding:8px 12px;
+  line-height:1.2;
 }
-
-.scChip:hover{
-  transform: translateY(-1px);
-}
-
-.scChip.on{
-  background: rgba(124,58,237,.25);
-  border-color: rgba(124,58,237,.65);
-}
-
-.scChip .sNum{
-  display:block;
-  font-size:.84rem;
-  font-weight:950;
-  line-height:1.1;
-}
-
-.scChip .sTxt{
-  display:block;
-  font-size:.70rem;
-  line-height:1.15;
-  margin-top:3px;
-  color: var(--muted);
-}
-
-body.light .scChip{
-  border-color: rgba(15,23,42,.12);
-  background: rgba(255,255,255,.75);
-}
-
-body.light .scChip.on{
-  background: rgba(79,140,255,.14);
-  border-color: rgba(79,140,255,.45);
-}  
   </style>
   </head>
   <body>
@@ -1797,7 +1760,6 @@ const sectionComfortTitle = $("sectionComfortTitle");
 const sectionComfortPill = $("sectionComfortPill");
 const sectionComfortScoreGrid = $("sectionComfortScoreGrid");
 const sectionComfortComment = $("sectionComfortComment");
-const sectionComfortCancelBtn = $("sectionComfortCancelBtn");
 const sectionComfortSaveBtn = $("sectionComfortSaveBtn");
 
 let currentSectionComfortPart = null;
@@ -1875,8 +1837,7 @@ function renderSectionComfortScoreGrid(selected=""){
     const active = String(selected) === String(s);
     return `
       <div class="chip scChip ${active ? "on" : ""}" data-score="${s}">
-        <span class="sNum">${s}/10</span>
-        <span class="sTxt">${escapeHtml(sectionScoreLabel(s))}</span>
+        ${s}/10 — ${escapeHtml(sectionScoreLabel(s))}
       </div>
     `;
   }).join("");
@@ -3073,8 +3034,7 @@ let currentGlobalSeatScore = loadJson(CURRENT_GC_KEY + "_score", "");
     const active = String(selected) === String(s);
     return `
       <div class="chip scChip ${active ? "on" : ""}" data-score="${s}">
-        <span class="sNum">${s}/10</span>
-        <span class="sTxt">${escapeHtml(sectionScoreLabel(s))}</span>
+        ${s}/10 — ${escapeHtml(sectionScoreLabel(s))}
       </div>
     `;
   }).join("");
@@ -3214,9 +3174,14 @@ if(!hasSectionComfort("assise")){
 
   // ✅ Comme toutes les zones sont notées, commentaire obligatoire (déjà ton comportement)
   if(currentGlobalComment){
-    finalizeSavePerson({ ...payload, globalComment: currentGlobalComment, words: currentWords });
-    return;
-  }
+  finalizeSavePerson({
+    ...payload,
+    globalComment: currentGlobalComment,
+    words: currentWords,
+    globalSeatScore: currentGlobalSeatScore
+  });
+  return;
+}
   openGlobalCommentModal(payload);
 });
 
